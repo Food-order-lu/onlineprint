@@ -1,6 +1,6 @@
 'use client';
 
-import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, pdf, Image } from '@react-pdf/renderer';
 
 // Types for quote data
 export interface QuoteLineItem {
@@ -31,9 +31,16 @@ export interface QuoteData {
     subtotal: number;
     discountPercent: number;
     discountAmount: number;
-    total: number;
+    vatRate: number;
+    vatAmount: number;
+    totalTtc: number;
+    depositAmount: number;
+    showDeposit?: boolean;
+    total: number; // This is the HT total
     notes?: string;
     paymentTerms: string;
+    signatureImage?: string;
+    signedDate?: string;
 }
 
 // Compact styles for single-page layout
@@ -352,28 +359,33 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                         </>
                     )}
                     <Text style={[styles.termsText, { marginTop: 6, fontStyle: 'italic' }]}>
-                        TVA non applicable (Art. 293B CGI)
+                        {data.vatRate === 0 && data.clientVat ? 'Autoliquidation - Art. 196 de la Directive 2006/112/CE (Reverse Charge)' : 'TVA au taux de ' + data.vatRate + '% comprise.'}
                     </Text>
                 </View>
 
                 {/* Totals */}
                 <View style={styles.totalsSection}>
                     <View style={styles.totalRow}>
-                        <Text style={styles.totalLabel}>Sous-total</Text>
-                        <Text style={styles.totalValue}>{data.subtotal.toFixed(2)} €</Text>
+                        <Text style={styles.totalLabel}>Sous-total HT</Text>
+                        <Text style={styles.totalValue}>{data.total.toFixed(2)} €</Text>
                     </View>
 
-                    {data.discountPercent > 0 && (
-                        <View style={[styles.totalRow, styles.discountRow]}>
-                            <Text style={[styles.totalLabel, styles.discountText]}>Remise ({data.discountPercent}%)</Text>
-                            <Text style={[styles.totalValue, styles.discountText]}>-{data.discountAmount.toFixed(2)} €</Text>
-                        </View>
-                    )}
+                    <View style={styles.totalRow}>
+                        <Text style={styles.totalLabel}>TVA ({data.vatRate}%)</Text>
+                        <Text style={styles.totalValue}>{data.vatAmount.toFixed(2)} €</Text>
+                    </View>
 
                     <View style={[styles.totalRow, styles.grandTotalRow]}>
-                        <Text style={styles.grandTotalLabel}>TOTAL</Text>
-                        <Text style={styles.grandTotalValue}>{data.total.toFixed(2)} €</Text>
+                        <Text style={styles.grandTotalLabel}>TOTAL TTC</Text>
+                        <Text style={styles.grandTotalValue}>{data.totalTtc.toFixed(2)} €</Text>
                     </View>
+
+                    {data.showDeposit && (
+                        <View style={[styles.totalRow, { marginTop: 4, paddingVertical: 4, borderTopWidth: 1, borderTopColor: '#E0E0E0' }]}>
+                            <Text style={[styles.totalLabel, { fontFamily: 'Helvetica-Bold' }]}>Acompte 20%</Text>
+                            <Text style={[styles.totalValue, { color: '#0D7377' }]}>{data.depositAmount.toFixed(2)} €</Text>
+                        </View>
+                    )}
                 </View>
             </View>
 
@@ -381,8 +393,18 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
             <View style={styles.signatureSection}>
                 <View style={styles.signatureBox}>
                     <Text style={styles.signatureLabel}>Signature client</Text>
-                    <View style={styles.signatureLine} />
-                    <Text style={styles.signatureNote}>Date et signature &quot;Bon pour accord&quot;</Text>
+                    {data.signatureImage ? (
+                        <View style={{ height: 40, marginBottom: 3 }}>
+                            <Image src={data.signatureImage} style={{ height: 35, objectFit: 'contain' }} />
+                        </View>
+                    ) : (
+                        <View style={styles.signatureLine} />
+                    )}
+                    {data.signedDate ? (
+                        <Text style={styles.signatureNote}>Signé le {data.signedDate}</Text>
+                    ) : (
+                        <Text style={styles.signatureNote}>Date et signature &quot;Bon pour accord&quot;</Text>
+                    )}
                 </View>
 
                 <View style={styles.signatureBox}>

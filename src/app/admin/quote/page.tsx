@@ -16,8 +16,11 @@ import {
     Globe,
     Download,
     Eye,
+    QrCode,
+    X,
 } from 'lucide-react';
 import Link from 'next/link';
+import { QRCodeSVG } from 'qrcode.react';
 
 // Schema for quote form
 const quoteSchema = z.object({
@@ -41,6 +44,7 @@ const quoteSchema = z.object({
         selected: z.boolean(),
     })),
     discountPercent: z.number().min(0).max(100).optional(),
+    discountEuros: z.number().min(0).optional(),
     paymentTerms: z.enum(['acompte20', 'custom']),
     customPaymentTerms: z.string().optional(),
     notes: z.string().optional(),
@@ -50,6 +54,13 @@ type QuoteFormData = z.infer<typeof quoteSchema>;
 
 // WebVision plans
 const webvisionPlans = [
+    {
+        id: 'supplements',
+        name: 'Suppléments uniquement',
+        basePrice: 0,
+        description: 'Pas de site web - Services mensuels uniquement',
+        features: ['Choisissez vos services mensuels ci-dessous']
+    },
     {
         id: 'essentiel',
         name: 'Essentiel',
@@ -88,6 +99,8 @@ const oneTimeExtras = [
     { name: 'Photos en présentiel', price: 60 },
     { name: 'Menu digital sur le site', price: 40 },
     { name: 'Site multi-langues', price: 30 },
+    { name: 'Imprimante (reconditionné)', price: 150, note: 'Installation incluse' },
+    { name: 'Router pour imprimante', price: 40, note: 'Installation incluse' },
 ];
 
 // Generate quote number
@@ -160,6 +173,7 @@ export default function QuoteBuilderPage() {
     const [showSuccess, setShowSuccess] = useState(false);
     const [quoteData, setQuoteData] = useState<any>(null);
     const [quoteNumber, setQuoteNumber] = useState('');
+    const [showQRModal, setShowQRModal] = useState(false);
 
     const {
         register,
@@ -174,6 +188,7 @@ export default function QuoteBuilderPage() {
             monthly: monthlyServices.map(s => ({ ...s, selected: s.defaultSelected || false })),
             extras: oneTimeExtras.map(e => ({ ...e, selected: false })),
             discountPercent: 0,
+            discountEuros: 0,
             paymentTerms: 'acompte20',
             customPaymentTerms: '',
         },
@@ -183,6 +198,8 @@ export default function QuoteBuilderPage() {
     const monthly = watch('monthly');
     const extras = watch('extras');
     const discountPercent = watch('discountPercent') || 0;
+    const discountEuros = watch('discountEuros') || 0;
+    const paymentTerms = watch('paymentTerms');
 
     useEffect(() => {
         const user = localStorage.getItem('rivego_user');
@@ -197,10 +214,35 @@ export default function QuoteBuilderPage() {
         const basePrice = plan?.basePrice || 0;
         const monthlyTotal = monthly.filter(s => s.selected).reduce((sum, s) => sum + s.price, 0);
         const extrasTotal = extras.filter(e => e.selected).reduce((sum, e) => sum + e.price, 0);
+
+        // HT Calculations
         const subtotal = basePrice + extrasTotal;
-        const discount = subtotal * (discountPercent / 100);
-        const total = subtotal - discount;
-        return { basePrice, monthlyTotal, extrasTotal, subtotal, discount, total, plan };
+        const discountFromPercent = subtotal * (discountPercent / 100);
+        const discount = discountFromPercent + discountEuros;
+        const totalHt = Math.max(0, subtotal - discount);
+
+        // VAT logic
+        const vatNumber = watch('vatNumber');
+        const isInternational = vatNumber && !vatNumber.toUpperCase().startsWith('LU');
+        const vatRate = isInternational ? 0 : 17;
+
+        const vatAmount = totalHt * (vatRate / 100);
+        const totalTtc = totalHt + vatAmount;
+        const depositAmount = totalTtc * 0.20;
+
+        return {
+            basePrice,
+            monthlyTotal,
+            extrasTotal,
+            subtotal,
+            discount,
+            totalHt,
+            vatRate,
+            vatAmount,
+            totalTtc,
+            depositAmount,
+            plan
+        };
     };
 
     const totals = calculateTotal();
@@ -296,10 +338,15 @@ export default function QuoteBuilderPage() {
             subtotal: totals.subtotal,
             discountPercent: data.discountPercent || 0,
             discountAmount: totals.discount,
-            total: totals.total,
+            total: totals.totalHt,
+            vatRate: totals.vatRate,
+            vatAmount: totals.vatAmount,
+            totalTtc: totals.totalTtc,
+            depositAmount: totals.depositAmount,
+            showDeposit: data.paymentTerms === 'acompte20',
             notes: data.notes,
             paymentTerms: data.paymentTerms === 'acompte20'
-                ? 'Acompte de 20% à la signature. Solde à la livraison.'
+                ? `Acompte de 20% (${totals.depositAmount.toFixed(2)}€) à la signature. Solde à la livraison.`
                 : data.customPaymentTerms || 'Conditions à définir.',
         };
 
@@ -340,10 +387,18 @@ export default function QuoteBuilderPage() {
                     <p className="text-gray-600 text-lg mb-4">
                         Devis N° <strong>{quoteNumber}</strong> pour <strong>{quoteData.clientCompany}</strong>
                     </p>
-                    <p className="text-3xl font-bold text-[#0D7377] mb-8">{quoteData.total.toFixed(2)} €</p>
+                    <p className="text-3xl font-bold text-[#0D7377] mb-8">{quoteData.totalTtc.toFixed(2)} € (TTC)</p>
 
                     <div className="flex gap-4 justify-center flex-wrap mb-8">
                         <PDFDownloadButton quoteData={quoteData} quoteNumber={quoteNumber} />
+
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => setShowQRModal(true)}
+                        >
+                            <QrCode size={20} />
+                            QR Signature mobile
+                        </button>
 
                         <button
                             className="btn btn-secondary"
@@ -365,6 +420,38 @@ export default function QuoteBuilderPage() {
                     <Link href="/admin/dashboard" className="text-gray-500 hover:text-gray-700">
                         ← Retour au dashboard
                     </Link>
+
+                    {/* QR Code Modal */}
+                    {showQRModal && (
+                        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+                            <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative">
+                                <button
+                                    onClick={() => setShowQRModal(false)}
+                                    className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600"
+                                >
+                                    <X size={24} />
+                                </button>
+
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">Signature mobile</h3>
+                                <p className="text-gray-500 text-sm mb-6">
+                                    Le client scanne ce QR code pour signer sur son téléphone
+                                </p>
+
+                                <div className="bg-white p-4 rounded-xl inline-block border-2 border-gray-100 mb-4">
+                                    <QRCodeSVG
+                                        value={`${typeof window !== 'undefined' ? window.location.origin : ''}/quote/${quoteNumber}/sign`}
+                                        size={200}
+                                        level="H"
+                                        includeMargin={true}
+                                    />
+                                </div>
+
+                                <p className="text-xs text-gray-400">
+                                    Devis N° {quoteNumber}
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </section>
         );
@@ -578,26 +665,46 @@ export default function QuoteBuilderPage() {
                                             <Percent size={16} />
                                             Remise commerciale
                                         </label>
-                                        <div className="flex items-center gap-2">
-                                            <input type="number" {...register('discountPercent', { valueAsNumber: true })} min="0" max="100" className="input w-20 text-center" />
-                                            <span className="text-gray-500">%</span>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <input type="number" {...register('discountPercent', { valueAsNumber: true })} min="0" max="100" className="input w-20 text-center" />
+                                                <span className="text-gray-500">%</span>
+                                            </div>
+                                            <span className="text-gray-400">ou</span>
+                                            <div className="flex items-center gap-2">
+                                                <input type="number" {...register('discountEuros', { valueAsNumber: true })} min="0" className="input w-24 text-center" />
+                                                <span className="text-gray-500">€</span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {discountPercent > 0 && (
+                                    {(discountPercent > 0 || discountEuros > 0) && (
                                         <div className="flex justify-between text-red-500">
-                                            <span>Remise ({discountPercent}%)</span>
+                                            <span>Remise totale</span>
                                             <span>-{totals.discount.toFixed(2)} €</span>
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="pt-4 border-t border-gray-200 mb-8">
-                                    <div className="flex justify-between text-2xl font-bold">
-                                        <span className="text-gray-900">Total</span>
-                                        <span className="text-[#0D7377]">{totals.total.toFixed(2)} €</span>
+                                <div className="pt-4 border-t border-gray-200 mb-8 space-y-2">
+                                    <div className="flex justify-between text-gray-600">
+                                        <span>Total HT</span>
+                                        <span>{totals.totalHt.toFixed(2)} €</span>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">TVA non applicable (Art. 293B CGI)</p>
+                                    <div className="flex justify-between text-gray-600">
+                                        <span>TVA ({totals.vatRate}%)</span>
+                                        <span>{totals.vatAmount.toFixed(2)} €</span>
+                                    </div>
+                                    <div className="flex justify-between text-2xl font-bold pt-2 border-t border-gray-100">
+                                        <span className="text-gray-900">Total TTC</span>
+                                        <span className="text-[#0D7377]">{totals.totalTtc.toFixed(2)} €</span>
+                                    </div>
+                                    {paymentTerms === 'acompte20' && (
+                                        <div className="flex justify-between text-sm font-medium text-[#0D7377] bg-[#0D7377]/5 p-2 rounded-lg">
+                                            <span>Acompte 20%</span>
+                                            <span>{totals.depositAmount.toFixed(2)} €</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-3">
