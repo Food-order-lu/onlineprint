@@ -17,7 +17,7 @@ export interface QuoteData {
     // Company
     companyName: string;
     companyAddress: string;
-    companyVat: string;
+    companyVat?: string;
     companyEmail: string;
     // Client
     clientName: string;
@@ -48,152 +48,162 @@ export interface QuoteData {
     signedDate?: string;
 }
 
-// Styles matching the uploaded design
+// Colors matching the image
+const COLORS = {
+    primary: '#1A3A5C',      // Dark blue (header, tables)
+    accent: '#0D7377',       // Teal accent
+    text: '#333333',
+    textLight: '#666666',
+    textMuted: '#999999',
+    border: '#E0E0E0',
+    bgLight: '#F5F7FA',
+    white: '#FFFFFF',
+};
+
+// Compact styles for single page
 const styles = StyleSheet.create({
     page: {
-        padding: 30,
-        fontSize: 9,
+        padding: 25,
+        fontSize: 8,
         fontFamily: 'Helvetica',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.white,
     },
     // Header
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 20,
-        paddingBottom: 10,
-        borderBottomWidth: 2,
-        borderBottomColor: '#1A3A5C',
+        marginBottom: 12,
+        paddingBottom: 8,
     },
     logo: {
-        fontSize: 24,
+        fontSize: 22,
         fontFamily: 'Helvetica-Bold',
-        color: '#1A3A5C',
+        color: COLORS.primary,
     },
     logoSubtitle: {
-        fontSize: 8,
-        color: '#0D7377',
-        letterSpacing: 2,
-        marginTop: 2,
+        fontSize: 7,
+        color: COLORS.accent,
+        letterSpacing: 1.5,
+        marginTop: 1,
     },
     quoteInfo: {
         textAlign: 'right',
     },
     quoteTitle: {
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: 'Helvetica-Bold',
-        color: '#1A1A1A',
-        marginBottom: 4,
+        color: COLORS.text,
+        marginBottom: 2,
     },
     quoteNumber: {
-        fontSize: 9,
-        color: '#666666',
+        fontSize: 8,
+        color: COLORS.textLight,
     },
     quoteDate: {
-        fontSize: 8,
-        color: '#666666',
-        marginTop: 2,
+        fontSize: 7,
+        color: COLORS.textLight,
+        marginTop: 1,
     },
 
-    // Parties section
+    // Parties section - with left border
     partiesSection: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 15,
+        marginBottom: 10,
     },
     partyBox: {
         width: '48%',
-        padding: 12,
-        backgroundColor: '#F5F7FA',
-        borderRadius: 4,
+        padding: 10,
+        paddingLeft: 12,
+        backgroundColor: COLORS.bgLight,
+        borderLeftWidth: 3,
+        borderLeftColor: COLORS.primary,
     },
     partyTitle: {
-        fontSize: 8,
+        fontSize: 7,
         fontFamily: 'Helvetica-Bold',
-        color: '#0D7377',
-        marginBottom: 6,
+        color: COLORS.accent,
+        marginBottom: 4,
         textTransform: 'uppercase',
-        letterSpacing: 0.5,
     },
     partyName: {
-        fontSize: 11,
+        fontSize: 9,
         fontFamily: 'Helvetica-Bold',
-        color: '#1A1A1A',
-        marginBottom: 4,
+        color: COLORS.text,
+        marginBottom: 2,
     },
     partyDetail: {
-        fontSize: 8,
-        color: '#666666',
-        marginBottom: 2,
+        fontSize: 7,
+        color: COLORS.textLight,
+        marginBottom: 1,
     },
 
     // Service banner
     serviceBox: {
-        padding: 12,
-        backgroundColor: '#1A3A5C',
-        borderRadius: 4,
-        marginBottom: 15,
+        padding: 8,
+        backgroundColor: COLORS.primary,
+        marginBottom: 10,
     },
     serviceName: {
-        fontSize: 12,
+        fontSize: 10,
         fontFamily: 'Helvetica-Bold',
-        color: '#FFFFFF',
+        color: COLORS.white,
     },
     serviceDescription: {
-        fontSize: 9,
-        color: '#FFFFFF',
+        fontSize: 7,
+        color: COLORS.white,
         opacity: 0.85,
-        marginTop: 2,
+        marginTop: 1,
     },
 
     // Section title
     sectionTitle: {
-        fontSize: 9,
+        fontSize: 8,
         fontFamily: 'Helvetica-Bold',
-        color: '#1A3A5C',
-        marginBottom: 8,
-        marginTop: 10,
+        color: COLORS.primary,
+        marginBottom: 4,
+        marginTop: 6,
         textTransform: 'uppercase',
-        letterSpacing: 0.5,
+        letterSpacing: 0.3,
     },
 
     // Table
     table: {
-        marginBottom: 8,
+        marginBottom: 4,
     },
     tableHeader: {
         flexDirection: 'row',
-        backgroundColor: '#1A3A5C',
-        paddingVertical: 8,
-        paddingHorizontal: 10,
+        backgroundColor: COLORS.primary,
+        paddingVertical: 5,
+        paddingHorizontal: 8,
     },
     tableHeaderText: {
-        color: '#FFFFFF',
+        color: COLORS.white,
         fontFamily: 'Helvetica-Bold',
-        fontSize: 8,
+        fontSize: 7,
         textTransform: 'uppercase',
     },
     tableRow: {
         flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8E8E8',
-        paddingVertical: 8,
-        paddingHorizontal: 10,
+        borderBottomWidth: 0.5,
+        borderBottomColor: COLORS.border,
+        paddingVertical: 5,
+        paddingHorizontal: 8,
     },
     tableRowAlt: {
         backgroundColor: '#FAFAFA',
     },
-    colDescription: { width: '50%' },
-    colQty: { width: '15%', textAlign: 'center' },
-    colPrice: { width: '17.5%', textAlign: 'right' },
-    colTotal: { width: '17.5%', textAlign: 'right' },
+    colDescription: { width: '52%' },
+    colQty: { width: '12%', textAlign: 'center' },
+    colPrice: { width: '18%', textAlign: 'right' },
+    colTotal: { width: '18%', textAlign: 'right' },
     cellText: {
-        fontSize: 9,
-        color: '#333333',
+        fontSize: 8,
+        color: COLORS.text,
     },
     cellTextBold: {
-        fontSize: 9,
-        color: '#333333',
+        fontSize: 8,
+        color: COLORS.text,
         fontFamily: 'Helvetica-Bold',
     },
 
@@ -201,51 +211,52 @@ const styles = StyleSheet.create({
     tableTotalRow: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        paddingVertical: 8,
-        paddingHorizontal: 10,
+        paddingVertical: 4,
+        paddingHorizontal: 8,
     },
     tableTotalLabel: {
-        fontSize: 9,
-        color: '#666666',
-        marginRight: 20,
+        fontSize: 8,
+        color: COLORS.textLight,
+        marginRight: 15,
     },
     tableTotalValue: {
-        fontSize: 10,
+        fontSize: 9,
         fontFamily: 'Helvetica-Bold',
-        color: '#1A3A5C',
+        color: COLORS.primary,
     },
     monthlyTotalValue: {
-        fontSize: 10,
+        fontSize: 9,
         fontFamily: 'Helvetica-Bold',
-        color: '#0D7377',
+        color: COLORS.accent,
     },
 
     // Bottom section
     bottomSection: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 15,
+        marginTop: 10,
     },
 
     // Terms on left
     termsSection: {
-        width: '48%',
+        width: '46%',
     },
     termsBox: {
-        padding: 12,
-        backgroundColor: '#F5F7FA',
-        borderRadius: 4,
+        padding: 8,
+        backgroundColor: COLORS.bgLight,
+        borderLeftWidth: 3,
+        borderLeftColor: COLORS.primary,
     },
     termsTitle: {
-        fontSize: 9,
+        fontSize: 8,
         fontFamily: 'Helvetica-Bold',
-        color: '#1A1A1A',
-        marginBottom: 6,
+        color: COLORS.text,
+        marginBottom: 4,
     },
     termsText: {
-        fontSize: 8,
-        color: '#666666',
-        lineHeight: 1.5,
+        fontSize: 7,
+        color: COLORS.textLight,
+        lineHeight: 1.4,
     },
 
     // Totals on right
@@ -255,53 +266,51 @@ const styles = StyleSheet.create({
     totalRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingVertical: 3,
+        paddingHorizontal: 8,
     },
     totalLabel: {
-        fontSize: 9,
-        color: '#666666',
+        fontSize: 8,
+        color: COLORS.textLight,
     },
     totalValue: {
-        fontSize: 9,
-        color: '#333333',
+        fontSize: 8,
+        color: COLORS.text,
         fontFamily: 'Helvetica-Bold',
     },
     grandTotalRow: {
-        backgroundColor: '#1A3A5C',
-        borderRadius: 4,
-        marginTop: 4,
-        paddingVertical: 10,
+        backgroundColor: COLORS.primary,
+        marginTop: 3,
+        paddingVertical: 6,
     },
     grandTotalLabel: {
-        fontSize: 10,
-        color: '#FFFFFF',
+        fontSize: 9,
+        color: COLORS.white,
         fontFamily: 'Helvetica-Bold',
     },
     grandTotalValue: {
-        fontSize: 14,
-        color: '#FFFFFF',
+        fontSize: 12,
+        color: COLORS.white,
         fontFamily: 'Helvetica-Bold',
     },
     depositRow: {
         backgroundColor: '#E8F4F4',
-        borderRadius: 4,
-        marginTop: 4,
+        marginTop: 3,
     },
     depositLabel: {
-        fontSize: 9,
-        color: '#0D7377',
+        fontSize: 8,
+        color: COLORS.accent,
         fontFamily: 'Helvetica-Bold',
     },
     depositValue: {
-        fontSize: 10,
-        color: '#0D7377',
+        fontSize: 9,
+        color: COLORS.accent,
         fontFamily: 'Helvetica-Bold',
     },
 
     // Signature section
     signatureSection: {
-        marginTop: 25,
+        marginTop: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
@@ -309,34 +318,34 @@ const styles = StyleSheet.create({
         width: '45%',
     },
     signatureLabel: {
-        fontSize: 9,
+        fontSize: 8,
         fontFamily: 'Helvetica-Bold',
-        color: '#333333',
-        marginBottom: 4,
+        color: COLORS.text,
+        marginBottom: 3,
     },
     signatureLine: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#333333',
-        height: 40,
-        marginBottom: 4,
+        borderBottomWidth: 0.5,
+        borderBottomColor: COLORS.text,
+        height: 30,
+        marginBottom: 3,
     },
     signatureNote: {
-        fontSize: 7,
-        color: '#999999',
+        fontSize: 6,
+        color: COLORS.textMuted,
     },
 
     // Footer
     footer: {
         position: 'absolute',
-        bottom: 20,
-        left: 30,
-        right: 30,
+        bottom: 15,
+        left: 25,
+        right: 25,
         textAlign: 'center',
-        color: '#999999',
-        fontSize: 7,
-        paddingTop: 8,
-        borderTopWidth: 1,
-        borderTopColor: '#E0E0E0',
+        color: COLORS.textMuted,
+        fontSize: 6,
+        paddingTop: 6,
+        borderTopWidth: 0.5,
+        borderTopColor: COLORS.border,
     },
 });
 
@@ -370,7 +379,7 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                 <View style={styles.partyBox}>
                     <Text style={styles.partyTitle}>À</Text>
                     <Text style={styles.partyName}>{data.clientCompany}</Text>
-                    <Text style={styles.partyDetail}>{data.clientName}</Text>
+                    <Text style={styles.partyDetail}>{data.clientCompany}</Text>
                     <Text style={styles.partyDetail}>{data.clientAddress}</Text>
                     <Text style={styles.partyDetail}>{data.clientEmail}</Text>
                 </View>
@@ -439,7 +448,7 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                     <View style={styles.termsBox}>
                         <Text style={styles.termsTitle}>Conditions de paiement</Text>
                         <Text style={styles.termsText}>{data.paymentTerms}</Text>
-                        <Text style={[styles.termsText, { marginTop: 8, fontStyle: 'italic' }]}>
+                        <Text style={[styles.termsText, { marginTop: 4, fontStyle: 'italic' }]}>
                             TVA au taux de {data.vatRate}% comprise.
                         </Text>
                     </View>
@@ -474,8 +483,8 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                 <View style={styles.signatureBox}>
                     <Text style={styles.signatureLabel}>Signature client</Text>
                     {data.signatureImage ? (
-                        <View style={{ height: 40, marginBottom: 4 }}>
-                            <Image src={data.signatureImage} style={{ height: 35, objectFit: 'contain' }} />
+                        <View style={{ height: 30, marginBottom: 3 }}>
+                            <Image src={data.signatureImage} style={{ height: 28, objectFit: 'contain' }} />
                         </View>
                     ) : (
                         <View style={styles.signatureLine} />

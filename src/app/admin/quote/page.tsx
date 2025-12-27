@@ -45,9 +45,9 @@ const quoteSchema = z.object({
     })),
     discountPercent: z.number().min(0).max(100).optional(),
     discountEuros: z.number().min(0).optional(),
-    // New field for monthly discount
     monthlyDiscount: z.number().min(0).optional(),
-    paymentTerms: z.enum(['acompte20', 'custom']),
+    depositPercent: z.number().min(0).max(100).optional(),
+    paymentTerms: z.enum(['acompte', 'custom']),
     customPaymentTerms: z.string().optional(),
     notes: z.string().optional(),
 });
@@ -186,7 +186,8 @@ export default function QuoteBuilderPage() {
             discountPercent: 0,
             discountEuros: 0,
             monthlyDiscount: 0,
-            paymentTerms: 'acompte20',
+            depositPercent: 20,
+            paymentTerms: 'acompte',
             customPaymentTerms: '',
         },
     });
@@ -229,7 +230,10 @@ export default function QuoteBuilderPage() {
 
         const vatAmount = totalHt * (vatRate / 100);
         const totalTtc = totalHt + vatAmount;
-        const depositAmount = totalTtc * 0.20;
+
+        // Variable deposit percentage
+        const depositPct = watch('depositPercent') || 20;
+        const depositAmount = totalTtc * (depositPct / 100);
 
         return {
             basePrice,
@@ -242,6 +246,7 @@ export default function QuoteBuilderPage() {
             vatRate,
             vatAmount,
             totalTtc,
+            depositPercent: depositPct,
             depositAmount,
             plan
         };
@@ -359,9 +364,9 @@ export default function QuoteBuilderPage() {
             vatAmount: totals.vatAmount,
             totalTtc: totals.totalTtc,
             depositAmount: totals.depositAmount,
-            showDeposit: data.paymentTerms === 'acompte20',
+            showDeposit: data.paymentTerms === 'acompte',
             notes: data.notes,
-            paymentTerms: data.paymentTerms === 'acompte20'
+            paymentTerms: data.paymentTerms === 'acompte'
                 ? `Acompte de 20% (${totals.depositAmount.toFixed(2)}€) à la signature. Solde à la livraison.`
                 : data.customPaymentTerms || 'Conditions à définir.',
 
@@ -628,8 +633,8 @@ export default function QuoteBuilderPage() {
                             <div className="card">
                                 <h2 className="text-xl font-semibold mb-6 text-gray-900">Conditions de paiement</h2>
                                 <div className="space-y-4">
-                                    <label className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-3 ${watch('paymentTerms') === 'acompte20' ? 'border-[#0D7377] bg-[#0D7377]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                                        <input type="radio" {...register('paymentTerms')} value="acompte20" className="w-5 h-5 text-[#0D7377] focus:ring-[#0D7377]" />
+                                    <label className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-3 ${watch('paymentTerms') === 'acompte' ? 'border-[#0D7377] bg-[#0D7377]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                                        <input type="radio" {...register('paymentTerms')} value="acompte" className="w-5 h-5 text-[#0D7377] focus:ring-[#0D7377]" />
                                         <div>
                                             <span className="font-medium text-gray-900">Acompte 20%</span>
                                             <p className="text-sm text-gray-500">20% à la signature, solde à la livraison</p>
@@ -737,7 +742,7 @@ export default function QuoteBuilderPage() {
                                         <span className="text-gray-900">Total TTC</span>
                                         <span className="text-[#0D7377]">{totals.totalTtc.toFixed(2)} €</span>
                                     </div>
-                                    {paymentTerms === 'acompte20' && (
+                                    {paymentTerms === 'acompte' && (
                                         <div className="flex justify-between text-sm font-medium text-[#0D7377] bg-[#0D7377]/5 p-2 rounded-lg">
                                             <span>Acompte 20%</span>
                                             <span>{totals.depositAmount.toFixed(2)} €</span>
