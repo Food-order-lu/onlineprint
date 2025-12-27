@@ -95,7 +95,33 @@ export class DocuSealClient {
           name: name,
           documents: [{
             name: name,
-            file: pdfBase64
+            file: pdfBase64,
+            fields: [
+              {
+                name: 'Signature Client',
+                role: 'First Party',
+                type: 'signature',
+                areas: [{
+                  page: 1,
+                  x: 0.1,  // 10% from left
+                  y: 0.85, // 85% from top (near bottom)
+                  w: 0.3,  // 30% width
+                  h: 0.08  // 8% height
+                }]
+              },
+              {
+                name: 'Date',
+                role: 'First Party',
+                type: 'date',
+                areas: [{
+                  page: 1,
+                  x: 0.1,
+                  y: 0.94,
+                  w: 0.2,
+                  h: 0.04
+                }]
+              }
+            ]
           }]
         }),
       });

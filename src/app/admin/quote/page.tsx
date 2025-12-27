@@ -115,9 +115,49 @@ const generateQuoteNumber = () => {
     return `DEV-${year}${month}-${random}`;
 };
 
-// ... (existing formatDate implementation) ...
+// Format date for display
+const formatDate = (date: Date): string => {
+    return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+};
 
-// ... (existing PDFDownloadButton implementation) ...
+// PDF Download Button Component
+const PDFDownloadButton = ({ quoteData, quoteNumber }: { quoteData: any; quoteNumber: string }) => {
+    const handleDownload = async () => {
+        try {
+            const response = await fetch('/api/generate-pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(quoteData),
+            });
+
+            if (!response.ok) throw new Error('PDF generation failed');
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Devis-${quoteNumber}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('PDF download error:', error);
+            alert('Erreur lors du téléchargement du PDF');
+        }
+    };
+
+    return (
+        <button onClick={handleDownload} className="btn btn-secondary">
+            <Download size={20} />
+            Télécharger PDF
+        </button>
+    );
+};
 
 export default function QuoteBuilderPage() {
     const router = useRouter();
@@ -212,7 +252,10 @@ export default function QuoteBuilderPage() {
     // ... (existing handleVatLookup implementation) ...
     const handleVatLookup = async () => {
         const vatNumber = watch('vatNumber');
-        if (!vatNumber || vatNumber.length < 4) return;
+        if (!vatNumber || vatNumber.length < 4) {
+            alert('Entrez un numéro de TVA valide (ex: FR12345678901, DE123456789)');
+            return;
+        }
         setVatLookupLoading(true);
         try {
             const response = await fetch('/api/vies', {
@@ -221,17 +264,27 @@ export default function QuoteBuilderPage() {
                 body: JSON.stringify({ vatNumber }),
             });
             const data = await response.json();
+
             if (data.valid && data.companyName) {
                 setValue('clientCompany', data.companyName);
                 if (data.address) setValue('clientAddress', data.address);
-                alert(`✅ TVA valide: ${data.companyName}`);
+
+                // Show autoliquidation info
+                if (data.autoliquidation) {
+                    alert(`✅ TVA valide: ${data.companyName}\n\n🇪🇺 Client ${data.country}\n🔄 AUTOLIQUIDATION - TVA 0%\n\nLa facture sera émise sans TVA (autoliquidation art. 283-2 du CGI)`);
+                } else {
+                    alert(`✅ TVA valide: ${data.companyName}\n\n🇱🇺 Client Luxembourgeois\n💰 TVA 17% applicable`);
+                }
             } else if (data.error) {
-                alert(`❌ ${data.error}`);
+                alert(`❌ ${data.error}${data.hint ? '\n\n💡 ' + data.hint : ''}`);
+            } else if (data.message) {
+                alert(`❌ ${data.message}`);
             } else {
-                alert('❌ Numéro de TVA non trouvé');
+                alert('❌ Numéro de TVA non trouvé dans la base VIES');
             }
         } catch (error) {
-            alert('Erreur de connexion au service VIES');
+            console.error('VIES error:', error);
+            alert('Erreur de connexion au service VIES. Réessayez dans quelques secondes.');
         }
         setVatLookupLoading(false);
     };

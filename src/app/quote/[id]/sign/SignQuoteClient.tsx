@@ -137,42 +137,59 @@ export default function SignQuoteClient({ demoQuote: initialQuote }: { demoQuote
         const initDocuSeal = async () => {
             try {
                 setLoadingSrc(true);
+                setError(null);
+
                 // 1. Generate PDF Blob
-                // Note: We use QuotePDF here as per user request (Devis template)
+                console.log('Generating PDF...');
                 const { generateQuotePDF } = await import('@/components/pdf/QuotePDF');
                 const contractData = getContractData();
                 const pdfBlob = await generateQuotePDF(contractData);
+                console.log('PDF Blob size:', pdfBlob.size, 'bytes');
+
+                if (!pdfBlob || pdfBlob.size === 0) {
+                    throw new Error('PDF generation failed - empty blob');
+                }
 
                 // 2. Convert Blob to Base64
-                const reader = new FileReader();
-                reader.readAsDataURL(pdfBlob);
-                reader.onloadend = async () => {
-                    const base64data = reader.result?.toString().split(',')[1];
-                    if (!base64data) throw new Error('Failed to convert PDF to base64');
+                const base64data = await new Promise<string>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const result = reader.result?.toString().split(',')[1];
+                        if (result) {
+                            resolve(result);
+                        } else {
+                            reject(new Error('Failed to convert PDF to base64'));
+                        }
+                    };
+                    reader.onerror = () => reject(new Error('FileReader error'));
+                    reader.readAsDataURL(pdfBlob);
+                });
 
-                    // 3. Call API to create signing session
-                    const response = await fetch('/api/docuseal/init', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            documents: [{
-                                name: `Devis-${quote.id}.pdf`,
-                                file: base64data
-                            }],
-                            email: quote.client.email,
-                            name: quote.client.name
-                        })
-                    });
+                console.log('Base64 length:', base64data.length);
 
-                    if (!response.ok) {
-                        const err = await response.json();
-                        throw new Error(err.error || 'Failed to init DocuSeal');
-                    }
+                // 3. Call API to create signing session
+                const response = await fetch('/api/docuseal/init', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        documents: [{
+                            name: `Devis-${quote.id}.pdf`,
+                            file: base64data
+                        }],
+                        email: quote.client.email,
+                        name: quote.client.name
+                    })
+                });
 
-                    const data = await response.json();
-                    setDocuSealSrc(`https://docuseal.com/s/${data.slug}`); // Or data.url if provided
-                    setLoadingSrc(false);
-                };
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || 'Failed to init DocuSeal');
+                }
+
+                const data = await response.json();
+                console.log('DocuSeal response:', data);
+                setDocuSealSrc(`https://docuseal.com/s/${data.slug}`);
+                setLoadingSrc(false);
             } catch (err: any) {
                 console.error('Error initializing DocuSeal:', err);
                 // Show error but also offer fallback
