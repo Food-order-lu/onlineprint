@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintFlow Pro - Impression en ligne professionnelle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #333;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav a {
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav a:hover {
+            color: #2563eb;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        .btn-secondary:hover {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(to right, #2563eb, #1e40af);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* Features Bar */
+        .features-bar {
+            background-color: white;
+            padding: 25px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            text-align: center;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #eff6ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .feature-item p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Section */
+        .section {
+            padding: 50px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .product-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-category {
+            font-size: 12px;
+            color: #2563eb;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .product-description {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .price-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        /* Trust Section */
+        .trust-section {
+            background-color: white;
+            padding: 40px 0;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .trust-item {
+            padding: 30px;
+        }
+
+        .trust-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .trust-item h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .trust-item p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(to right, #1e40af, #2563eb);
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .stat-item h3 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background-color: #f8fafc;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 32px;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p {
+            font-size: 14px;
+            line-height: 1.8;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+        }
+
+        .payment-icon {
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trust-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div>📞 Service client : +33 1 23 45 67 89 | 📧 contact@printflow-pro.com</div>
+            <div>
+                <a href="compte.html">Mon compte</a>
+                <a href="panier.html">Panier (0)</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Print<span>Flow</span> Pro</a>
+                <nav class="nav">
+                    <a href="catalogue.html">Catalogue</a>
+                    <a href="catalogue.html">Produits</a>
+                    <a href="#services">Services</a>
+                    <a href="#contact">Contact</a>
+                    <a href="admin.html" class="btn btn-primary">Espace Admin</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Impression professionnelle en ligne</h1>
+            <p>Cartes de visite, flyers, affiches et bien plus. Qualité garantie, livraison rapide.</p>
+            <div class="hero-buttons">
+                <a href="catalogue.html" class="btn btn-primary"
+                    style="background: white; color: #2563eb; font-size: 16px; padding: 12px 30px;">Voir le
+                    catalogue</a>
+                <a href="catalogue.html" class="btn btn-secondary"
+                    style="border-color: white; color: white; font-size: 16px; padding: 12px 30px;">Commander
+                    maintenant</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Bar -->
+    <section class="features-bar">
+        <div class="container">
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <h3>Qualité professionnelle</h3>
+                    <p>Impression haute résolution</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Livraison rapide</h3>
+                    <p>Expédition sous 48-72h</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💳</div>
+                    <h3>Paiement sécurisé</h3>
+                    <p>CB, PayPal, Virement</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📞</div>
+                    <h3>Support expert</h3>
+                    <p>Assistance personnalisée</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="section" style="background-color: white;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nos produits les plus populaires</h2>
+                <p>Découvrez notre gamme complète d'impression professionnelle</p>
+            </div>
+            <div class="products-grid">
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">📇</div>
+                    <div class="product-info">
+                        <div class="product-category">Identité visuelle</div>
+                        <div class="product-title">Cartes de visite</div>
+                        <div class="product-description">Format 85x55mm, plusieurs finitions disponibles</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">12,90 €</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">📄</div>
+                    <div class="product-info">
+                        <div class="product-category">Marketing</div>
+                        <div class="product-title">Flyers</div>
+                        <div class="product-description">A6, A5, A4 - Recto ou recto-verso</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">25,00 €</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">🖼️</div>
+                    <div class="product-info">
+                        <div class="product-category">Communication</div>
+                        <div class="product-title">Affiches</div>
+                        <div class="product-description">Tous formats, papier premium</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">45,00 €</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">📑</div>
+                    <div class="product-info">
+                        <div class="product-category">Marketing</div>
+                        <div class="product-title">Dépliants</div>
+                        <div class="product-description">2 ou 3 volets, plusieurs formats</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">35,00 €</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">📚</div>
+                    <div class="product-info">
+                        <div class="product-category">Édition</div>
+                        <div class="product-title">Brochures</div>
+                        <div class="product-description">Reliure agrafée ou dos carré collé</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">89,00 €</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">✨</div>
+                    <div class="product-info">
+                        <div class="product-category">Signalétique</div>
+                        <div class="product-title">Stickers</div>
+                        <div class="product-description">Découpe sur mesure, vinyle qualité</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">19,90 €</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">🎪</div>
+                    <div class="product-info">
+                        <div class="product-category">Signalétique</div>
+                        <div class="product-title">Bâches</div>
+                        <div class="product-description">Grand format pour événements</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">120,00 €</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="produit.html" class="product-card">
+                    <div class="product-image">📦</div>
+                    <div class="product-info">
+                        <div class="product-category">Packaging</div>
+                        <div class="product-title">Emballages</div>
+                        <div class="product-description">Boîtes personnalisées sur mesure</div>
+                        <div class="product-price">
+                            <span class="price-label">À partir de</span>
+                            <span class="price-value">75,00 €</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="catalogue.html" class="btn btn-primary" style="font-size: 16px; padding: 12px 40px;">Voir tous
+                    les produits →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <div class="trust-icon">🏆</div>
+                    <h3>15 ans d'expérience</h3>
+                    <p>Leader français de l'impression en ligne avec plus de 100 000 clients satisfaits.</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">♻️</div>
+                    <h3>Écologique</h3>
+                    <p>Papiers certifiés FSC et PEFC. Encres végétales. Engagement environnemental fort.</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">⚡</div>
+                    <h3>Production rapide</h3>
+                    <p>Fabrication en France. Impression et expédition sous 48-72h pour la majorité des produits.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>100K+</h3>
+                    <p>Clients satisfaits</p>
+                </div>
+                <div class="stat-item">
+                    <h3>500K+</h3>
+                    <p>Commandes livrées</p>
+                </div>
+                <div class="stat-item">
+                    <h3>4.8/5</h3>
+                    <p>Note moyenne</p>
+                </div>
+                <div class="stat-item">
+                    <h3>48h</h3>
+                    <p>Délai moyen</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Prêt à commencer votre projet d'impression ?</h2>
+            <p>Configurez vos produits en ligne et recevez un devis instantané</p>
+            <a href="catalogue.html" class="btn btn-primary" style="font-size: 18px; padding: 15px 50px;">Commencer
+                maintenant</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>PrintFlow Pro</h4>
+                    <p>Votre partenaire impression professionnelle en ligne depuis 2010. Qualité, rapidité, expertise.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        <strong>Service client</strong><br>
+                        Du lundi au vendredi<br>
+                        9h - 18h (heure de Paris)
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Produits</h4>
+                    <ul class="footer-links">
+                        <li><a href="catalogue.html">Cartes de visite</a></li>
+                        <li><a href="catalogue.html">Flyers</a></li>
+                        <li><a href="catalogue.html">Affiches</a></li>
+                        <li><a href="catalogue.html">Brochures</a></li>
+                        <li><a href="catalogue.html">Tous les produits</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Information</h4>
+                    <ul class="footer-links">
+                        <li><a href="cgv.html">CGV</a></li>
+                        <li><a href="mentions.html">Mentions légales</a></li>
+                        <li><a href="confidentialite.html">Confidentialité</a></li>
+                        <li><a href="#livraison">Livraison</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul class="footer-links">
+                        <li>📧 contact@printflow-pro.com</li>
+                        <li>📞 +33 1 23 45 67 89</li>
+                        <li>📍 123 Avenue de l'Impression</li>
+                        <li>75001 Paris, France</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2025 PrintFlow Pro. Tous droits réservés.</div>
+                <div class="payment-methods">
+                    <span class="payment-icon">VISA</span>
+                    <span class="payment-icon">MC</span>
+                    <span class="payment-icon">PAYPAL</span>
+                    <span class="payment-icon">STRIPE</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

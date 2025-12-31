@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Produits | onlineprint.lu Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body class="admin-body">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-logo">
+                <a href="../index.html" target="_blank">
+                    <span class="logo-text">onlineprint<span class="logo-dot">.lu</span></span>
+                </a>
+                <span class="admin-badge">Admin</span>
+            </div>
+            <nav class="admin-nav">
+                <a href="index.html">Tableau de bord</a>
+                <a href="orders.html">Commandes</a>
+                <a href="products.html" class="active">Produits</a>
+                <a href="customers.html">Clients</a>
+                <a href="settings.html">Paramètres</a>
+            </nav>
+            <div class="admin-user">
+                <span>👤 Admin</span>
+                <a href="logout.html" class="logout-btn">Déconnexion</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-container">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Gestion des Produits</h1>
+                <p>Gérez votre catalogue de produits, variantes et tarifs</p>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="section-card">
+                <div class="data-table-header">
+                    <div class="search-box">
+                        <input type="text" placeholder="Rechercher un produit..." id="productSearch">
+                        <select class="filter-select" id="categoryFilter">
+                            <option value="">Toutes les catégories</option>
+                        </select>
+                    </div>
+                    <div class="header-actions">
+                        <a href="import.html" class="btn btn-secondary">📤 Import CSV</a>
+                        <a href="product-edit.html" class="btn btn-action">+ Nouveau produit</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products List -->
+            <div class="section-card">
+                <h2>Catalogue des produits (<span id="productCount">0</span>)</h2>
+
+                <div class="admin-products-grid" id="productsGrid">
+                    <p class="empty-state">Chargement des produits...</p>
+                </div>
+            </div>
+
+            <!-- Category Summary -->
+            <div class="section-card">
+                <h2>Résumé par catégorie</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Catégorie</th>
+                            <th>Produits</th>
+                            <th>Variantes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categorySummary">
+                        <tr>
+                            <td colspan="4" class="empty-state">Chargement...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="admin-footer">
+        <p>© 2025 onlineprint.lu - Panneau d'administration v1.0</p>
+    </footer>
+
+    <script src="js/admin.js"></script>
+    <script src="js/products.js"></script>
+</body>
+
+</html>

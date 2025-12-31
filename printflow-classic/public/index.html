@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="onlineprint.lu - Impression en ligne professionnelle">
+    <title>onlineprint.lu - Impression en ligne professionnelle | Cartes de visite, Flyers, Affiches</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-left">
+                ☎️ Service client: <strong>01 23 45 67 89</strong> | Lun-Ven 9h-18h
+            </div>
+            <div class="top-right">
+                <a href="login.php">Mon compte</a>
+                <a href="cart.php" class="cart-link">🛒 Panier <span class="cart-count">(0)</span></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <span class="logo-text">onlineprint<span class="logo-dot">.lu</span></span>
+                    </a>
+                </div>
+
+                <div class="search-bar">
+                    <form action="search.php" method="GET">
+                        <input type="text" name="q"
+                            placeholder="Rechercher un produit (ex: cartes de visite, flyers...)" class="search-input">
+                        <button type="submit" class="search-btn">🔍 Rechercher</button>
+                    </form>
+                </div>
+
+                <div class="header-right">
+                    <div class="trust-badge">
+                        <div class="stars">★★★★★</div>
+                        <div class="rating">4.8/5 | 2500+ avis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="products.php?cat=cartes-visite">Cartes de visite</a></li>
+                <li><a href="products.php?cat=flyers">Flyers</a></li>
+                <li><a href="products.php?cat=affiches">Affiches</a></li>
+                <li><a href="products.php?cat=brochures">Brochures</a></li>
+                <li><a href="products.php?cat=depliants">Dépliants</a></li>
+                <li><a href="products.php?cat=autocollants">Autocollants</a></li>
+                <li class="nav-more">
+                    <a href="products.php">Tous les produits ▼</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content-->
+    <div class="main-container">
+        <div class="container">
+            <div class="content-wrapper">
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sidebar-section">
+                        <h3>Catégories</h3>
+                        <ul class="category-list">
+                            <li><a href="products.php?cat=cartes-visite">📇 Cartes de visite</a></li>
+                            <li><a href="products.php?cat=flyers">📄 Flyers</a></li>
+                            <li><a href="products.php?cat=affiches">🖼️ Affiches</a></li>
+                            <li><a href="products.php?cat=depliants">📑 Dépliants</a></li>
+                            <li><a href="products.php?cat=brochures">📚 Brochures</a></li>
+                            <li><a href="products.php?cat=autocollants">✨ Autocollants</a></li>
+                            <li><a href="products.php?cat=baches">🎪 Bâches</a></li>
+                            <li><a href="products.php?cat=packaging">📦 Packaging</a></li>
+                            <li><a href="products.php?cat=textile">👕 Textile</a></li>
+                            <li><a href="products.php?cat=signalitique">🚦 Signalétique</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-section trust-section">
+                        <div class="trust-item">
+                            <div class="trust-icon">✓</div>
+                            <div class="trust-text">
+                                <strong>100% Satisfait</strong><br>
+                                ou remboursé
+                            </div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-icon">🚚</div>
+                            <div class="trust-text">
+                                <strong>Livraison rapide</strong><br>
+                                48-72h standard
+                            </div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-icon">💳</div>
+                            <div class="trust-text">
+                                <strong>Paiement sécurisé</strong><br>
+                                CB, PayPal, Virement
+                            </div>
+                        </div>
+                        <div class="trust-item">
+                            <div class="trust-icon">♻️</div>
+                            <div class="trust-text">
+                                <strong>Éco-responsable</strong><br>
+                                Papiers certifiés FSC
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section promo-box">
+                        <h4>🎁 Offre spéciale</h4>
+                        <p>-10% sur votre première commande</p>
+                        <p class="promo-code">Code: <strong>BIENVENUE10</strong></p>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <main class="main-content">
+
+                    <!-- Hero Banner -->
+                    <div class="hero-banner">
+                        <div class="hero-content">
+                            <h1>Impression professionnelle en ligne</h1>
+                            <p class="hero-subtitle">Qualité supérieure • Prix attractifs • Livraison rapide</p>
+                            <div class="hero-cta">
+                                <a href="products.php" class="btn btn-primary btn-lg">Voir tous les produits</a>
+                                <a href="devis.php" class="btn btn-secondary btn-lg">Demander un devis</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- USP Bar -->
+                    <div class="usp-bar">
+                        <div class="usp-item">
+                            <strong>✓ 15 ans d'expérience</strong>
+                        </div>
+                        <div class="usp-item">
+                            <strong>✓ + de 100 000 clients</strong>
+                        </div>
+                        <div class="usp-item">
+                            <strong>✓ Fabrication en France</strong>
+                        </div>
+                        <div class="usp-item">
+                            <strong>✓ Support expert 7j/7</strong>
+                        </div>
+                    </div>
+
+                    <!-- Popular Products -->
+                    <section class="products-section">
+                        <h2>Nos produits les plus demandés</h2>
+
+                        <div class="products-grid">
+
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/cartes-visite.jpg" alt="Cartes de visite"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23003d7a%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23fff%22%3E📇 Cartes de visite%3C/text%3E%3C/svg%3E'">
+                                </div>
+                                <div class="product-info">
+                                    <h3>Cartes de visite</h3>
+                                    <p class="product-desc">10 finitions, papier 300g-400g</p>
+                                    <div class="product-price">
+                                        À partir de <strong>13,35 €</strong>
+                                    </div>
+                                    <a href="product.html?id=cartes-visite-standard" class="btn btn-action">Prix &
+                                        Commande</a>
+                                </div>
+                            </div>
+
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/flyers.jpg" alt="Flyers"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23003d7a%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23fff%22%3E📄 Flyers%3C/text%3E%3C/svg%3E'">
+                                </div>
+                                <div class="product-info">
+                                    <h3>Flyers</h3>
+                                    <p class="product-desc">A6, A5, A4, DIN Lang</p>
+                                    <div class="product-price">
+                                        À partir de <strong>28,86 €</strong>
+                                    </div>
+                                    <a href="product.html?id=flyers-a5" class="btn btn-action">Prix & Commande</a>
+                                </div>
+                            </div>
+
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/affiches.jpg" alt="Affiches"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22%3EAffiches%3C/text%3E%3C/svg%3E'">
+                                </div>
+                                <div class="product-info">
+                                    <h3>Affiches</h3>
+                                    <p class="product-desc">Tous formats, papier premium</p>
+                                    <div class="product-price">
+                                        À partir de <strong>45,00 €</strong>
+                                    </div>
+                                    <a href="product.html?id=affiches-a3" class="btn btn-action">Prix & Commande</a>
+                                </div>
+                            </div>
+
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/depliants.jpg" alt="Dépliants"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22%3EDépliants%3C/text%3E%3C/svg%3E'">
+                                </div>
+                                <div class="product-info">
+                                    <h3>Dépliants</h3>
+                                    <p class="product-desc">2 ou 3 volets, plusieurs formats</p>
+                                    <div class="product-price">
+                                        À partir de <strong>35,00 €</strong>
+                                    </div>
+                                    <a href="product.html?id=depliants-2-volets" class="btn btn-action">Prix &
+                                        Commande</a>
+                                </div>
+                            </div>
+
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/menu.jpg" alt="Menus Restaurant"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23003d7a%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23fff%22%3E🍽️ Menus Restaurant%3C/text%3E%3C/svg%3E'">
+                                </div>
+                                <div class="product-info">
+                                    <h3>Menus Restaurant</h3>
+                                    <p class="product-desc">Cartes résistantes, pelliculées</p>
+                                    <div class="product-price">
+                                        À partir de <strong>61,85 €</strong>
+                                    </div>
+                                    <a href="product.html?id=carte-menu-restaurant" class="btn btn-action">Prix &
+                                        Commande</a>
+                                </div>
+                            </div>
+
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/autocollants.jpg" alt="Autocollants"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22%3EAutocollants%3C/text%3E%3C/svg%3E'">
+                                </div>
+                                <div class="product-info">
+                                    <h3>Autocollants</h3>
+                                    <p class="product-desc">Découpe sur mesure, vinyle qualité</p>
+                                    <div class="product-price">
+                                        À partir de <strong>19,90 €</strong>
+                                    </div>
+                                    <a href="product.html?id=autocollants-vinyle" class="btn btn-action">Prix &
+                                        Commande</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <!-- Why Choose Us -->
+                    <section class="why-section">
+                        <h2>Pourquoi choisir onlineprint.lu ?</h2>
+                        <div class="reasons-grid">
+                            <div class="reason-card">
+                                <div class="reason-icon">🏆</div>
+                                <h3>Qualité garantie</h3>
+                                <p>Impression haute définition sur papiers premium certifiés FSC et PEFC</p>
+                            </div>
+                            <div class="reason-card">
+                                <div class="reason-icon">💰</div>
+                                <h3>Prix compétitifs</h3>
+                                <p>Tarifs dégressifs attractifs et transparents, sans frais cachés</p>
+                            </div>
+                            <div class="reason-card">
+                                <div class="reason-icon">⚡</div>
+                                <h3>Production rapide</h3>
+                                <p>Mise en production sous 24h et livraison express disponible</p>
+                            </div>
+                            <div class="reason-card">
+                                <div class="reason-icon">🇫🇷</div>
+                                <h3>Made in France</h3>
+                                <p>Fabrication française dans nos ateliers près de Paris</p>
+                            </div>
+                        </div>
+                    </section>
+
+                </main>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>onlineprint.lu</h4>
+                    <p>Votre imprimerie en ligne depuis 2010</p>
+                    <p><strong>Service client</strong><br>
+                        ☎️ 01 23 45 67 89<br>
+                        📧 contact@printflow-pro.fr<br>
+                        Lun-Ven: 9h-18h</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Produits populaires</h4>
+                    <ul>
+                        <li><a href="products.php?cat=cartes-visite">Cartes de visite</a></li>
+                        <li><a href="products.php?cat=flyers">Flyers</a></li>
+                        <li><a href="products.php?cat=affiches">Affiches</a></li>
+                        <li><a href="products.php?cat=brochures">Brochures</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Informations</h4>
+                    <ul>
+                        <li><a href="about.php">Qui sommes-nous</a></li>
+                        <li><a href="cgv.php">CGV</a></li>
+                        <li><a href="mentions.php">Mentions légales</a></li>
+                        <li><a href="confidentialite.php">Confidentialité</a></li>
+                        <li><a href="livraison.php">Livraison</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Paiement sécurisé</h4>
+                    <div class="payment-icons">
+                        <span class="payment-badge">VISA</span>
+                        <span class="payment-badge">MASTERCARD</span>
+                        <span class="payment-badge">PAYPAL</span>
+                        <span class="payment-badge">CB</span>
+                    </div>
+                    <p style="margin-top: 15px;"><strong>Certifications</strong></p>
+                    <p>✓ Imprim'Vert<br>✓ FSC & PEFC<br>✓ ISO 9001</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 onlineprint.lu - Tous droits réservés</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

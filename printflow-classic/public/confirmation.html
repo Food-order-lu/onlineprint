@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de commande | onlineprint.lu</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <style>
+        .confirmation-main {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .confirmation-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-box h1 {
+            font-size: 28px;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .order-number {
+            font-size: 24px;
+            color: #003d7a;
+            font-weight: 700;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+        }
+
+        .confirmation-text {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .next-steps {
+            text-align: left;
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .next-steps h3 {
+            color: #003d7a;
+            margin-bottom: 15px;
+        }
+
+        .next-steps ol {
+            margin-left: 20px;
+        }
+
+        .next-steps li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <span class="logo-text">onlineprint<span class="logo-dot">.lu</span></span>
+                    </a>
+                </div>
+                <div class="checkout-steps">
+                    <div class="step completed">1. Panier</div>
+                    <div class="step completed">2. Informations</div>
+                    <div class="step completed">3. Paiement</div>
+                    <div class="step active">4. Confirmation</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="confirmation-main">
+        <div class="container">
+            <div class="confirmation-box">
+                <div class="success-icon">✅</div>
+                <h1>Merci pour votre commande !</h1>
+                <div class="order-number" id="orderNumber">Commande #OP-2025-XXXXXX</div>
+
+                <p class="confirmation-text">
+                    Votre commande a été enregistrée avec succès.<br>
+                    Un email de confirmation a été envoyé à votre adresse.
+                </p>
+
+                <div class="next-steps">
+                    <h3>📋 Prochaines étapes</h3>
+                    <ol>
+                        <li><strong>Vérification de vos fichiers</strong> - Nous vérifions la qualité de vos fichiers
+                            d'impression.</li>
+                        <li><strong>Production</strong> - Votre commande est mise en production (2-5 jours ouvrés).</li>
+                        <li><strong>Expédition</strong> - Vous recevrez un email avec le numéro de suivi.</li>
+                        <li><strong>Livraison</strong> - Réception à l'adresse indiquée.</li>
+                    </ol>
+                </div>
+
+                <p class="confirmation-text">
+                    Des questions ? Contactez-nous à <strong>contact@onlineprint.lu</strong>
+                </p>
+
+                <div class="action-buttons">
+                    <a href="index.html" class="btn btn-secondary">Continuer les achats</a>
+                    <button onclick="viewInvoice()" class="btn btn-primary">📄 Voir la facture</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="checkout-footer">
+        <div class="container">
+            <p>© 2025 onlineprint.lu - Merci de votre confiance !</p>
+        </div>
+    </footer>
+
+    <script src="js/vat.js"></script>
+    <script src="js/invoice.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get order number from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderNumber = urlParams.get('order');
+
+            if (orderNumber) {
+                document.getElementById('orderNumber').textContent = 'Commande #' + orderNumber;
+            }
+        });
+
+        function viewInvoice() {
+            // Get the last order
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            if (orders.length === 0) {
+                alert('Aucune commande trouvée');
+                return;
+            }
+
+            const order = orders[orders.length - 1];
+
+            // Prepare items for invoice
+            order.items = order.items || [];
+            order.invoiceNumber = generateInvoiceNumber();
+
+            // Create invoice
+            createInvoice(order, order.customer);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finaliser la commande | onlineprint.lu</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-left">
+                ☎️ Service client: <strong>+352 XX XX XX XX</strong> | Lun-Ven 9h-18h
+            </div>
+            <div class="top-right">
+                <a href="index.html">← Continuer les achats</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <span class="logo-text">onlineprint<span class="logo-dot">.lu</span></span>
+                    </a>
+                </div>
+                <div class="checkout-steps">
+                    <div class="step completed">1. Panier</div>
+                    <div class="step active">2. Informations</div>
+                    <div class="step">3. Paiement</div>
+                    <div class="step">4. Confirmation</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="checkout-main">
+        <div class="container">
+            <div class="checkout-layout">
+
+                <!-- Left: Form -->
+                <div class="checkout-form-section">
+                    <h1>Finaliser votre commande</h1>
+
+                    <form id="checkoutForm">
+                        <!-- Customer Type -->
+                        <div class="form-section">
+                            <h2>Type de client</h2>
+                            <div class="customer-type-selector">
+                                <label class="type-option">
+                                    <input type="radio" name="customerType" value="private" checked>
+                                    <span class="type-card">
+                                        <span class="type-icon">👤</span>
+                                        <span class="type-label">Particulier</span>
+                                    </span>
+                                </label>
+                                <label class="type-option">
+                                    <input type="radio" name="customerType" value="company">
+                                    <span class="type-card">
+                                        <span class="type-icon">🏢</span>
+                                        <span class="type-label">Société / Professionnel</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Company Info (shown only for company) -->
+                        <div class="form-section" id="companySection" style="display: none;">
+                            <h2>Informations société</h2>
+                            <div class="form-row">
+                                <div class="form-group full">
+                                    <label for="companyName">Nom de la société *</label>
+                                    <input type="text" id="companyName" name="companyName"
+                                        placeholder="Nom de votre entreprise">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="vatNumber">Numéro TVA intracommunautaire</label>
+                                    <input type="text" id="vatNumber" name="vatNumber"
+                                        placeholder="Ex: FR12345678901 ou LU12345678">
+                                    <small class="form-hint">Si renseigné et valide (hors LU), autoliquidation TVA
+                                        appliquée</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vatStatus" id="vatStatusLabel">Statut TVA</label>
+                                    <div id="vatStatus" class="vat-status">
+                                        <span class="vat-badge pending">En attente</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="form-section">
+                            <h2>Coordonnées</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">Prénom *</label>
+                                    <input type="text" id="firstName" name="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Nom *</label>
+                                    <input type="text" id="lastName" name="lastName" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email *</label>
+                                    <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Téléphone *</label>
+                                    <input type="tel" id="phone" name="phone" required placeholder="+352 XXX XXX">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Billing Address -->
+                        <div class="form-section">
+                            <h2>Adresse de facturation</h2>
+                            <div class="form-row">
+                                <div class="form-group full">
+                                    <label for="address">Adresse *</label>
+                                    <input type="text" id="address" name="address" required placeholder="Rue et numéro">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="postalCode">Code postal *</label>
+                                    <input type="text" id="postalCode" name="postalCode" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city">Ville *</label>
+                                    <input type="text" id="city" name="city" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group full">
+                                    <label for="country">Pays *</label>
+                                    <select id="country" name="country" required>
+                                        <option value="LU" selected>🇱🇺 Luxembourg</option>
+                                        <option value="BE">🇧🇪 Belgique</option>
+                                        <option value="FR">🇫🇷 France</option>
+                                        <option value="DE">🇩🇪 Allemagne</option>
+                                        <option value="NL">🇳🇱 Pays-Bas</option>
+                                        <option value="AT">🇦🇹 Autriche</option>
+                                        <option value="IT">🇮🇹 Italie</option>
+                                        <option value="ES">🇪🇸 Espagne</option>
+                                        <option value="PT">🇵🇹 Portugal</option>
+                                        <option value="CH">🇨🇭 Suisse</option>
+                                        <option value="UK">🇬🇧 Royaume-Uni</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Private Customer VAT Option (shown for non-LU private customers) -->
+                        <div class="form-section" id="privateVatSection" style="display: none;">
+                            <h2>Option TVA</h2>
+                            <div class="vat-option-box">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="customerHandlesVat" name="customerHandlesVat">
+                                    <span>Je prends la responsabilité de déclarer la TVA dans mon pays</span>
+                                </label>
+                                <p class="vat-option-hint">En cochant cette case, vous serez facturé hors TVA (0%). Vous
+                                    devrez déclarer et payer la TVA auprès de votre administration fiscale locale.</p>
+                            </div>
+                        </div>
+
+                        <!-- Shipping (same as billing or different) -->
+                        <div class="form-section">
+                            <h2>Adresse de livraison</h2>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="sameAsBilling" name="sameAsBilling" checked>
+                                <span>Identique à l'adresse de facturation</span>
+                            </label>
+                            <div id="shippingAddressFields" style="display: none;">
+                                <div class="form-row" style="margin-top: 20px;">
+                                    <div class="form-group">
+                                        <label for="shippingFirstName">Prénom destinataire *</label>
+                                        <input type="text" id="shippingFirstName" name="shippingFirstName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="shippingLastName">Nom destinataire *</label>
+                                        <input type="text" id="shippingLastName" name="shippingLastName">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group full">
+                                        <label for="shippingCompany">Société (optionnel)</label>
+                                        <input type="text" id="shippingCompany" name="shippingCompany"
+                                            placeholder="Nom de la société">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group full">
+                                        <label for="shippingAddress">Adresse *</label>
+                                        <input type="text" id="shippingAddress" name="shippingAddress"
+                                            placeholder="Commencez à taper pour rechercher...">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="shippingPostalCode">Code postal *</label>
+                                        <input type="text" id="shippingPostalCode" name="shippingPostalCode">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="shippingCity">Ville *</label>
+                                        <input type="text" id="shippingCity" name="shippingCity">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group full">
+                                        <label for="shippingCountry">Pays *</label>
+                                        <select id="shippingCountry" name="shippingCountry">
+                                            <option value="LU">🇱🇺 Luxembourg</option>
+                                            <option value="FR">🇫🇷 France</option>
+                                            <option value="DE">🇩🇪 Allemagne</option>
+                                            <option value="BE">🇧🇪 Belgique</option>
+                                            <option value="PT">🇵🇹 Portugal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="form-section">
+                            <h2>Conditions</h2>
+                            <label class="checkbox-label required">
+                                <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                                <span>J'accepte les <a href="cgv.html" target="_blank">Conditions Générales de Vente</a>
+                                    *</span>
+                            </label>
+                            <label class="checkbox-label required">
+                                <input type="checkbox" id="acceptQuality" name="acceptQuality" required>
+                                <span>Je comprends que la qualité d'impression dépend de la résolution de mes fichiers.
+                                    onlineprint.lu ne peut être tenu responsable si mes fichiers sont de basse qualité.
+                                    *</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large" id="submitBtn">
+                            Procéder au paiement →
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right: Order Summary -->
+                <div class="order-summary-section">
+                    <div class="order-summary-sticky">
+                        <div class="order-summary">
+                            <h2>Récapitulatif</h2>
+
+                            <div id="cartItems" class="cart-items">
+                                <!-- Cart items loaded dynamically -->
+                            </div>
+
+                            <div class="summary-totals">
+                                <div class="summary-row">
+                                    <span>Sous-total HT</span>
+                                    <span id="subtotalHT">0,00 €</span>
+                                </div>
+                                <div class="summary-row" id="vatRow">
+                                    <span id="vatLabel">TVA Luxembourg (17%)</span>
+                                    <span id="vatAmount">0,00 €</span>
+                                </div>
+                                <div class="summary-row total">
+                                    <span>Total TTC</span>
+                                    <span id="totalTTC">0,00 €</span>
+                                </div>
+                            </div>
+
+                            <div class="secure-badge">
+                                🔒 Paiement 100% sécurisé par Stripe
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="checkout-footer">
+        <div class="container">
+            <p>© 2025 onlineprint.lu - Paiement sécurisé | <a href="cgv.html">CGV</a> | <a
+                    href="mentions-legales.html">Mentions légales</a></p>
+        </div>
+    </footer>
+
+    <script src="js/vat.js"></script>
+    <script src="js/invoice.js"></script>
+    <script src="js/address-autocomplete.js"></script>
+    <script src="js/checkout.js"></script>
+</body>
+
+</html>

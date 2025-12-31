@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartes de visite - Configuration & Prix | onlineprint.lu</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/configurator.css">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-left">
+                ☎️ Service client: <strong>01 23 45 67 89</strong> | Lun-Ven 9h-18h
+            </div>
+            <div class="top-right">
+                <a href="login.php">Mon compte</a>
+                <a href="cart.php" class="cart-link">🛒 Panier <span class="cart-count">(0)</span></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <span class="logo-text">onlineprint<span class="logo-dot">.lu</span></span>
+                    </a>
+                </div>
+
+                <div class="search-bar">
+                    <form action="search.php" method="GET">
+                        <input type="text" name="q"
+                            placeholder="Rechercher un produit (ex: cartes de visite, flyers...)" class="search-input">
+                        <button type="submit" class="search-btn">🔍 Rechercher</button>
+                    </form>
+                </div>
+
+                <div class="header-right">
+                    <div class="trust-badge">
+                        <div class="stars">★★★★★</div>
+                        <div class="rating">4.8/5 | 2500+ avis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="products.php?cat=cartes-visite">Cartes de visite</a></li>
+                <li><a href="products.php?cat=flyers">Flyers</a></li>
+                <li><a href="products.php?cat=affiches">Affiches</a></li>
+                <li><a href="products.php?cat=brochures">Brochures</a></li>
+                <li><a href="products.php?cat=depliants">Dépliants</a></li>
+                <li><a href="products.php?cat=autocollants">Autocollants</a></li>
+                <li class="nav-more">
+                    <a href="products.php">Tous les produits ▼</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Accueil</a> &gt;
+            <a href="products.php?cat=cartes-visite">Cartes de visite</a> &gt;
+            <strong>Configuration</strong>
+        </div>
+    </div>
+
+    <!-- Main Content-->
+    <div class="main-container">
+        <div class="container">
+            <div class="product-page-wrapper">
+
+                <!-- Product Title -->
+                <div class="product-header">
+                    <h1>Cartes de visite premium</h1>
+                    <p class="product-subtitle">Format professionnel 85x55mm • Impression haute qualité • Livraison
+                        rapide</p>
+                </div>
+
+                <div class="configurator-layout">
+
+                    <!-- Left Column - Configuration -->
+                    <div class="config-panel">
+
+                        <form id="productConfigForm" class="config-form">
+
+                            <!-- Step 1: Format -->
+                            <div class="config-section">
+                                <div class="config-section-header">
+                                    <span class="step-number">1</span>
+                                    <h3>Choisissez le format</h3>
+                                </div>
+                                <div class="option-grid">
+                                    <label class="option-card">
+                                        <input type="radio" name="format" value="85x55" checked>
+                                        <div class="option-content">
+                                            <div class="option-icon">📏</div>
+                                            <div class="option-title">85 x 55 mm</div>
+                                            <div class="option-desc">Format standard</div>
+                                        </div>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="format" value="90x50">
+                                        <div class="option-content">
+                                            <div class="option-icon">📐</div>
+                                            <div class="option-title">90 x 50 mm</div>
+                                            <div class="option-desc">Format américain</div>
+                                        </div>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="format" value="85x54">
+                                        <div class="option-content">
+                                            <div class="option-icon">📐</div>
+                                            <div class="option-title">85 x 54 mm</div>
+                                            <div class="option-desc">Format carte bancaire</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Paper Type -->
+                            <div class="config-section">
+                                <div class="config-section-header">
+                                    <span class="step-number">2</span>
+                                    <h3>Type de papier</h3>
+                                </div>
+                                <div class="option-list">
+                                    <label class="option-row">
+                                        <input type="radio" name="paper" value="couche-mat-300" checked>
+                                        <div class="option-info">
+                                            <strong>Couché mat 300g</strong>
+                                            <span class="option-detail">Finition mate élégante • Recommandé</span>
+                                        </div>
+                                        <div class="option-price">+0,00 €</div>
+                                    </label>
+                                    <label class="option-row">
+                                        <input type="radio" name="paper" value="couche-brillant-300">
+                                        <div class="option-info">
+                                            <strong>Couché brillant 300g</strong>
+                                            <span class="option-detail">Couleurs vives et éclatantes</span>
+                                        </div>
+                                        <div class="option-price">+0,00 €</div>
+                                    </label>
+                                    <label class="option-row">
+                                        <input type="radio" name="paper" value="extra-blanc-350">
+                                        <div class="option-info">
+                                            <strong>Extra blanc 350g</strong>
+                                            <span class="option-detail">Papier premium ultra épais</span>
+                                        </div>
+                                        <div class="option-price">+3,50 €</div>
+                                    </label>
+                                    <label class="option-row">
+                                        <input type="radio" name="paper" value="recycle-280">
+                                        <div class="option-info">
+                                            <strong>Recyclé 280g</strong>
+                                            <span class="option-detail">Éco-responsable certifié FSC</span>
+                                        </div>
+                                        <div class="option-price">+1,50 €</div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Print Sides -->
+                            <div class="config-section">
+                                <div class="config-section-header">
+                                    <span class="step-number">3</span>
+                                    <h3>Impression</h3>
+                                </div>
+                                <div class="option-grid">
+                                    <label class="option-card">
+                                        <input type="radio" name="sides" value="recto" checked>
+                                        <div class="option-content">
+                                            <div class="option-icon">📄</div>
+                                            <div class="option-title">Recto</div>
+                                            <div class="option-desc">Un seul côté</div>
+                                            <div class="option-price-tag">+0,00 €</div>
+                                        </div>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="sides" value="recto-verso">
+                                        <div class="option-content">
+                                            <div class="option-icon">📑</div>
+                                            <div class="option-title">Recto-verso</div>
+                                            <div class="option-desc">Deux côtés</div>
+                                            <div class="option-price-tag">+2,90 €</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Finish -->
+                            <div class="config-section">
+                                <div class="config-section-header">
+                                    <span class="step-number">4</span>
+                                    <h3>Finition (optionnel)</h3>
+                                </div>
+                                <div class="option-list">
+                                    <label class="option-row">
+                                        <input type="radio" name="finish" value="none" checked>
+                                        <div class="option-info">
+                                            <strong>Sans finition</strong>
+                                            <span class="option-detail">Standard • Aucun traitement
+                                                supplémentaire</span>
+                                        </div>
+                                        <div class="option-price">+0,00 €</div>
+                                    </label>
+                                    <label class="option-row">
+                                        <input type="radio" name="finish" value="pelliculage-mat">
+                                        <div class="option-info">
+                                            <strong>Pelliculage mat</strong>
+                                            <span class="option-detail">Protection anti-rayures • Aspect
+                                                soft-touch</span>
+                                        </div>
+                                        <div class="option-price">+4,90 €</div>
+                                    </label>
+                                    <label class="option-row">
+                                        <input type="radio" name="finish" value="pelliculage-brillant">
+                                        <div class="option-info">
+                                            <strong>Pelliculage brillant</strong>
+                                            <span class="option-detail">Protection anti-rayures • Rendu éclatant</span>
+                                        </div>
+                                        <div class="option-price">+4,90 €</div>
+                                    </label>
+                                    <label class="option-row">
+                                        <input type="radio" name="finish" value="vernis-selectif">
+                                        <div class="option-info">
+                                            <strong>Vernis sélectif</strong>
+                                            <span class="option-detail">Effet haut de gamme • Relief brillant</span>
+                                        </div>
+                                        <div class="option-price">+9,90 €</div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Quantity -->
+                            <div class="config-section">
+                                <div class="config-section-header">
+                                    <span class="step-number">5</span>
+                                    <h3>Quantité</h3>
+                                </div>
+
+                                <div class="quantity-selector">
+                                    <div class="quantity-presets">
+                                        <button type="button" class="qty-preset" data-qty="50">50</button>
+                                        <button type="button" class="qty-preset active" data-qty="100">100</button>
+                                        <button type="button" class="qty-preset" data-qty="250">250</button>
+                                        <button type="button" class="qty-preset" data-qty="500">500</button>
+                                        <button type="button" class="qty-preset" data-qty="1000">1000</button>
+                                        <button type="button" class="qty-preset" data-qty="2500">2500</button>
+                                    </div>
+
+                                    <div class="quantity-custom">
+                                        <label for="quantity">Ou saisissez une quantité personnalisée :</label>
+                                        <input type="number" id="quantity" name="quantity" value="100" min="25"
+                                            step="25" class="qty-input">
+                                    </div>
+
+                                    <div class="quantity-notice">
+                                        💡 <strong>Prix dégressifs</strong> : Plus vous commandez, moins cher c'est !
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 6: File Upload -->
+                            <div class="config-section">
+                                <div class="config-section-header">
+                                    <span class="step-number">6</span>
+                                    <h3>Téléchargez votre fichier</h3>
+                                </div>
+
+                                <div class="upload-zone" id="uploadZone">
+                                    <div class="upload-icon">📁</div>
+                                    <h4>Glissez votre fichier ici</h4>
+                                    <p>ou cliquez pour sélectionner</p>
+                                    <p class="upload-formats">Formats acceptés: PDF, JPG, PNG, AI, PSD (max 100 Mo)</p>
+                                    <input type="file" id="fileUpload" accept=".pdf,.jpg,.jpeg,.png,.ai,.psd" hidden>
+                                </div>
+
+                                <div id="uploadedFile" class="uploaded-file" style="display: none;">
+                                    <div class="file-preview">
+                                        <span class="file-icon">📄</span>
+                                        <div class="file-info">
+                                            <strong id="uploadFileName">-</strong>
+                                            <span id="uploadFileSize">-</span>
+                                        </div>
+                                        <button type="button" class="remove-file-btn" id="removeFileBtn">✕</button>
+                                    </div>
+                                </div>
+
+                                <div class="upload-notice">
+                                    <p>💡 <strong>Pas encore de fichier ?</strong> Vous pouvez aussi l'envoyer plus tard
+                                        par email après la commande.</p>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                    <!-- Right Column - Price Summary -->
+                    <div class="price-summary-sticky">
+                        <div class="price-summary">
+                            <h3>Récapitulatif</h3>
+
+                            <div class="summary-details">
+                                <div class="summary-row">
+                                    <span>Format:</span>
+                                    <strong id="summary-format">85 x 55 mm</strong>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Papier:</span>
+                                    <strong id="summary-paper">Couché mat 300g</strong>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Impression:</span>
+                                    <strong id="summary-sides">Recto</strong>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Finition:</span>
+                                    <strong id="summary-finish">Sans finition</strong>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Quantité:</span>
+                                    <strong id="summary-quantity">100 ex.</strong>
+                                </div>
+                            </div>
+
+                            <div class="price-breakdown">
+                                <div class="price-row">
+                                    <span>Prix unitaire HT:</span>
+                                    <span id="price-unit">0,129 €</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Total HT:</span>
+                                    <span id="price-ht">12,90 €</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>TVA (20%):</span>
+                                    <span id="price-vat">2,58 €</span>
+                                </div>
+                                <div class="price-row price-total">
+                                    <span>TOTAL TTC:</span>
+                                    <strong id="price-total">15,48 €</strong>
+                                </div>
+                            </div>
+
+                            <div class="delivery-info">
+                                <div class="delivery-item">
+                                    <span class="delivery-icon">🚚</span>
+                                    <div>
+                                        <strong>Livraison standard</strong>
+                                        <span>4-6 jours ouvrés • Gratuite dès 50€</span>
+                                    </div>
+                                </div>
+                                <div class="delivery-item">
+                                    <span class="delivery-icon">⚡</span>
+                                    <div>
+                                        <strong>Production</strong>
+                                        <span>Fabrication sous 48h</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-action btn-block btn-add-cart" id="addToCartBtn">
+                                🛒 Ajouter au panier
+                            </button>
+
+                            <a href="upload.html" class="btn btn-secondary btn-block">
+                                📤 Télécharger mes fichiers
+                            </a>
+
+                            <div class="trust-icons">
+                                <div class="trust-icon-item">
+                                    <span>✓</span> Paiement sécurisé
+                                </div>
+                                <div class="trust-icon-item">
+                                    <span>✓</span> Satisfait ou remboursé
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Product Details Tabs -->
+                <div class="product-tabs">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" data-tab="description">Description</button>
+                        <button class="tab-btn" data-tab="specifications">Spécifications</button>
+                        <button class="tab-btn" data-tab="delivery">Livraison</button>
+                    </div>
+
+                    <div class="tabs-content">
+                        <div class="tab-panel active" id="description">
+                            <h3>Description du produit</h3>
+                            <p>Nos cartes de visite premium sont imprimées sur du papier de qualité supérieure avec des
+                                encres haute définition pour un rendu professionnel impeccable.</p>
+                            <ul>
+                                <li>✓ Impression offset haute qualité</li>
+                                <li>✓ Papiers certifiés FSC</li>
+                                <li>✓ Couleurs fidèles au fichier source</li>
+                                <li>✓ Coins arrondis disponibles sur demande</li>
+                                <li>✓ Contrôle qualité systématique</li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-panel" id="specifications">
+                            <h3>Spécifications techniques</h3>
+                            <table class="specs-table">
+                                <tr>
+                                    <td><strong>Formats disponibles</strong></td>
+                                    <td>85x55mm (standard), 90x50mm, 85x54mm</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Papiers</strong></td>
+                                    <td>Couché mat/brillant 300g, Extra blanc 350g, Recyclé 280g</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Impression</strong></td>
+                                    <td>Recto ou Recto-verso</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Finitions</strong></td>
+                                    <td>Sans, Pelliculage mat/brillant, Vernis sélectif</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fichiers acceptés</strong></td>
+                                    <td>PDF, AI, EPS, PSD (CMJN, 300 DPI minimum)</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="tab-panel" id="delivery">
+                            <h3>Délais de livraison</h3>
+                            <table class="specs-table">
+                                <tr>
+                                    <td><strong>Production</strong></td>
+                                    <td>48h après validation du BAT</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Livraison standard</strong></td>
+                                    <td>4-6 jours ouvrés (Gratuite dès 50€)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Livraison express</strong></td>
+                                    <td>2-3 jours ouvrés (+9,90€)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Livraison premium</strong></td>
+                                    <td>24h ouvrées (+19,90€)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>onlineprint.lu</h4>
+                    <p>Votre imprimerie en ligne depuis 2010</p>
+                    <p><strong>Service client</strong><br>
+                        ☎️ 01 23 45 67 89<br>
+                        📧 contact@printflow-pro.fr<br>
+                        Lun-Ven: 9h-18h</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Produits populaires</h4>
+                    <ul>
+                        <li><a href="products.php?cat=cartes-visite">Cartes de visite</a></li>
+                        <li><a href="products.php?cat=flyers">Flyers</a></li>
+                        <li><a href="products.php?cat=affiches">Affiches</a></li>
+                        <li><a href="products.php?cat=brochures">Brochures</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Informations</h4>
+                    <ul>
+                        <li><a href="about.php">Qui sommes-nous</a></li>
+                        <li><a href="cgv.php">CGV</a></li>
+                        <li><a href="mentions.php">Mentions légales</a></li>
+                        <li><a href="confidentialite.php">Confidentialité</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Paiement sécurisé</h4>
+                    <div class="payment-icons">
+                        <span class="payment-badge">VISA</span>
+                        <span class="payment-badge">MASTERCARD</span>
+                        <span class="payment-badge">PAYPAL</span>
+                        <span class="payment-badge">CB</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 onlineprint.lu - Tous droits réservés</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/vat.js"></script>
+    <script src="js/invoice.js"></script>
+    <script src="js/configurator.js"></script>
+</body>
+
+</html>

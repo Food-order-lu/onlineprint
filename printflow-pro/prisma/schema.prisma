@@ -1,0 +1,389 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USERS & AUTH
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  role          String    @default("CUSTOMER") // CUSTOMER, ADMIN, OPS, SUPPORT, ACCOUNTING
+  companyName   String?
+  vatNumber     String?
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  accounts      Account[]
+  sessions      Session[]
+  addresses     Address[]
+  carts         Cart[]
+  orders        Order[]
+  auditLogs     AuditLog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// PRODUCTS
+// ============================================
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  icon        String?
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  
+  products    Product[]
+}
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  active      Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  variants    ProductVariant[]
+}
+
+model ProductVariant {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku             String   @unique
+  
+  // Characteristics
+  format          String   // e.g., "85x55mm", "A6", "A5"
+  paperWeight     String   // e.g., "250g", "300g", "350g"
+  paperType       String   // e.g., "Couché mat", "Couché brillant"
+  printSides      String   // "RECTO" ou "RECTO_VERSO"
+  finish          String?  // e.g., "Pelliculage mat", "Pelliculage brillant"
+  
+  // Pricing & Production
+  baseCost        Float    // Cost from supplier (base quantity)
+  leadTimeDays    Int      @default(5)
+  currency        String   @default("EUR")
+  
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  pricingTiers    PricingTier[]
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+}
+
+model PricingTier {
+  id              String         @id @default(cuid())
+  variantId       String
+  variant         ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  
+  minQuantity     Int
+  maxQuantity     Int?
+  
+  supplierCost    Float          // Cost per unit from supplier
+  sellingPrice    Float?         // Override selling price (if null, use margin rule)
+  marginPercent   Float?         // Margin % if no selling price set
+  
+  createdAt       DateTime       @default(now())
+  
+  @@unique([variantId, minQuantity])
+}
+
+// ============================================
+// SHOPPING CART
+// ============================================
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String?
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId String?    @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String         @id @default(cuid())
+  cartId    String
+  cart      Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  
+  quantity  Int
+  
+  // Additional options selected
+  options   String?        // JSON string of selected options
+  
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+// ============================================
+// ADDRESSES
+// ============================================
+
+model Address {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type        String   // "BILLING" or "SHIPPING"
+  isDefault   Boolean  @default(false)
+  
+  firstName   String
+  lastName    String
+  company     String?
+  address1    String
+  address2    String?
+  city        String
+  postalCode  String
+  country     String   @default("FR")
+  phone       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  billingOrders  Order[] @relation("BillingAddress")
+  shippingOrders Order[] @relation("ShippingAddress")
+}
+
+// ============================================
+// ORDERS
+// ============================================
+
+model Order {
+  id                String   @id @default(cuid())
+  orderNumber       String   @unique
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  
+  status            String   @default("NEW") // NEW, FILES_ISSUE, FILES_OK, ORDERED_WITH_SUPPLIER, etc.
+  paymentStatus     String   @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  
+  // Addresses
+  billingAddressId  String
+  billingAddress    Address  @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  shippingAddressId String
+  shippingAddress   Address  @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  
+  // Pricing
+  subtotalHT        Float
+  vatAmount         Float
+  vatRate           Float    @default(20)
+  shippingCost      Float    @default(0)
+  total             Float
+  currency          String   @default("EUR")
+  
+  // Payment
+  paymentMethod     String?
+  paymentIntentId   String?
+  paidAt            DateTime?
+  
+  // Production notes
+  notes             String?
+  internalNotes     String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  items             OrderItem[]
+  supplierOrder     SupplierOrder?
+  supplierInvoice   SupplierInvoice?
+  shipment          Shipment?
+  emailLogs         EmailLog[]
+  auditLogs         AuditLog[]
+}
+
+model OrderItem {
+  id              String         @id @default(cuid())
+  orderId         String
+  order           Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId       String
+  variant         ProductVariant @relation(fields: [variantId], references: [id])
+  
+  productName     String         // Snapshot at order time
+  variantDetails  String         // JSON snapshot of variant config
+  
+  quantity        Int
+  unitPriceHT     Float
+  totalPriceHT    Float
+  
+  options         String?        // JSON of selected options
+  
+  createdAt       DateTime       @default(now())
+  
+  files           OrderFile[]
+}
+
+model OrderFile {
+  id          String    @id @default(cuid())
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  
+  fileType    String    // "FRONT" or "BACK"
+  fileName    String
+  filePath    String
+  fileSize    Int
+  mimeType    String
+  
+  status      String    @default("PENDING") // PENDING, VALIDATED, ISSUE
+  issueNotes  String?
+  
+  uploadedAt  DateTime  @default(now())
+  validatedAt DateTime?
+}
+
+// ============================================
+// SUPPLIER MANAGEMENT
+// ============================================
+
+model SupplierOrder {
+  id                String    @id @default(cuid())
+  orderId           String    @unique
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  supplierName      String
+  supplierRef       String    // Reference number from supplier
+  
+  notes             String?
+  
+  createdAt         DateTime  @default(now())
+  createdBy         String    // User ID who created this
+  updatedAt         DateTime  @updatedAt
+}
+
+model SupplierInvoice {
+  id              String   @id @default(cuid())
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  invoiceNumber   String
+  invoiceDate     DateTime
+  totalAmount     Float
+  currency        String   @default("EUR")
+  
+  filePath        String
+  
+  matchStatus     String   @default("PENDING") // PENDING, MATCHED, MISMATCH
+  mismatchReason  String?
+  
+  uploadedAt      DateTime @default(now())
+  uploadedBy      String   // User ID
+  matchedAt       DateTime?
+}
+
+model Shipment {
+  id            String   @id @default(cuid())
+  orderId       String   @unique
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  carrier       String   @default("GLS")
+  trackingNumber String
+  trackingUrl   String?
+  
+  shippedAt     DateTime @default(now())
+  shippedBy     String   // User ID
+  
+  estimatedDelivery DateTime?
+  deliveredAt   DateTime?
+}
+
+// ============================================
+// EMAIL SYSTEM
+// ============================================
+
+model EmailTemplate {
+  id          String    @id @default(cuid())
+  type        String    @unique // ORDER_CONFIRMATION, FILES_ISSUE, etc.
+  subject     String
+  bodyHtml    String
+  bodyText    String?
+  variables   String?   // JSON array of available variables
+  
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model EmailLog {
+  id          String    @id @default(cuid())
+  orderId     String?
+  order       Order?    @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  
+  emailType   String    // ORDER_CONFIRMATION, FILES_ISSUE, etc.
+  recipient   String
+  subject     String
+  bodyHtml    String
+  
+  status      String    @default("PENDING") // PENDING, SENT, FAILED
+  error       String?
+  
+  sentAt      DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+// ============================================
+// AUDIT LOGS
+// ============================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  orderId     String?
+  order       Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  
+  action      String   // e.g., "ORDER_STATUS_CHANGED", "FILE_VALIDATED"
+  details     String?  // JSON details
+  
+  ipAddress   String?
+  userAgent   String?
+  
+  createdAt   DateTime @default(now())
+}

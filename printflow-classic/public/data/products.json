@@ -1,0 +1,579 @@
+[
+  {
+    "id": "prod-cv-standard",
+    "name": "Cartes de visite standard",
+    "slug": "cartes-visite-standard",
+    "description": "Format classique 85x55mm - Qualité professionnelle",
+    "active": true,
+    "sortOrder": 1,
+    "category": {"id": "cat-cv", "name": "Cartes de visite", "slug": "cartes-visite", "icon": "📇"},
+    "variants": [
+      {"id": "cv-01", "sku": "CV-85x55-MAT300-R", "format": "85x55mm", "paperType": "Couché mat", "paperWeight": "300g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 8.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 10.50, "marginPercent": 50},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 14.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 19.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 29.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 59.90, "marginPercent": 50}
+        ]},
+      {"id": "cv-02", "sku": "CV-85x55-MAT300-RV", "format": "85x55mm", "paperType": "Couché mat", "paperWeight": "300g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 9.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 12.90, "marginPercent": 50},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 18.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 24.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 79.90, "marginPercent": 50}
+        ]},
+      {"id": "cv-03", "sku": "CV-85x55-MAT350-RV", "format": "85x55mm", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 12.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 16.90, "marginPercent": 50},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 24.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 34.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 54.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 109.90, "marginPercent": 50}
+        ]},
+      {"id": "cv-04", "sku": "CV-85x55-MAT350-RV-PMAT", "format": "85x55mm", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Pelliculage mat", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 19.90, "marginPercent": 55},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 24.90, "marginPercent": 55},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 34.90, "marginPercent": 55},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 49.90, "marginPercent": 55},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 79.90, "marginPercent": 55},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 159.90, "marginPercent": 55}
+        ]},
+      {"id": "cv-05", "sku": "CV-85x55-MAT350-RV-PBRI", "format": "85x55mm", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Pelliculage brillant", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 19.90, "marginPercent": 55},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 24.90, "marginPercent": 55},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 34.90, "marginPercent": 55},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 49.90, "marginPercent": 55},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 79.90, "marginPercent": 55},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 159.90, "marginPercent": 55}
+        ]},
+      {"id": "cv-06", "sku": "CV-85x55-MAT350-RV-SOFT", "format": "85x55mm", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Soft-touch", "leadTimeDays": 7,
+        "pricingTiers": [
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 39.90, "marginPercent": 60},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 54.90, "marginPercent": 60},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 79.90, "marginPercent": 60},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 129.90, "marginPercent": 60},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 259.90, "marginPercent": 60}
+        ]},
+      {"id": "cv-07", "sku": "CV-85x55-MAT350-RV-UV", "format": "85x55mm", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Vernis sélectif UV", "leadTimeDays": 8,
+        "pricingTiers": [
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 49.90, "marginPercent": 60},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 69.90, "marginPercent": 60},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 99.90, "marginPercent": 60},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 159.90, "marginPercent": 60},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 319.90, "marginPercent": 60}
+        ]},
+      {"id": "cv-08", "sku": "CV-85x55-BRI300-RV", "format": "85x55mm", "paperType": "Couché brillant", "paperWeight": "300g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 9.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 12.90, "marginPercent": 50},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 18.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 24.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 79.90, "marginPercent": 50}
+        ]},
+      {"id": "cv-09", "sku": "CV-90x50-MAT350-RV-PMAT", "format": "90x50mm", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Pelliculage mat", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 26.90, "marginPercent": 55},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 36.90, "marginPercent": 55},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 52.90, "marginPercent": 55},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 84.90, "marginPercent": 55},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 169.90, "marginPercent": 55}
+        ]},
+      {"id": "cv-10", "sku": "CV-55x55-MAT350-RV-PMAT", "format": "55x55mm", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Pelliculage mat", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 24.90, "marginPercent": 55},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 34.90, "marginPercent": 55},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 49.90, "marginPercent": 55},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 79.90, "marginPercent": 55},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 159.90, "marginPercent": 55}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-flyers-a6",
+    "name": "Flyers A6",
+    "slug": "flyers-a6",
+    "description": "Format A6 (105x148mm) - Idéal pour distribution",
+    "active": true,
+    "sortOrder": 10,
+    "category": {"id": "cat-flyers", "name": "Flyers", "slug": "flyers", "icon": "📄"},
+    "variants": [
+      {"id": "fl-a6-01", "sku": "FL-A6-BRI135-R", "format": "A6 (105x148mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 19.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 24.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 29.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 44.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": 9999, "supplierCost": 69.90, "marginPercent": 45},
+          {"minQuantity": 10000, "maxQuantity": null, "supplierCost": 119.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-a6-02", "sku": "FL-A6-BRI135-RV", "format": "A6 (105x148mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 24.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 29.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 39.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 59.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": 9999, "supplierCost": 89.90, "marginPercent": 45},
+          {"minQuantity": 10000, "maxQuantity": null, "supplierCost": 149.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-a6-03", "sku": "FL-A6-MAT170-RV", "format": "A6 (105x148mm)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 29.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 39.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 54.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 79.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": 9999, "supplierCost": 119.90, "marginPercent": 45},
+          {"minQuantity": 10000, "maxQuantity": null, "supplierCost": 199.90, "marginPercent": 45}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-flyers-a5",
+    "name": "Flyers A5",
+    "slug": "flyers-a5",
+    "description": "Format A5 (148x210mm) - Polyvalent",
+    "active": true,
+    "sortOrder": 11,
+    "category": {"id": "cat-flyers", "name": "Flyers", "slug": "flyers", "icon": "📄"},
+    "variants": [
+      {"id": "fl-a5-01", "sku": "FL-A5-BRI135-R", "format": "A5 (148x210mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 29.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 39.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 54.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 79.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": 9999, "supplierCost": 129.90, "marginPercent": 45},
+          {"minQuantity": 10000, "maxQuantity": null, "supplierCost": 219.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-a5-02", "sku": "FL-A5-BRI135-RV", "format": "A5 (148x210mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 34.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 49.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 69.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 99.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": 9999, "supplierCost": 159.90, "marginPercent": 45},
+          {"minQuantity": 10000, "maxQuantity": null, "supplierCost": 269.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-a5-03", "sku": "FL-A5-MAT170-RV", "format": "A5 (148x210mm)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 44.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 64.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 89.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 129.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": null, "supplierCost": 199.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-a5-04", "sku": "FL-A5-MAT250-RV-PMAT", "format": "A5 (148x210mm)", "paperType": "Couché mat", "paperWeight": "250g", "printSides": "RECTO_VERSO", "finish": "Pelliculage mat", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 69.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 99.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 149.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 249.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-flyers-a4",
+    "name": "Flyers A4",
+    "slug": "flyers-a4",
+    "description": "Format A4 (210x297mm) - Grand format",
+    "active": true,
+    "sortOrder": 12,
+    "category": {"id": "cat-flyers", "name": "Flyers", "slug": "flyers", "icon": "📄"},
+    "variants": [
+      {"id": "fl-a4-01", "sku": "FL-A4-BRI135-R", "format": "A4 (210x297mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 49.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 69.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 99.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 149.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": null, "supplierCost": 249.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-a4-02", "sku": "FL-A4-BRI135-RV", "format": "A4 (210x297mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 59.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 84.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 124.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 189.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": null, "supplierCost": 319.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-a4-03", "sku": "FL-A4-MAT170-RV", "format": "A4 (210x297mm)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 74.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 109.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 159.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 249.90, "marginPercent": 45}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-flyers-dl",
+    "name": "Flyers DIN Lang",
+    "slug": "flyers-din-lang",
+    "description": "Format DIN Lang (99x210mm) - Format enveloppe",
+    "active": true,
+    "sortOrder": 13,
+    "category": {"id": "cat-flyers", "name": "Flyers", "slug": "flyers", "icon": "📄"},
+    "variants": [
+      {"id": "fl-dl-01", "sku": "FL-DL-BRI135-RV", "format": "DIN Lang (99x210mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 29.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 39.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 54.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": 4999, "supplierCost": 79.90, "marginPercent": 45},
+          {"minQuantity": 5000, "maxQuantity": null, "supplierCost": 129.90, "marginPercent": 45}
+        ]},
+      {"id": "fl-dl-02", "sku": "FL-DL-MAT170-RV", "format": "DIN Lang (99x210mm)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 4,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 39.90, "marginPercent": 45},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 54.90, "marginPercent": 45},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 79.90, "marginPercent": 45},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 129.90, "marginPercent": 45}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-affiches-a3",
+    "name": "Affiches A3",
+    "slug": "affiches-a3",
+    "description": "Format A3 (297x420mm) - Affichage intérieur",
+    "active": true,
+    "sortOrder": 20,
+    "category": {"id": "cat-affiches", "name": "Affiches", "slug": "affiches", "icon": "🖼️"},
+    "variants": [
+      {"id": "af-a3-01", "sku": "AF-A3-BRI135-R", "format": "A3 (297x420mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 10, "maxQuantity": 24, "supplierCost": 14.90, "marginPercent": 50},
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 19.90, "marginPercent": 50},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 29.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 44.90, "marginPercent": 50},
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 79.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": null, "supplierCost": 139.90, "marginPercent": 50}
+        ]},
+      {"id": "af-a3-02", "sku": "AF-A3-MAT170-R", "format": "A3 (297x420mm)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 10, "maxQuantity": 24, "supplierCost": 18.90, "marginPercent": 50},
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 26.90, "marginPercent": 50},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 59.90, "marginPercent": 50},
+          {"minQuantity": 250, "maxQuantity": null, "supplierCost": 99.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-affiches-a2",
+    "name": "Affiches A2",
+    "slug": "affiches-a2",
+    "description": "Format A2 (420x594mm) - Grand impact",
+    "active": true,
+    "sortOrder": 21,
+    "category": {"id": "cat-affiches", "name": "Affiches", "slug": "affiches", "icon": "🖼️"},
+    "variants": [
+      {"id": "af-a2-01", "sku": "AF-A2-BRI135-R", "format": "A2 (420x594mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 10, "maxQuantity": 24, "supplierCost": 24.90, "marginPercent": 50},
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 59.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 99.90, "marginPercent": 50},
+          {"minQuantity": 250, "maxQuantity": null, "supplierCost": 179.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-affiches-a1",
+    "name": "Affiches A1",
+    "slug": "affiches-a1",
+    "description": "Format A1 (594x841mm) - Maximum visibilité",
+    "active": true,
+    "sortOrder": 22,
+    "category": {"id": "cat-affiches", "name": "Affiches", "slug": "affiches", "icon": "🖼️"},
+    "variants": [
+      {"id": "af-a1-01", "sku": "AF-A1-BRI135-R", "format": "A1 (594x841mm)", "paperType": "Couché brillant", "paperWeight": "135g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 5, "maxQuantity": 9, "supplierCost": 29.90, "marginPercent": 50},
+          {"minQuantity": 10, "maxQuantity": 24, "supplierCost": 49.90, "marginPercent": 50},
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 89.90, "marginPercent": 50},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 149.90, "marginPercent": 50},
+          {"minQuantity": 100, "maxQuantity": null, "supplierCost": 269.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-menu-restaurant",
+    "name": "Cartes Menu Restaurant",
+    "slug": "carte-menu-restaurant",
+    "description": "Menus pour restaurants - Format A4 ou A3 plié",
+    "active": true,
+    "sortOrder": 30,
+    "category": {"id": "cat-menu", "name": "Menus Restaurant", "slug": "menus", "icon": "🍽️"},
+    "variants": [
+      {"id": "menu-01", "sku": "MENU-A4-MAT350-RV-PMAT", "format": "A4 (210x297mm)", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Pelliculage mat", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 39.90, "marginPercent": 55},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 59.90, "marginPercent": 55},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 99.90, "marginPercent": 55},
+          {"minQuantity": 250, "maxQuantity": null, "supplierCost": 179.90, "marginPercent": 55}
+        ]},
+      {"id": "menu-02", "sku": "MENU-A3PLIE-MAT350-RV-PMAT", "format": "A3 plié (A4 fermé)", "paperType": "Couché mat", "paperWeight": "350g", "printSides": "RECTO_VERSO", "finish": "Pelliculage mat", "leadTimeDays": 7,
+        "pricingTiers": [
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 69.90, "marginPercent": 55},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 99.90, "marginPercent": 55},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 159.90, "marginPercent": 55},
+          {"minQuantity": 250, "maxQuantity": null, "supplierCost": 279.90, "marginPercent": 55}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-depliants-2v",
+    "name": "Dépliants 2 volets",
+    "slug": "depliants-2-volets",
+    "description": "Dépliant avec 1 pli - 4 pages",
+    "active": true,
+    "sortOrder": 40,
+    "category": {"id": "cat-depliants", "name": "Dépliants", "slug": "depliants", "icon": "📑"},
+    "variants": [
+      {"id": "dep-2v-01", "sku": "DEP-2V-A5-MAT170-RV", "format": "A5 fermé (A4 ouvert)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 49.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 69.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 99.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 169.90, "marginPercent": 50}
+        ]},
+      {"id": "dep-2v-02", "sku": "DEP-2V-DL-MAT170-RV", "format": "DL fermé (A4 ouvert)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 44.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 64.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 94.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 159.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-depliants-3v",
+    "name": "Dépliants 3 volets",
+    "slug": "depliants-3-volets",
+    "description": "Dépliant avec 2 plis - 6 pages",
+    "active": true,
+    "sortOrder": 41,
+    "category": {"id": "cat-depliants", "name": "Dépliants", "slug": "depliants", "icon": "📑"},
+    "variants": [
+      {"id": "dep-3v-01", "sku": "DEP-3V-DL-MAT170-RV", "format": "DL fermé (A4 ouvert)", "paperType": "Couché mat", "paperWeight": "170g", "printSides": "RECTO_VERSO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 54.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 79.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 119.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 199.90, "marginPercent": 50}
+        ]},
+      {"id": "dep-3v-02", "sku": "DEP-3V-DL-MAT250-RV-PMAT", "format": "DL fermé (A4 ouvert)", "paperType": "Couché mat", "paperWeight": "250g", "printSides": "RECTO_VERSO", "finish": "Pelliculage mat", "leadTimeDays": 7,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 89.90, "marginPercent": 55},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 129.90, "marginPercent": 55},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 199.90, "marginPercent": 55},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 349.90, "marginPercent": 55}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-rollup-standard",
+    "name": "Roll-up Standard",
+    "slug": "roll-up-standard",
+    "description": "Roll-up économique avec structure aluminium",
+    "active": true,
+    "sortOrder": 50,
+    "category": {"id": "cat-rollup", "name": "Roll-ups & Banners", "slug": "roll-ups", "icon": "🎪"},
+    "variants": [
+      {"id": "rup-01", "sku": "RUP-85x200-STD", "format": "85x200cm", "paperType": "Bâche PVC", "paperWeight": "440g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 1, "maxQuantity": 1, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 2, "maxQuantity": 4, "supplierCost": 34.90, "marginPercent": 50},
+          {"minQuantity": 5, "maxQuantity": 9, "supplierCost": 29.90, "marginPercent": 50},
+          {"minQuantity": 10, "maxQuantity": null, "supplierCost": 24.90, "marginPercent": 50}
+        ]},
+      {"id": "rup-02", "sku": "RUP-100x200-STD", "format": "100x200cm", "paperType": "Bâche PVC", "paperWeight": "440g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 1, "maxQuantity": 1, "supplierCost": 49.90, "marginPercent": 50},
+          {"minQuantity": 2, "maxQuantity": 4, "supplierCost": 44.90, "marginPercent": 50},
+          {"minQuantity": 5, "maxQuantity": 9, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 10, "maxQuantity": null, "supplierCost": 34.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-bache-pvc",
+    "name": "Bâche PVC",
+    "slug": "bache-pvc",
+    "description": "Bâche publicitaire extérieure résistante",
+    "active": true,
+    "sortOrder": 51,
+    "category": {"id": "cat-rollup", "name": "Roll-ups & Banners", "slug": "roll-ups", "icon": "��"},
+    "variants": [
+      {"id": "bac-01", "sku": "BAC-100x50-PVC510", "format": "100x50cm", "paperType": "PVC", "paperWeight": "510g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 1, "maxQuantity": 4, "supplierCost": 19.90, "marginPercent": 50},
+          {"minQuantity": 5, "maxQuantity": 9, "supplierCost": 16.90, "marginPercent": 50},
+          {"minQuantity": 10, "maxQuantity": null, "supplierCost": 12.90, "marginPercent": 50}
+        ]},
+      {"id": "bac-02", "sku": "BAC-200x100-PVC510", "format": "200x100cm", "paperType": "PVC", "paperWeight": "510g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 1, "maxQuantity": 4, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 5, "maxQuantity": 9, "supplierCost": 34.90, "marginPercent": 50},
+          {"minQuantity": 10, "maxQuantity": null, "supplierCost": 29.90, "marginPercent": 50}
+        ]},
+      {"id": "bac-03", "sku": "BAC-300x100-PVC510", "format": "300x100cm", "paperType": "PVC", "paperWeight": "510g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 1, "maxQuantity": 4, "supplierCost": 54.90, "marginPercent": 50},
+          {"minQuantity": 5, "maxQuantity": 9, "supplierCost": 49.90, "marginPercent": 50},
+          {"minQuantity": 10, "maxQuantity": null, "supplierCost": 44.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-autocollants-papier",
+    "name": "Autocollants Papier",
+    "slug": "autocollants-papier",
+    "description": "Étiquettes papier pour usage intérieur",
+    "active": true,
+    "sortOrder": 60,
+    "category": {"id": "cat-stickers", "name": "Autocollants", "slug": "autocollants", "icon": "✨"},
+    "variants": [
+      {"id": "stk-pap-01", "sku": "STK-50x30-PAP", "format": "Rectangle 50x30mm", "paperType": "Papier blanc", "paperWeight": "80g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 19.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 29.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 44.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 79.90, "marginPercent": 50}
+        ]},
+      {"id": "stk-pap-02", "sku": "STK-100x50-PAP", "format": "Rectangle 100x50mm", "paperType": "Papier blanc", "paperWeight": "80g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 29.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 44.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 69.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 119.90, "marginPercent": 50}
+        ]},
+      {"id": "stk-pap-03", "sku": "STK-ROND50-PAP", "format": "Rond 50mm", "paperType": "Papier blanc", "paperWeight": "80g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 24.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 59.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 99.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-autocollants-vinyle",
+    "name": "Autocollants Vinyle",
+    "slug": "autocollants-vinyle",
+    "description": "Étiquettes vinyle résistantes usage extérieur",
+    "active": true,
+    "sortOrder": 61,
+    "category": {"id": "cat-stickers", "name": "Autocollants", "slug": "autocollants", "icon": "✨"},
+    "variants": [
+      {"id": "stk-vin-01", "sku": "STK-50x30-VIN", "format": "Rectangle 50x30mm", "paperType": "Vinyle blanc", "paperWeight": "90µ", "printSides": "RECTO", "finish": "Pelliculage brillant", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 34.90, "marginPercent": 55},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 49.90, "marginPercent": 55},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 79.90, "marginPercent": 55},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 139.90, "marginPercent": 55}
+        ]},
+      {"id": "stk-vin-02", "sku": "STK-100x50-VIN", "format": "Rectangle 100x50mm", "paperType": "Vinyle blanc", "paperWeight": "90µ", "printSides": "RECTO", "finish": "Pelliculage brillant", "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 49.90, "marginPercent": 55},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 74.90, "marginPercent": 55},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 119.90, "marginPercent": 55},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 209.90, "marginPercent": 55}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-papier-entete",
+    "name": "Papier à en-tête",
+    "slug": "papier-en-tete",
+    "description": "Papier à lettres personnalisé",
+    "active": true,
+    "sortOrder": 70,
+    "category": {"id": "cat-papeterie", "name": "Papeterie", "slug": "papeterie", "icon": "✉️"},
+    "variants": [
+      {"id": "pap-01", "sku": "PAP-A4-OFF90-R", "format": "A4", "paperType": "Offset blanc", "paperWeight": "90g", "printSides": "RECTO", "finish": null, "leadTimeDays": 5,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 39.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 54.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 79.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 139.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-enveloppes",
+    "name": "Enveloppes personnalisées",
+    "slug": "enveloppes",
+    "description": "Enveloppes avec impression logo",
+    "active": true,
+    "sortOrder": 71,
+    "category": {"id": "cat-papeterie", "name": "Papeterie", "slug": "papeterie", "icon": "✉️"},
+    "variants": [
+      {"id": "env-01", "sku": "ENV-C5-OFF90-R", "format": "C5 (162x229mm)", "paperType": "Offset blanc", "paperWeight": "90g", "printSides": "RECTO", "finish": null, "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 59.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 89.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 139.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 249.90, "marginPercent": 50}
+        ]},
+      {"id": "env-02", "sku": "ENV-DL-OFF90-R", "format": "DL (110x220mm)", "paperType": "Offset blanc", "paperWeight": "90g", "printSides": "RECTO", "finish": null, "leadTimeDays": 6,
+        "pricingTiers": [
+          {"minQuantity": 250, "maxQuantity": 499, "supplierCost": 49.90, "marginPercent": 50},
+          {"minQuantity": 500, "maxQuantity": 999, "supplierCost": 74.90, "marginPercent": 50},
+          {"minQuantity": 1000, "maxQuantity": 2499, "supplierCost": 119.90, "marginPercent": 50},
+          {"minQuantity": 2500, "maxQuantity": null, "supplierCost": 209.90, "marginPercent": 50}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-tshirt",
+    "name": "T-shirts personnalisés",
+    "slug": "tshirts",
+    "description": "T-shirts avec impression sérigraphie ou transfert",
+    "active": true,
+    "sortOrder": 80,
+    "category": {"id": "cat-textile", "name": "Textile", "slug": "textile", "icon": "👕"},
+    "variants": [
+      {"id": "tsh-01", "sku": "TSH-BLANC-SERI-R", "format": "S à XXL", "paperType": "Coton 180g", "paperWeight": "180g", "printSides": "RECTO", "finish": "Sérigraphie 1 couleur", "leadTimeDays": 10,
+        "pricingTiers": [
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 8.90, "marginPercent": 60},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 6.90, "marginPercent": 60},
+          {"minQuantity": 100, "maxQuantity": 249, "supplierCost": 5.50, "marginPercent": 60},
+          {"minQuantity": 250, "maxQuantity": null, "supplierCost": 4.50, "marginPercent": 60}
+        ]},
+      {"id": "tsh-02", "sku": "TSH-BLANC-DTGF-RV", "format": "S à XXL", "paperType": "Coton 180g", "paperWeight": "180g", "printSides": "RECTO_VERSO", "finish": "Impression DTG couleurs", "leadTimeDays": 10,
+        "pricingTiers": [
+          {"minQuantity": 10, "maxQuantity": 24, "supplierCost": 18.90, "marginPercent": 60},
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 14.90, "marginPercent": 60},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 11.90, "marginPercent": 60},
+          {"minQuantity": 100, "maxQuantity": null, "supplierCost": 9.90, "marginPercent": 60}
+        ]}
+    ]
+  },
+  {
+    "id": "prod-polo",
+    "name": "Polos personnalisés",
+    "slug": "polos",
+    "description": "Polos brodés ou imprimés",
+    "active": true,
+    "sortOrder": 81,
+    "category": {"id": "cat-textile", "name": "Textile", "slug": "textile", "icon": "👕"},
+    "variants": [
+      {"id": "polo-01", "sku": "POLO-BLANC-BROD", "format": "S à XXL", "paperType": "Piqué coton 200g", "paperWeight": "200g", "printSides": "RECTO", "finish": "Broderie poitrine", "leadTimeDays": 12,
+        "pricingTiers": [
+          {"minQuantity": 10, "maxQuantity": 24, "supplierCost": 24.90, "marginPercent": 60},
+          {"minQuantity": 25, "maxQuantity": 49, "supplierCost": 19.90, "marginPercent": 60},
+          {"minQuantity": 50, "maxQuantity": 99, "supplierCost": 16.90, "marginPercent": 60},
+          {"minQuantity": 100, "maxQuantity": null, "supplierCost": 14.90, "marginPercent": 60}
+        ]}
+    ]
+  }
+]
