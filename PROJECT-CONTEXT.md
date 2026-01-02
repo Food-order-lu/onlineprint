@@ -65,25 +65,76 @@ Rivego is a **B2B SaaS platform** for managing restaurant/commerce clients, subs
 
 ---
 
-## 🖥️ Deployment
+## 🖥️ Oracle Server Connection
 
-| Environment | URL | Method |
-|-------------|-----|--------|
-| **Oracle Cloud** | `http://141.253.116.210:3000` | Mutagen sync from local |
+| Parameter | Value |
+|-----------|-------|
+| **Public IP** | `141.253.116.210` |
+| **User** | `ubuntu` |
+| **SSH Key** | `~/.ssh/oracle-rivego.key` |
+| **Project Path** | `~/Rivego` |
+| **Live URL** | **http://141.253.116.210:3000** |
 
-### Mutagen Sync Commands
+### Connect to Server
 ```bash
-# Check sync status
-mutagen sync list
+ssh oracle
+# or full command:
+ssh -i ~/.ssh/oracle-rivego.key ubuntu@141.253.116.210
+```
 
-# Force sync
-mutagen sync flush rivego
-
-# SSH to server
+### Start Dev Server on Oracle
+```bash
 ssh oracle
 cd ~/Rivego
 npm run dev -- --hostname 0.0.0.0
 ```
+
+### Keep Server Running (Screen)
+```bash
+ssh oracle
+screen -S rivego
+cd ~/Rivego && npm run dev -- --hostname 0.0.0.0
+# Detach: Ctrl+A, then D
+# Reattach later: screen -r rivego
+```
+
+---
+
+## 🔄 Mutagen Sync (Local ↔ Oracle)
+
+Mutagen automatically syncs files between your Mac and Oracle server.
+
+| Command | Description |
+|---------|-------------|
+| `mutagen sync list` | Check sync status |
+| `mutagen sync flush rivego` | Force immediate sync |
+| `mutagen sync pause rivego` | Pause syncing |
+| `mutagen sync resume rivego` | Resume syncing |
+
+### Synced Paths
+- **Local**: `/Users/tiagoribeiro/.gemini/antigravity/scratch/Rivego automation system`
+- **Remote**: `oracle:~/Rivego`
+
+---
+
+## 📤 Git Push Workflow
+
+### Quick Push (run after changes)
+```bash
+cd "/Users/tiagoribeiro/.gemini/antigravity/scratch/Rivego automation system"
+git add -A
+git commit -m "Your commit message"
+git push origin main
+```
+
+### Antigravity Workflow Command
+When working with Antigravity, you can ask:
+> "Push all changes to GitHub with message: [your message]"
+
+### GitHub Repository
+- **URL**: https://github.com/Food-order-lu/Rivego
+- **Branch**: `main`
+- **Visibility**: Private (recommended)
 
 ---
 
