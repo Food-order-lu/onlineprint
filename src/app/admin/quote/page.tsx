@@ -18,9 +18,12 @@ import {
     Eye,
     QrCode,
     X,
+    Target,
+    TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
+import { generateQuotePDF } from '@/components/pdf/QuotePDF'; // Ensure this is exported and client-side safe
 
 // Schema for quote form
 const quoteSchema = z.object({
@@ -107,7 +110,6 @@ const oneTimeExtras = [
 
 // Generate quote number
 const generateQuoteNumber = () => {
-    // ... (existing implementation) ...
     const date = new Date();
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -159,6 +161,56 @@ const PDFDownloadButton = ({ quoteData, quoteNumber }: { quoteData: any; quoteNu
     );
 };
 
+// NEW: Monthly Objectives Component
+const MonthlyObjectives = () => {
+    // TODO: Fetch real data from DB
+    const objective = {
+        min: 10,
+        target: 14,
+        actual: 4, // Example current progress
+        month: 'Janvier 2026'
+    };
+
+    const progressPercent = Math.min(100, (objective.actual / objective.target) * 100);
+    const minPercent = (objective.min / objective.target) * 100;
+
+    return (
+        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm mb-8">
+            <div className="flex justify-between items-start mb-4">
+                <div>
+                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <Target className="text-blue-600" size={20} />
+                        Objectifs Commerciaux
+                    </h3>
+                    <p className="text-sm text-gray-500">{objective.month}</p>
+                </div>
+                <div className="text-right">
+                    <p className="text-2xl font-bold text-gray-900">{objective.actual} <span className="text-sm text-gray-400 font-normal">/ {objective.target}</span></p>
+                    <p className="text-xs text-green-600 font-medium">Nouveaux Clients</p>
+                </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden">
+                {/* Min Target Marker */}
+                <div className="absolute top-0 bottom-0 w-0.5 bg-gray-300 z-10" style={{ left: `${minPercent}%` }} title={`Minimum: ${objective.min}`}></div>
+
+                {/* Actual Progress */}
+                <div
+                    className={`absolute top-0 bottom-0 transition-all duration-1000 ${objective.actual >= objective.min ? 'bg-green-500' : 'bg-blue-500'}`}
+                    style={{ width: `${progressPercent}%` }}
+                ></div>
+            </div>
+
+            <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium">
+                <span>0</span>
+                <span style={{ marginLeft: `${minPercent - 5}%` }}>Min: {objective.min}</span>
+                <span>Obj: {objective.target}</span>
+            </div>
+        </div>
+    );
+};
+
 export default function QuoteBuilderPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
@@ -170,6 +222,10 @@ export default function QuoteBuilderPage() {
 
     // Presentation Mode State
     const [presentationMode, setPresentationMode] = useState(false);
+
+    // View Mode: 'builder' | 'pipeline'
+    // For now we keep it simple in one page or just add the widget at top
+    // The user asked for "Commercial Dashboard" updates, this seems to be the place.
 
     const {
         register,
@@ -254,7 +310,6 @@ export default function QuoteBuilderPage() {
 
     const totals = calculateTotal();
 
-    // ... (existing handleVatLookup implementation) ...
     const handleVatLookup = async () => {
         const vatNumber = watch('vatNumber');
         if (!vatNumber || vatNumber.length < 4) {
@@ -298,23 +353,29 @@ export default function QuoteBuilderPage() {
         const newQuoteNumber = generateQuoteNumber();
         setQuoteNumber(newQuoteNumber);
 
-        // ... (existing onSubmit logic) ...
         const today = new Date();
         const validUntil = new Date(today);
         validUntil.setDate(validUntil.getDate() + 30);
 
-        const lineItems = [];
+        // Build SEPARATE arrays for one-time and monthly items (required by QuotePDF)
+        const oneTimeItems: { description: string; quantity: number; unitPrice: number; total: number }[] = [];
+        const monthlyItems: { description: string; quantity: number; unitPrice: number; total: number }[] = [];
+
         const plan = webvisionPlans.find(p => p.id === data.plan);
-        if (plan) {
-            lineItems.push({
+
+        // Add plan as one-time item (if not "supplements only")
+        if (plan && plan.basePrice > 0) {
+            oneTimeItems.push({
                 description: `Site ${plan.name}`,
                 quantity: 1,
                 unitPrice: plan.basePrice,
                 total: plan.basePrice,
             });
         }
+
+        // Add selected extras as one-time items
         data.extras.filter(e => e.selected).forEach(extra => {
-            lineItems.push({
+            oneTimeItems.push({
                 description: extra.name,
                 quantity: 1,
                 unitPrice: extra.price,
@@ -322,21 +383,27 @@ export default function QuoteBuilderPage() {
             });
         });
 
-        // Handle monthly items formatting
+        // Add selected monthly services
         data.monthly.filter(s => s.selected).forEach(service => {
-            lineItems.push({
-                description: `${service.name} (mensuel)`,
+            monthlyItems.push({
+                description: service.name,
                 quantity: 1,
                 unitPrice: service.price,
                 total: service.price,
             });
         });
 
-        // Pass the monthly discount to the PDF?
-        // Current PDF structure might not support monthly discount field directly, 
-        // but we can deduct it from the monthly total or add a negative line item if we changed definition.
-        // For now, let's keep the PDF simple and just pass the updated totals?
-        // The user request was about the ADMIN form.
+        // Calculate one-time total (for PDF)
+        const oneTimeTotal = oneTimeItems.reduce((sum, item) => sum + item.total, 0);
+
+        // Also keep a combined lineItems for Zoho sync compatibility
+        const lineItems = [
+            ...oneTimeItems,
+            ...monthlyItems.map(item => ({
+                ...item,
+                description: `${item.description} (mensuel)`,
+            }))
+        ];
 
         const pdfData = {
             quoteNumber: newQuoteNumber,
@@ -355,6 +422,11 @@ export default function QuoteBuilderPage() {
             serviceName: 'WebVision',
             planName: plan?.name || '',
             planDescription: plan?.description || '',
+            // QuotePDF expects these separate arrays:
+            oneTimeItems,
+            monthlyItems,
+            oneTimeTotal,
+            // Keep lineItems for Zoho sync:
             lineItems,
             subtotal: totals.subtotal,
             discountPercent: data.discountPercent || 0,
@@ -363,11 +435,12 @@ export default function QuoteBuilderPage() {
             vatRate: totals.vatRate,
             vatAmount: totals.vatAmount,
             totalTtc: totals.totalTtc,
+            depositPercent: totals.depositPercent,
             depositAmount: totals.depositAmount,
             showDeposit: data.paymentTerms === 'acompte',
             notes: data.notes,
             paymentTerms: data.paymentTerms === 'acompte'
-                ? `Acompte de 20% (${totals.depositAmount.toFixed(2)}€) à la signature. Solde à la livraison.`
+                ? `Acompte de ${totals.depositPercent}% (${totals.depositAmount.toFixed(2)}€) à la signature. Solde à la livraison.`
                 : data.customPaymentTerms || 'Conditions à définir.',
 
             // Pass monthly total info
@@ -379,7 +452,6 @@ export default function QuoteBuilderPage() {
         setShowSuccess(true);
     };
 
-    // ... (existing helper functions toggleExtra, toggleMonthly) ...
     const toggleExtra = (index: number) => {
         const currentExtras = [...extras];
         currentExtras[index].selected = !currentExtras[index].selected;
@@ -403,7 +475,6 @@ export default function QuoteBuilderPage() {
     }
 
     if (showSuccess && quoteData) {
-        // ... (existing success view) ...
         return (
             <section className="min-h-screen flex items-center justify-center py-32 bg-gray-50">
                 <div className="container mx-auto px-6 text-center max-w-2xl">
@@ -417,7 +488,6 @@ export default function QuoteBuilderPage() {
                     <p className="text-3xl font-bold text-[#0D7377] mb-8">{quoteData.totalTtc.toFixed(2)} € (TTC)</p>
 
                     <div className="flex gap-4 justify-center flex-wrap mb-8">
-                        {/* Ensure PDFDownloadButton is properly imported/defined in scope if not shown here */}
                         <PDFDownloadButton quoteData={quoteData} quoteNumber={quoteNumber} />
 
                         <button
@@ -443,13 +513,151 @@ export default function QuoteBuilderPage() {
                             <Send size={20} />
                             Envoyer par email
                         </button>
+
+                        <button
+                            className="btn bg-indigo-600 text-white hover:bg-indigo-700"
+                            onClick={async () => {
+                                const btn = document.activeElement as HTMLButtonElement;
+                                const originalText = btn.innerHTML;
+                                btn.innerHTML = '<span class="animate-spin">...</span> Préparation...';
+                                btn.disabled = true;
+
+                                try {
+                                    // 1. Generate PDF
+                                    const blob = await generateQuotePDF(quoteData);
+
+                                    // 2. Convert to Base64
+                                    const reader = new FileReader();
+                                    reader.readAsDataURL(blob);
+                                    reader.onloadend = async () => {
+                                        const base64data = reader.result?.toString().split(',')[1];
+
+                                        if (!base64data) {
+                                            alert('Erreur: Impossible de générer le PDF');
+                                            btn.innerHTML = originalText;
+                                            btn.disabled = false;
+                                            return;
+                                        }
+
+                                        // 3. Send to API
+                                        try {
+                                            const res = await fetch('/api/invoicing/sign-docuseal', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    pdf_base64: base64data,
+                                                    client_email: quoteData.clientEmail,
+                                                    client_name: quoteData.clientName,
+                                                    quote_number: quoteNumber
+                                                })
+                                            });
+
+                                            const json = await res.json();
+                                            if (json.success && json.url) {
+                                                // 4. Open Signing URL
+                                                window.open(json.url, '_blank');
+                                                btn.innerHTML = '✅ Ouverture...';
+
+                                                // Optional: Reset button after a delay
+                                                setTimeout(() => {
+                                                    btn.innerHTML = originalText;
+                                                    btn.disabled = false;
+                                                }, 3000);
+                                            } else {
+                                                alert(`Erreur DocuSeal: ${json.error}`);
+                                                btn.innerHTML = originalText;
+                                                btn.disabled = false;
+                                            }
+                                        } catch (apiErr) {
+                                            console.error(apiErr);
+                                            alert('Erreur lors de la communication avec le serveur (DocuSeal)');
+                                            btn.innerHTML = originalText;
+                                            btn.disabled = false;
+                                        }
+                                    };
+                                } catch (err) {
+                                    console.error('PDF Generation Error Details:', err);
+                                    if (err instanceof Error) {
+                                        console.error('Stack:', err.stack);
+                                    }
+                                    alert(`Erreur lors de la génération du PDF: ${err instanceof Error ? err.message : 'Erreur inconnue'}`);
+                                    btn.innerHTML = originalText;
+                                    btn.disabled = false;
+                                }
+                            }}
+                        >
+                            <FileText size={20} />
+                            Signer via DocuSeal
+                        </button>
+
+                        <button
+                            className="btn border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                            onClick={async () => {
+                                const btn = document.activeElement as HTMLButtonElement;
+                                const originalText = btn.innerHTML;
+                                btn.innerHTML = '<span class="animate-spin">...</span> Syncing...';
+                                btn.disabled = true;
+
+                                try {
+                                    // Prepare data mapping
+                                    const payload = {
+                                        client_data: {
+                                            contact_name: quoteData.clientName,
+                                            company_name: quoteData.clientCompany,
+                                            email: quoteData.clientEmail,
+                                            phone: quoteData.clientPhone,
+                                            address: quoteData.clientAddress,
+                                            vat_number: quoteData.clientVat
+                                        },
+                                        quote_data: {
+                                            quote_number: quoteNumber,
+                                            date: new Date().toISOString().split('T')[0],
+                                            valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                                            notes: quoteData.notes,
+                                            payment_terms: quoteData.paymentTerms,
+                                            discount_amount: quoteData.discountAmount,
+                                            vat_rate: quoteData.vatRate,
+                                            items: quoteData.lineItems.map((item: any) => ({
+                                                name: item.description, // Mapping description only as name? Or splitting?
+                                                description: item.description,
+                                                unit_price: item.unitPrice,
+                                                quantity: item.quantity
+                                            }))
+                                        }
+                                    };
+
+                                    const res = await fetch('/api/invoicing/create-quote', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(payload)
+                                    });
+
+                                    const json = await res.json();
+                                    if (json.success) {
+                                        alert(`✅ Devis créé dans Zoho !\nNuméro: ${json.zoho_estimate_number}`);
+                                        btn.innerHTML = '✅ Synced';
+                                    } else {
+                                        alert(`❌ Erreur: ${json.error}`);
+                                        btn.innerHTML = originalText;
+                                        btn.disabled = false;
+                                    }
+                                } catch (err) {
+                                    console.error(err);
+                                    alert('Erreur de connexion');
+                                    btn.innerHTML = originalText;
+                                    btn.disabled = false;
+                                }
+                            }}
+                        >
+                            <Save size={20} />
+                            Sync Zoho
+                        </button>
                     </div>
 
                     <Link href="/admin/dashboard" className="text-gray-500 hover:text-gray-700">
                         ← Retour au dashboard
                     </Link>
 
-                    {/* QR Code Modal re-implementation or reuse */}
                     {showQRModal && (
                         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
                             <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative">
@@ -508,6 +716,9 @@ export default function QuoteBuilderPage() {
                         {presentationMode ? 'Mode Présentation' : 'Vue Admin'}
                     </button>
                 </div>
+
+                {/* NEW: Objectives Section (Displayed at top of Quote Builder) */}
+                <MonthlyObjectives />
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -633,11 +844,27 @@ export default function QuoteBuilderPage() {
                             <div className="card">
                                 <h2 className="text-xl font-semibold mb-6 text-gray-900">Conditions de paiement</h2>
                                 <div className="space-y-4">
-                                    <label className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-3 ${watch('paymentTerms') === 'acompte' ? 'border-[#0D7377] bg-[#0D7377]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                                        <input type="radio" {...register('paymentTerms')} value="acompte" className="w-5 h-5 text-[#0D7377] focus:ring-[#0D7377]" />
-                                        <div>
-                                            <span className="font-medium text-gray-900">Acompte 20%</span>
-                                            <p className="text-sm text-gray-500">20% à la signature, solde à la livraison</p>
+                                    <label className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-3 ${watch('paymentTerms') === 'acompte' ? 'border-[#0D7377] bg-[#0D7377]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                                        <input type="radio" {...register('paymentTerms')} value="acompte" className="w-5 h-5 mt-1 text-[#0D7377] focus:ring-[#0D7377]" />
+                                        <div className="w-full">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="font-medium text-gray-900">Acompte</span>
+                                                {watch('paymentTerms') === 'acompte' && (
+                                                    <div className="flex items-center gap-1">
+                                                        <input
+                                                            type="number"
+                                                            {...register('depositPercent', { valueAsNumber: true })}
+                                                            min="0"
+                                                            max="100"
+                                                            className="text-sm w-16 text-right border-gray-300 rounded-md shadow-sm focus:border-[#0D7377] focus:ring-[#0D7377]"
+                                                        />
+                                                        <span className="text-gray-500 text-sm">%</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-gray-500">
+                                                {watch('depositPercent') || 20}% à la signature, solde à la livraison
+                                            </p>
                                         </div>
                                     </label>
                                     <label className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-3 ${watch('paymentTerms') === 'custom' ? 'border-[#0D7377] bg-[#0D7377]/5' : 'border-gray-200 hover:border-gray-300'}`}>
@@ -696,7 +923,6 @@ export default function QuoteBuilderPage() {
                                                     </div>
                                                 </div>
                                             )}
-                                            {/* Show applied monthly discount if exists even in presentation mode? No, user wants it hidden */}
                                         </div>
                                     )}
 
@@ -744,7 +970,7 @@ export default function QuoteBuilderPage() {
                                     </div>
                                     {paymentTerms === 'acompte' && (
                                         <div className="flex justify-between text-sm font-medium text-[#0D7377] bg-[#0D7377]/5 p-2 rounded-lg">
-                                            <span>Acompte 20%</span>
+                                            <span>Acompte {totals.depositPercent}%</span>
                                             <span>{totals.depositAmount.toFixed(2)} €</span>
                                         </div>
                                     )}

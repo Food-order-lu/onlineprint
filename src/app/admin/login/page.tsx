@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
                 name: user.name,
                 loggedInAt: new Date().toISOString()
             }));
-            router.push('/admin/dashboard');
+            router.push('/admin');
         } else {
             setError('Email ou mot de passe incorrect');
         }

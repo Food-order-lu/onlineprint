@@ -38,7 +38,7 @@ export default function AdminHomePage() {
             description: 'Mandats SEPA et encaissements',
             icon: CreditCard,
             color: 'bg-purple-500',
-            href: '/admin/payments', // We might need to create this or link to a filtered client list
+            href: '/admin/payments', // Linked to the new payments page
             count: null
         },
         {
@@ -57,21 +57,18 @@ export default function AdminHomePage() {
             href: '/admin/dashboard',
             count: null
         },
+        {
+            title: 'Rapports & Com.',
+            description: 'Suivi CA GloriaFood et facturation',
+            icon: FileText,
+            color: 'bg-teal-500',
+            href: '/admin/reports',
+            count: null
+        }
     ];
 
     return (
         <div className="min-h-screen bg-white"> {/* Fond blanc demandé */}
-            {/* Header */}
-            <header className="bg-white border-b border-gray-100 py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-10">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-bold">R</div>
-                    <span className="font-bold text-xl text-gray-900">Rivego Admin</span>
-                </div>
-                <Link href="/admin/login" className="text-gray-500 hover:text-red-500 transition-colors">
-                    <LogOut size={20} />
-                </Link>
-            </header>
-
             <main className="max-w-6xl mx-auto px-6 py-12">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Bienvenue</h1>
                 <p className="text-gray-500 mb-12">Sélectionnez un module pour commencer.</p>

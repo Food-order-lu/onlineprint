@@ -1,0 +1,208 @@
+
+> blazing-spicule@0.1.0 dev
+> next dev --hostname 0.0.0.0
+
+▲ Next.js 16.1.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+- Environments: .env.local
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 1270ms
+⚠ Cross origin request detected from 141.253.116.210 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET / 200 in 1303ms (compile: 692ms, proxy.ts: 83ms, render: 528ms)
+ HEAD / 200 in 170ms (compile: 6ms, proxy.ts: 8ms, render: 157ms)
+ GET / 200 in 358ms (compile: 6ms, proxy.ts: 6ms, render: 346ms)
+ GET /admin/login 200 in 158ms (compile: 102ms, proxy.ts: 8ms, render: 47ms)
+ GET /admin 200 in 80ms (compile: 41ms, proxy.ts: 6ms, render: 33ms)
+ GET /admin/clients 200 in 81ms (compile: 47ms, proxy.ts: 6ms, render: 28ms)
+ GET /api/clients? 200 in 1423ms (compile: 82ms, proxy.ts: 4ms, render: 1337ms)
+ GET /api/clients? 200 in 219ms (compile: 4ms, proxy.ts: 5ms, render: 210ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 650ms (compile: 593ms, proxy.ts: 6ms, render: 51ms)
+ GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 1073ms (compile: 731ms, proxy.ts: 4ms, render: 338ms)
+ GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 245ms (compile: 27ms, proxy.ts: 4ms, render: 213ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/subscriptions/new 404 in 253ms (compile: 79ms, proxy.ts: 5ms, render: 169ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/subscriptions/new 404 in 227ms (compile: 91ms, proxy.ts: 31ms, render: 104ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 467ms (compile: 31ms, proxy.ts: 4ms, render: 432ms)
+ GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 663ms (compile: 125ms, proxy.ts: 24ms, render: 515ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoice 404 in 33ms (compile: 7ms, proxy.ts: 4ms, render: 22ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoice 404 in 122ms (compile: 7ms, proxy.ts: 4ms, render: 112ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 314ms (compile: 28ms, proxy.ts: 4ms, render: 282ms)
+ GET /admin/clients 200 in 34ms (compile: 8ms, proxy.ts: 5ms, render: 21ms)
+ GET /api/clients? 200 in 269ms (compile: 3ms, proxy.ts: 6ms, render: 260ms)
+ GET /api/clients? 200 in 161ms (compile: 2ms, proxy.ts: 3ms, render: 155ms)
+ GET /admin 200 in 26ms (compile: 3ms, proxy.ts: 3ms, render: 19ms)
+ GET /admin/payments 200 in 65ms (compile: 39ms, proxy.ts: 4ms, render: 22ms)
+Payment Error: TypeError: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2f$supabase$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.supabaseAdmin.from is not a function
+    at POST (src/app/api/gocardless/create-payment/route.ts:51:14)
+  49 |         // Check active mandate
+  50 |         const { data: mandates } = await supabaseAdmin
+> 51 |             .from('gocardless_mandates')
+     |              ^
+  52 |             .select('*')
+  53 |             .eq('client_id', client_id)
+  54 |             .eq('status', 'active')
+ POST /api/gocardless/create-payment 500 in 470ms (compile: 44ms, proxy.ts: 5ms, render: 421ms)
+Payment Error: TypeError: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2f$supabase$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.supabaseAdmin.from is not a function
+    at POST (src/app/api/gocardless/create-payment/route.ts:51:14)
+  49 |         // Check active mandate
+  50 |         const { data: mandates } = await supabaseAdmin
+> 51 |             .from('gocardless_mandates')
+     |              ^
+  52 |             .select('*')
+  53 |             .eq('client_id', client_id)
+  54 |             .eq('status', 'active')
+ POST /api/gocardless/create-payment 500 in 214ms (compile: 4ms, proxy.ts: 4ms, render: 207ms)
+ GET /admin 200 in 28ms (compile: 4ms, proxy.ts: 4ms, render: 21ms)
+ GET /admin/clients 200 in 29ms (compile: 3ms, proxy.ts: 3ms, render: 22ms)
+ GET /api/clients? 200 in 294ms (compile: 3ms, proxy.ts: 4ms, render: 288ms)
+ GET /api/clients? 200 in 205ms (compile: 3ms, proxy.ts: 3ms, render: 199ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 85ms (compile: 28ms, proxy.ts: 4ms, render: 53ms)
+ GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 291ms (compile: 64ms, proxy.ts: 8ms, render: 219ms)
+ GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 235ms (compile: 20ms, proxy.ts: 11ms, render: 204ms)
+ GET /admin 200 in 49ms (compile: 4ms, proxy.ts: 4ms, render: 41ms)
+ GET /admin/dashboard 200 in 111ms (compile: 84ms, proxy.ts: 4ms, render: 23ms)
+ GET /admin 200 in 24ms (compile: 3ms, proxy.ts: 3ms, render: 17ms)
+ GET /admin/reports 200 in 465ms (compile: 420ms, proxy.ts: 3ms, render: 42ms)
+Generating invoice draft for report 1
+Invoice Generation Error: Error: You are not authorized to perform this operation
+    at ZohoClient.request (src/lib/invoicing/zoho.ts:139:19)
+    at async ZohoClient.getOrCreateContact (src/lib/invoicing/zoho.ts:403:30)
+    at async POST (src/app/api/invoicing/create-draft/route.ts:29:25)
+  137 |
+  138 |         if (data.code !== 0) {
+> 139 |             throw new Error(data.message || `Zoho API error: ${data.code}`);
+      |                   ^
+  140 |         }
+  141 |
+  142 |         return data;
+ POST /api/invoicing/create-draft 500 in 1202ms (compile: 261ms, proxy.ts: 6ms, render: 935ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 648ms (compile: 9ms, proxy.ts: 10ms, render: 630ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 642ms (compile: 10ms, proxy.ts: 9ms, render: 623ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 614ms (compile: 8ms, proxy.ts: 10ms, render: 596ms)
+ GET / 200 in 186ms (compile: 5ms, proxy.ts: 6ms, render: 175ms)
+ GET /robots.txt 404 in 113ms (compile: 10ms, proxy.ts: 3ms, render: 99ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 675ms (compile: 4ms, proxy.ts: 50ms, render: 621ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 615ms (compile: 6ms, proxy.ts: 15ms, render: 595ms)
+ GET / 200 in 28.8s (compile: 4ms, proxy.ts: 9ms, render: 28.7s)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 646ms (compile: 8ms, proxy.ts: 5ms, render: 633ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 627ms (compile: 7ms, proxy.ts: 14ms, render: 607ms)
+⨯ Error: aborted
+    at ignore-listed frames
+ HEAD / 200 in 154ms (compile: 5ms, proxy.ts: 4ms, render: 144ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 612ms (compile: 5ms, proxy.ts: 4ms, render: 602ms)
+ GET / 200 in 189ms (compile: 6ms, proxy.ts: 5ms, render: 179ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 603ms (compile: 6ms, proxy.ts: 5ms, render: 593ms)
+ GET / 200 in 187ms (compile: 7ms, proxy.ts: 11ms, render: 169ms)
+ GET / 200 in 157ms (compile: 3ms, proxy.ts: 6ms, render: 148ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 592ms (compile: 3ms, proxy.ts: 4ms, render: 585ms)
+ GET / 200 in 204ms (compile: 4ms, proxy.ts: 9ms, render: 192ms)
+ GET /explore/repos 404 in 117ms (compile: 10ms, proxy.ts: 4ms, render: 103ms)
+ GET /explore/repos 404 in 101ms (compile: 8ms, proxy.ts: 4ms, render: 89ms)
+ GET / 200 in 158ms (compile: 4ms, proxy.ts: 4ms, render: 150ms)
+ OPTIONS / 400 in 8ms (proxy.ts: 4ms)
+ OPTIONS / 400 in 8ms (proxy.ts: 4ms)
+ GET /nice%20ports%2C/Tri%6Eity.txt%2ebak 404 in 304ms (compile: 36ms, proxy.ts: 3ms, render: 265ms)
+ GET /health 404 in 208ms (compile: 21ms, proxy.ts: 14ms, render: 172ms)
+ GET /cgi-mod/header_logo.cgi?size=big 404 in 214ms (compile: 43ms, proxy.ts: 13ms, render: 158ms)
+ GET / 200 in 283ms (compile: 7ms, proxy.ts: 6ms, render: 270ms)
+ GET / 200 in 308ms (compile: 135ms, proxy.ts: 6ms, render: 167ms)
+ GET /ise/img/rm-logo_small.png 404 in 87ms (compile: 7ms, proxy.ts: 4ms, render: 76ms)
+ GET / 200 in 193ms (compile: 7ms, proxy.ts: 11ms, render: 175ms)
+ GET /images/logo.png 404 in 279ms (compile: 182ms, proxy.ts: 9ms, render: 88ms)
+ GET /dashboard 404 in 161ms (compile: 27ms, proxy.ts: 35ms, render: 98ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 639ms (compile: 3ms, proxy.ts: 8ms, render: 628ms)
+ GET / 200 in 196ms (compile: 6ms, proxy.ts: 12ms, render: 178ms)
+ GET / 200 in 14.5s (compile: 6ms, proxy.ts: 3ms, render: 14.4s)
+Error: aborted
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+⨯ uncaughtException: Error: aborted
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+⨯ uncaughtException:  Error: aborted
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 615ms (compile: 7ms, proxy.ts: 8ms, render: 600ms)
+ GET / 200 in 170ms (compile: 4ms, proxy.ts: 9ms, render: 157ms)
+ GET / 200 in 162ms (compile: 9ms, proxy.ts: 8ms, render: 145ms)
+ GET /admin/login 200 in 53ms (compile: 7ms, proxy.ts: 4ms, render: 43ms)
+ GET /admin 200 in 48ms (compile: 4ms, proxy.ts: 4ms, render: 40ms)
+ GET /admin/quote 200 in 105ms (compile: 51ms, proxy.ts: 3ms, render: 51ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 1141ms (compile: 228ms, proxy.ts: 27ms, render: 886ms)
+🔍 VIES lookup: BE0477472701
+✅ VIES valid: SA ODOO | Autoliquidation: true
+ POST /api/vies 200 in 446ms (compile: 3ms, proxy.ts: 6ms, render: 437ms)
+Error: Attempted to call QuotePDF() from the server but QuotePDF is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.
+    at ignore-listed frames {
+  componentStack: '\n' +
+    '    at <anonymous> (/home/ubuntu/Rivego/src/components/pdf/QuotePDF.tsx/__nextjs-internal-proxy.mjs:9:24)'
+}
+PDF Generation Error: TypeError: Cannot read properties of null (reading 'props')
+    at POST (src/app/api/generate-pdf/route.ts:12:47)
+  10 |
+  11 |         // Render the PDF to a stream
+> 12 |         const pdfStream = await renderToStream(createElement(QuotePDF, { data }));
+     |                                               ^
+  13 |
+  14 |         // Convert the stream to a Response
+  15 |         // We need to construct a ReadableStream from the NodeJS stream returned by renderToStream
+ POST /api/generate-pdf 500 in 1143ms (compile: 889ms, proxy.ts: 5ms, render: 249ms)
+ GET /admin/reports 200 in 138ms (compile: 15ms, proxy.ts: 5ms, render: 119ms)
+ GET /admin 200 in 31ms (compile: 4ms, proxy.ts: 3ms, render: 23ms)
+ GET /admin/clients 200 in 40ms (compile: 5ms, proxy.ts: 3ms, render: 31ms)
+ GET /api/clients? 200 in 1258ms (compile: 15ms, proxy.ts: 9ms, render: 1233ms)
+ GET /api/clients? 200 in 179ms (compile: 4ms, proxy.ts: 4ms, render: 172ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 126ms (compile: 44ms, proxy.ts: 3ms, render: 79ms)
+ GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 392ms (compile: 87ms, proxy.ts: 16ms, render: 289ms)
+ GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 328ms (compile: 17ms, proxy.ts: 10ms, render: 300ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoices 404 in 38ms (compile: 11ms, proxy.ts: 6ms, render: 21ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoices 404 in 105ms (compile: 11ms, proxy.ts: 4ms, render: 91ms)
+ GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 322ms (compile: 38ms, proxy.ts: 4ms, render: 280ms)
+ GET /admin/clients 200 in 32ms (compile: 7ms, proxy.ts: 5ms, render: 20ms)
+ GET /api/clients? 200 in 383ms (compile: 3ms, proxy.ts: 3ms, render: 376ms)
+ GET /api/clients? 200 in 215ms (compile: 3ms, proxy.ts: 3ms, render: 209ms)
+[?25h

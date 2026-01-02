@@ -33,6 +33,8 @@ type TaskType =
     | 'follow_up_payment'
     | 'setup_sepa_mandate'
     | 'send_cancellation'
+    | 'generate_monthly_invoice'
+    | 'process_gloriafood_report'
     | 'other';
 
 interface Task {
@@ -63,15 +65,17 @@ const taskTypeConfig: Record<TaskType, { icon: typeof FileText; label: string; c
     follow_up_payment: { icon: CreditCard, label: 'Relance paiement', color: 'text-orange-400' },
     setup_sepa_mandate: { icon: CreditCard, label: 'Config. SEPA', color: 'text-cyan-400' },
     send_cancellation: { icon: Ban, label: 'Envoyer résiliation', color: 'text-red-400' },
+    generate_monthly_invoice: { icon: Receipt, label: 'Facture mensuelle', color: 'text-blue-500' },
+    process_gloriafood_report: { icon: FileText, label: 'Rapport GloriaFood', color: 'text-orange-500' },
     other: { icon: FileText, label: 'Autre', color: 'text-gray-400' },
 };
 
 // Priority badges
 const priorityConfig: Record<TaskPriority, { label: string; className: string }> = {
-    urgent: { label: 'Urgent', className: 'bg-red-500/10 text-red-400 border-red-500/20' },
-    high: { label: 'Haute', className: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
-    medium: { label: 'Moyenne', className: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
-    low: { label: 'Basse', className: 'bg-gray-500/10 text-gray-400 border-gray-500/20' },
+    urgent: { label: 'Urgent', className: 'bg-red-50 text-red-600 border-red-100' },
+    high: { label: 'Haute', className: 'bg-orange-50 text-orange-600 border-orange-100' },
+    medium: { label: 'Moyenne', className: 'bg-yellow-50 text-yellow-600 border-yellow-100' },
+    low: { label: 'Basse', className: 'bg-gray-50 text-gray-600 border-gray-200' },
 };
 
 // Status icons
@@ -150,16 +154,16 @@ export default function TaskManagerPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="bg-white min-h-screen">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                            <CheckSquare className="text-blue-400" />
+                        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                            <CheckSquare className="text-blue-500" />
                             Gestionnaire de Tâches
                         </h1>
-                        <p className="text-gray-400 mt-1">
+                        <p className="text-gray-500 mt-1">
                             Tâches de facturation et administration
                         </p>
                     </div>
@@ -167,33 +171,33 @@ export default function TaskManagerPage() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">À faire</p>
-                        <p className="text-2xl font-bold text-white mt-1">{stats.pending}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">À faire</p>
+                        <p className="text-2xl font-bold text-gray-900 mt-1">{stats.pending}</p>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">En cours</p>
-                        <p className="text-2xl font-bold text-blue-400 mt-1">{stats.inProgress}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">En cours</p>
+                        <p className="text-2xl font-bold text-blue-600 mt-1">{stats.inProgress}</p>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">Urgentes</p>
-                        <p className="text-2xl font-bold text-red-400 mt-1">{stats.urgent}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">Urgentes</p>
+                        <p className="text-2xl font-bold text-red-600 mt-1">{stats.urgent}</p>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">Échéance aujourd&apos;hui</p>
-                        <p className="text-2xl font-bold text-orange-400 mt-1">{stats.dueToday}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">Échéance aujourd&apos;hui</p>
+                        <p className="text-2xl font-bold text-orange-500 mt-1">{stats.dueToday}</p>
                     </div>
                 </div>
 
                 {/* Filters */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4 mb-6">
+                <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 mb-6">
                     <div className="flex flex-wrap gap-4">
                         <div className="relative">
                             <Filter size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value as TaskStatus | 'all')}
-                                className="pl-10 pr-8 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
+                                className="pl-10 pr-8 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
                             >
                                 <option value="all">Tous les statuts</option>
                                 <option value="pending">À faire</option>
@@ -208,7 +212,7 @@ export default function TaskManagerPage() {
                             <select
                                 value={typeFilter}
                                 onChange={(e) => setTypeFilter(e.target.value as TaskType | 'all')}
-                                className="pl-10 pr-8 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
+                                className="pl-10 pr-8 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
                             >
                                 <option value="all">Tous les types</option>
                                 <option value="create_deposit_invoice">Factures acompte</option>
@@ -217,6 +221,8 @@ export default function TaskManagerPage() {
                                 <option value="follow_up_payment">Relances paiement</option>
                                 <option value="setup_sepa_mandate">Config. SEPA</option>
                                 <option value="send_cancellation">Résiliations</option>
+                                <option value="generate_monthly_invoice">Factures mensuelles</option>
+                                <option value="process_gloriafood_report">Rapports GloriaFood</option>
                             </select>
                         </div>
                     </div>
@@ -224,9 +230,9 @@ export default function TaskManagerPage() {
 
                 {/* Loading */}
                 {loading && (
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-12 text-center">
-                        <Loader2 size={32} className="animate-spin text-blue-400 mx-auto mb-4" />
-                        <p className="text-gray-400">Chargement des tâches...</p>
+                    <div className="bg-gray-50 rounded-xl border border-gray-100 p-12 text-center">
+                        <Loader2 size={32} className="animate-spin text-blue-500 mx-auto mb-4" />
+                        <p className="text-gray-500">Chargement des tâches...</p>
                     </div>
                 )}
 
@@ -243,15 +249,15 @@ export default function TaskManagerPage() {
                     <div className="space-y-6">
                         {/* Pending & In Progress */}
                         <div>
-                            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                                <Clock size={20} className="text-blue-400" />
+                            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <Clock size={20} className="text-blue-500" />
                                 À traiter ({pendingTasks.length})
                             </h2>
 
                             {pendingTasks.length === 0 ? (
-                                <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-8 text-center">
-                                    <CheckCircle size={48} className="text-green-400 mx-auto mb-4" />
-                                    <p className="text-gray-400">Aucune tâche en attente</p>
+                                <div className="bg-gray-50 rounded-xl border border-gray-100 p-8 text-center">
+                                    <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
+                                    <p className="text-gray-500">Aucune tâche en attente</p>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
@@ -269,8 +275,8 @@ export default function TaskManagerPage() {
                         {/* Completed */}
                         {completedTasks.length > 0 && statusFilter !== 'pending' && statusFilter !== 'in_progress' && (
                             <div>
-                                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                                    <CheckCircle size={20} className="text-green-400" />
+                                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                    <CheckCircle size={20} className="text-green-500" />
                                     Terminées ({completedTasks.length})
                                 </h2>
 
@@ -312,8 +318,8 @@ function TaskCard({
         task.status !== 'completed';
 
     return (
-        <div className={`bg-white/5 backdrop-blur-sm rounded-xl border ${isOverdue ? 'border-red-500/30' : 'border-white/10'
-            } p-4 hover:bg-white/10 transition-colors`}>
+        <div className={`bg-white rounded-xl border ${isOverdue ? 'border-red-200 bg-red-50/10' : 'border-gray-100'
+            } p-4 hover:shadow-md transition-all`}>
             <div className="flex items-start gap-4">
                 {/* Status checkbox */}
                 <button
@@ -329,10 +335,10 @@ function TaskCard({
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <TypeIcon size={16} className={typeConfig.color} />
-                                <span className={`text-xs ${typeConfig.color}`}>{typeConfig.label}</span>
+                                <span className={`text-xs font-semibold ${typeConfig.color}`}>{typeConfig.label}</span>
                             </div>
 
-                            <h3 className={`font-medium ${task.status === 'completed' ? 'text-gray-500 line-through' : 'text-white'
+                            <h3 className={`font-semibold ${task.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
                                 {task.title}
                             </h3>
@@ -372,7 +378,7 @@ function TaskCard({
                 {task.status !== 'completed' && (
                     <Link
                         href={getTaskActionUrl(task)}
-                        className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                     >
                         <ChevronRight size={20} />
                     </Link>
@@ -399,6 +405,10 @@ function getTaskActionUrl(task: Task): string {
         case 'setup_sepa_mandate':
             return `/admin/clients/${task.client_id}`;
         case 'send_cancellation':
+            return `/admin/clients/${task.client_id}`;
+        case 'generate_monthly_invoice':
+            return `/admin/clients/${task.client_id}`;
+        case 'process_gloriafood_report':
             return `/admin/clients/${task.client_id}`;
         default:
             return task.client_id

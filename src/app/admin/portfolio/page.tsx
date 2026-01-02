@@ -95,21 +95,21 @@ export default function PortfolioPage() {
     }
 
     return (
-        <section className="min-h-screen pt-24 pb-12">
+        <section className="min-h-screen pt-24 pb-12 bg-white">
             <div className="container mx-auto px-6">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <Link
-                        href="/admin/dashboard"
-                        className="p-2 rounded-xl bg-charcoal hover:bg-charcoal-light transition-colors"
+                        href="/admin"
+                        className="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-colors"
                     >
-                        <ArrowLeft size={24} />
+                        <ArrowLeft size={24} className="text-gray-600" />
                     </Link>
                     <div>
-                        <h1 className="text-3xl font-bold">
-                            Portfolio <span className="gradient-text">WebVision</span>
+                        <h1 className="text-3xl font-bold text-gray-900">
+                            Portfolio <span className="text-blue-600 font-extrabold">Rivego</span>
                         </h1>
-                        <p className="text-gray-400">Montrez nos réalisations à vos clients</p>
+                        <p className="text-gray-500">Exemples de réalisations pour vos clients</p>
                     </div>
                 </div>
 
@@ -119,9 +119,9 @@ export default function PortfolioPage() {
                         <button
                             key={cat.id}
                             onClick={() => setFilter(cat.id)}
-                            className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all ${filter === cat.id
-                                    ? 'bg-teal-500 text-white'
-                                    : 'bg-charcoal text-gray-300 hover:bg-charcoal-light'
+                            className={`px-4 py-2 rounded-xl border flex items-center gap-2 transition-all font-medium ${filter === cat.id
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600'
                                 }`}
                         >
                             <cat.icon size={18} />
@@ -131,28 +131,28 @@ export default function PortfolioPage() {
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredItems.map((item) => (
-                        <div key={item.id} className="card group overflow-hidden p-0">
+                        <div key={item.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group">
                             {/* Image placeholder */}
-                            <div className="h-48 bg-gradient-to-br from-charcoal-light to-charcoal flex items-center justify-center">
-                                <Globe size={48} className="text-gray-600" />
+                            <div className="h-48 bg-gray-50 flex items-center justify-center border-b border-gray-50 group-hover:bg-blue-50 transition-colors">
+                                <Globe size={48} className="text-gray-200 group-hover:text-blue-200 transition-colors" />
                             </div>
 
                             <div className="p-6">
-                                <span className="text-xs text-teal-400 uppercase tracking-wider">
+                                <span className="text-xs text-blue-600 font-bold uppercase tracking-wider">
                                     {item.category}
                                 </span>
-                                <h3 className="text-xl font-bold text-white mt-1 mb-2 group-hover:text-teal-400 transition-colors">
+                                <h3 className="text-xl font-bold text-gray-900 mt-1 mb-2 group-hover:text-blue-600 transition-colors">
                                     {item.name}
                                 </h3>
-                                <p className="text-gray-400 text-sm mb-4">{item.description}</p>
+                                <p className="text-gray-500 text-sm mb-4 leading-relaxed">{item.description}</p>
 
-                                <div className="flex flex-wrap gap-2 mb-4">
+                                <div className="flex flex-wrap gap-2 mb-6">
                                     {item.features.map((feature) => (
                                         <span
                                             key={feature}
-                                            className="px-2 py-1 bg-charcoal-light text-gray-300 text-xs rounded"
+                                            className="px-2.5 py-1 bg-gray-50 text-gray-600 text-xs font-semibold rounded-lg border border-transparent"
                                         >
                                             {feature}
                                         </span>
@@ -163,10 +163,10 @@ export default function PortfolioPage() {
                                     href={item.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 text-sm"
+                                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-sm"
                                 >
-                                    Voir le site
-                                    <ExternalLink size={14} />
+                                    Consulter le projet
+                                    <ExternalLink size={16} />
                                 </a>
                             </div>
                         </div>
@@ -174,8 +174,9 @@ export default function PortfolioPage() {
                 </div>
 
                 {filteredItems.length === 0 && (
-                    <div className="text-center py-12">
-                        <p className="text-gray-400">Aucun projet dans cette catégorie</p>
+                    <div className="text-center py-16 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                        <Globe size={48} className="text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 font-medium">Aucune réalisation dans cette catégorie</p>
                     </div>
                 )}
             </div>

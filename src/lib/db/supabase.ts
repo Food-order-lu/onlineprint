@@ -21,7 +21,8 @@ import {
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+// Use service key if available, otherwise fallback to anon key
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 
 // =============================================================================
 // SUPABASE CLIENT (using fetch for simplicity, no extra deps)
@@ -196,8 +197,12 @@ export async function getClientWithSubscriptions(id: string): Promise<ClientWith
 
 export async function createClient(input: CreateClientInput): Promise<Client> {
     const { data, error } = await supabaseAdmin.insert<Client>('clients', input);
-    if (error) throw new Error(error.message);
-    if (!data || data.length === 0) throw new Error('Failed to create client');
+    if (error) {
+        console.error('SUPABASE CREATE ERROR:', error);
+        throw new Error(`SUPABASE ERROR: ${error.message} (${error.code})`);
+    }
+    console.log('SUPABASE CREATE DATA:', data);
+    if (!data || data.length === 0) throw new Error('SUPABASE ERROR: No data returned after insert (Row Level Security?)');
     return data[0];
 }
 

@@ -478,28 +478,42 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                 </View>
             </View>
 
-            {/* Signature */}
+            {/* Signature Section - Client Only */}
             <View style={styles.signatureSection}>
-                <View style={styles.signatureBox}>
-                    <Text style={styles.signatureLabel}>Signature client</Text>
-                    {data.signatureImage ? (
-                        <View style={{ height: 30, marginBottom: 3 }}>
-                            <Image src={data.signatureImage} style={{ height: 28, objectFit: 'contain' }} />
-                        </View>
-                    ) : (
-                        <View style={styles.signatureLine} />
-                    )}
-                    {data.signedDate ? (
-                        <Text style={styles.signatureNote}>Signé le {data.signedDate}</Text>
-                    ) : (
-                        <Text style={styles.signatureNote}>Date et signature &quot;Bon pour accord&quot;</Text>
-                    )}
-                </View>
+                <View style={{ width: '100%' }}>
+                    <Text style={styles.signatureLabel}>Acceptation du devis</Text>
 
-                <View style={styles.signatureBox}>
-                    <Text style={styles.signatureLabel}>Pour RIVEGO T&M Group</Text>
-                    <View style={styles.signatureLine} />
-                    <Text style={styles.signatureNote}>Commercial autorisé</Text>
+                    {/* Row with Bon pour accord + Date */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                        {/* Bon pour accord - handwritten */}
+                        <View style={{ width: '55%' }}>
+                            <Text style={{ fontSize: 7, color: COLORS.textLight, marginBottom: 2 }}>
+                                Mention manuscrite « Bon pour accord »
+                            </Text>
+                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 25 }} />
+                        </View>
+
+                        {/* Date */}
+                        <View style={{ width: '35%' }}>
+                            <Text style={{ fontSize: 7, color: COLORS.textLight, marginBottom: 2 }}>Date</Text>
+                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 25 }} />
+                        </View>
+                    </View>
+
+                    {/* Signature */}
+                    <View style={{ marginTop: 5 }}>
+                        <Text style={{ fontSize: 7, color: COLORS.textLight, marginBottom: 2 }}>Signature client</Text>
+                        {data.signatureImage ? (
+                            <View style={{ height: 40, marginBottom: 3 }}>
+                                <Image src={data.signatureImage} style={{ height: 38, objectFit: 'contain' }} />
+                            </View>
+                        ) : (
+                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 40, marginBottom: 3 }} />
+                        )}
+                        {data.signedDate && (
+                            <Text style={styles.signatureNote}>Signé le {data.signedDate}</Text>
+                        )}
+                    </View>
                 </View>
             </View>
 

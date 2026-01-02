@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Create billing request
-        const { billing_request } = await gocardless.createBillingRequest({
+        const billingRequestResult = await gocardless.createBillingRequest({
             customer_email: client.email,
             customer_name: client.contact_name,
             company_name: client.company_name,
@@ -52,6 +52,14 @@ export async function POST(request: NextRequest) {
                 company_name: client.company_name,
             },
         });
+
+        // GoCardless returns { billing_requests: {...} } (plural key)
+        const billing_request = billingRequestResult.billing_requests;
+
+        if (!billing_request || !billing_request.id) {
+            console.error('GoCardless response:', JSON.stringify(billingRequestResult));
+            throw new Error('Failed to create billing request - no ID returned');
+        }
 
         // Set up default URIs
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -63,12 +71,6 @@ export async function POST(request: NextRequest) {
             billing_request_id: billing_request.id,
             redirect_uri: redirect_uri || defaultRedirectUri,
             exit_uri: exit_uri || defaultExitUri,
-            customer_details: {
-                email: client.email,
-                given_name: client.contact_name.split(' ')[0],
-                family_name: client.contact_name.split(' ').slice(1).join(' ') || client.contact_name,
-                company_name: client.company_name,
-            },
         });
 
         // Store pending mandate in database

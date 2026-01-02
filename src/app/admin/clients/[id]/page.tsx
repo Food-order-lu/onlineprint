@@ -103,13 +103,13 @@ const serviceTypeLabels: Record<ServiceType, string> = {
 // Status badge
 function StatusBadge({ status }: { status: ClientStatus }) {
     const config = {
-        active: { icon: CheckCircle, label: 'Actif', className: 'bg-green-500/10 text-green-400 border-green-500/20' },
-        inactive: { icon: XCircle, label: 'Inactif', className: 'bg-gray-500/10 text-gray-400 border-gray-500/20' },
-        pending_cancellation: { icon: Clock, label: 'Résiliation en cours', className: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
+        active: { icon: CheckCircle, label: 'Actif', className: 'bg-green-50 text-green-600 border-green-100' },
+        inactive: { icon: XCircle, label: 'Inactif', className: 'bg-gray-50 text-gray-400 border-gray-200' },
+        pending_cancellation: { icon: Clock, label: 'Résiliation en cours', className: 'bg-orange-50 text-orange-600 border-orange-100' },
     };
     const { icon: Icon, label, className } = config[status];
     return (
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${className}`}>
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border ${className}`}>
             <Icon size={14} />
             {label}
         </span>
@@ -119,25 +119,25 @@ function StatusBadge({ status }: { status: ClientStatus }) {
 // Subscription status badge
 function SubscriptionBadge({ status }: { status: SubscriptionStatus }) {
     const config = {
-        active: { label: 'Actif', className: 'bg-green-500/10 text-green-400' },
-        paused: { label: 'Pausé', className: 'bg-yellow-500/10 text-yellow-400' },
-        cancelled: { label: 'Annulé', className: 'bg-red-500/10 text-red-400' },
+        active: { label: 'Actif', className: 'bg-green-50 text-green-600 border-green-100' },
+        paused: { label: 'Pausé', className: 'bg-yellow-50 text-yellow-600 border-yellow-100' },
+        cancelled: { label: 'Annulé', className: 'bg-red-50 text-red-600 border-red-100' },
     };
     const { label, className } = config[status];
-    return <span className={`px-2 py-0.5 rounded text-xs font-medium ${className}`}>{label}</span>;
+    return <span className={`px-2 py-0.5 border rounded text-xs font-semibold ${className}`}>{label}</span>;
 }
 
 // Invoice status badge
 function InvoiceBadge({ status }: { status: Invoice['status'] }) {
     const config = {
-        draft: { label: 'Brouillon', className: 'bg-gray-500/10 text-gray-400' },
-        sent: { label: 'Envoyée', className: 'bg-blue-500/10 text-blue-400' },
-        paid: { label: 'Payée', className: 'bg-green-500/10 text-green-400' },
-        overdue: { label: 'En retard', className: 'bg-red-500/10 text-red-400' },
-        cancelled: { label: 'Annulée', className: 'bg-gray-500/10 text-gray-400' },
+        draft: { label: 'Brouillon', className: 'bg-gray-50 text-gray-600 border-gray-200' },
+        sent: { label: 'Envoyée', className: 'bg-blue-50 text-blue-600 border-blue-100' },
+        paid: { label: 'Payée', className: 'bg-green-50 text-green-600 border-green-100' },
+        overdue: { label: 'En retard', className: 'bg-red-50 text-red-600 border-red-100' },
+        cancelled: { label: 'Annulée', className: 'bg-gray-50 text-gray-400 border-gray-200' },
     };
     const { label, className } = config[status];
-    return <span className={`px-2 py-0.5 rounded text-xs font-medium ${className}`}>{label}</span>;
+    return <span className={`px-2 py-0.5 border rounded text-xs font-semibold ${className}`}>{label}</span>;
 }
 
 // Section component
@@ -148,10 +148,10 @@ function Section({ title, icon: Icon, children, action }: {
     action?: React.ReactNode;
 }) {
     return (
-        <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <Icon size={20} className="text-blue-400" />
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <Icon size={20} className="text-blue-500" />
                     {title}
                 </h3>
                 {action}
@@ -229,10 +229,10 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+            <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
-                    <p className="text-gray-400">Chargement...</p>
+                    <Loader2 size={32} className="animate-spin text-blue-500 mx-auto mb-4" />
+                    <p className="text-gray-500">Chargement...</p>
                 </div>
             </div>
         );
@@ -240,11 +240,11 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
 
     if (error || !client) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+            <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
-                    <AlertCircle size={48} className="text-red-400 mx-auto mb-4" />
-                    <p className="text-red-400 mb-4">{error || 'Client not found'}</p>
-                    <Link href="/admin/clients" className="text-blue-400 hover:underline">
+                    <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+                    <p className="text-red-600 mb-4">{error || 'Client not found'}</p>
+                    <Link href="/admin/clients" className="text-blue-600 hover:underline">
                         Retour à la liste
                     </Link>
                 </div>
@@ -255,12 +255,12 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     const activeSubscriptions = client.subscriptions.filter(s => s.status === 'active');
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="min-h-screen bg-white">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Back button */}
                 <Link
                     href="/admin/clients"
-                    className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
+                    className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-6 transition-colors"
                 >
                     <ArrowLeft size={20} />
                     Retour aux clients
@@ -269,20 +269,20 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
                     <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                            <Building2 size={32} className="text-white" />
+                        <div className="w-16 h-16 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
+                            <Building2 size={32} />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-white">{client.company_name}</h1>
-                            <p className="text-gray-400">{client.contact_name}</p>
+                            <h1 className="text-3xl font-bold text-gray-900">{client.company_name}</h1>
+                            <p className="text-gray-500">{client.contact_name}</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
                         <StatusBadge status={client.status} />
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${client.client_type === 'new'
-                                ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                                : 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border ${client.client_type === 'new'
+                            ? 'bg-blue-50 text-blue-600 border-blue-100'
+                            : 'bg-purple-50 text-purple-600 border-purple-100'
                             }`}>
                             <CreditCard size={14} />
                             {client.client_type === 'new' ? 'SEPA' : 'Legacy'}
@@ -292,21 +292,21 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">Revenu Mensuel</p>
-                        <p className="text-2xl font-bold text-white mt-1">€{client.total_monthly.toFixed(2)}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">Revenu Mensuel</p>
+                        <p className="text-2xl font-bold text-gray-900 mt-1">€{client.total_monthly.toFixed(2)}</p>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">Abonnements Actifs</p>
-                        <p className="text-2xl font-bold text-white mt-1">{activeSubscriptions.length}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">Abonnements Actifs</p>
+                        <p className="text-2xl font-bold text-green-600 mt-1">{activeSubscriptions.length}</p>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">Factures</p>
-                        <p className="text-2xl font-bold text-white mt-1">{client.invoices.length}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">Factures</p>
+                        <p className="text-2xl font-bold text-blue-600 mt-1">{client.invoices.length}</p>
                     </div>
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-5">
-                        <p className="text-sm text-gray-400">Client depuis</p>
-                        <p className="text-2xl font-bold text-white mt-1">
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                        <p className="text-sm text-gray-400 font-medium">Client depuis</p>
+                        <p className="text-2xl font-bold text-gray-900 mt-1">
                             {new Date(client.created_at).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}
                         </p>
                     </div>
@@ -319,27 +319,27 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                         <Section title="Informations" icon={Building2}>
                             <div className="space-y-4">
                                 <div className="flex items-start gap-3">
-                                    <Mail size={18} className="text-gray-500 mt-0.5" />
+                                    <Mail size={18} className="text-gray-400 mt-0.5" />
                                     <div>
-                                        <p className="text-sm text-gray-400">Email</p>
-                                        <p className="text-white">{client.email}</p>
+                                        <p className="text-sm text-gray-400 font-medium">Email</p>
+                                        <p className="text-gray-900">{client.email}</p>
                                     </div>
                                 </div>
                                 {client.phone && (
                                     <div className="flex items-start gap-3">
-                                        <Phone size={18} className="text-gray-500 mt-0.5" />
+                                        <Phone size={18} className="text-gray-400 mt-0.5" />
                                         <div>
-                                            <p className="text-sm text-gray-400">Téléphone</p>
-                                            <p className="text-white">{client.phone}</p>
+                                            <p className="text-sm text-gray-400 font-medium">Téléphone</p>
+                                            <p className="text-gray-900">{client.phone}</p>
                                         </div>
                                     </div>
                                 )}
                                 {client.address && (
                                     <div className="flex items-start gap-3">
-                                        <MapPin size={18} className="text-gray-500 mt-0.5" />
+                                        <MapPin size={18} className="text-gray-400 mt-0.5" />
                                         <div>
-                                            <p className="text-sm text-gray-400">Adresse</p>
-                                            <p className="text-white">
+                                            <p className="text-sm text-gray-400 font-medium">Adresse</p>
+                                            <p className="text-gray-900 font-medium">
                                                 {client.address}<br />
                                                 {client.postal_code} {client.city}<br />
                                                 {client.country}
@@ -349,10 +349,10 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                 )}
                                 {client.vat_number && (
                                     <div className="flex items-start gap-3">
-                                        <FileText size={18} className="text-gray-500 mt-0.5" />
+                                        <FileText size={18} className="text-gray-400 mt-0.5" />
                                         <div>
-                                            <p className="text-sm text-gray-400">N° TVA</p>
-                                            <p className="text-white">{client.vat_number}</p>
+                                            <p className="text-sm text-gray-400 font-medium">N° TVA</p>
+                                            <p className="text-gray-900 font-mono">{client.vat_number}</p>
                                         </div>
                                     </div>
                                 )}
@@ -364,24 +364,24 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                             {client.mandate ? (
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-gray-400">Statut</span>
-                                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${client.mandate.status === 'active'
-                                                ? 'bg-green-500/10 text-green-400'
-                                                : 'bg-yellow-500/10 text-yellow-400'
+                                        <span className="text-gray-500">Statut</span>
+                                        <span className={`px-2 py-0.5 border rounded text-xs font-semibold ${client.mandate.status === 'active'
+                                            ? 'bg-green-50 text-green-600 border-green-100'
+                                            : 'bg-yellow-50 text-yellow-600 border-yellow-100'
                                             }`}>
                                             {client.mandate.status === 'active' ? 'Actif' : 'En attente'}
                                         </span>
                                     </div>
                                     {client.mandate.iban_last4 && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-gray-400">IBAN</span>
-                                            <span className="text-white">**** **** **** {client.mandate.iban_last4}</span>
+                                            <span className="text-gray-500">IBAN</span>
+                                            <span className="text-gray-900 font-mono font-medium">**** **** **** {client.mandate.iban_last4}</span>
                                         </div>
                                     )}
                                     {client.mandate.bank_name && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-gray-400">Banque</span>
-                                            <span className="text-white">{client.mandate.bank_name}</span>
+                                            <span className="text-gray-500">Banque</span>
+                                            <span className="text-gray-900 font-medium">{client.mandate.bank_name}</span>
                                         </div>
                                     )}
                                 </div>
@@ -425,7 +425,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
 
                                 <Link
                                     href={`/admin/clients/${client.id}/invoice`}
-                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg font-medium transition-colors"
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-lg font-medium transition-colors"
                                 >
                                     <Receipt size={18} />
                                     Créer une facture
@@ -472,16 +472,16 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                     {client.subscriptions.map((sub) => (
                                         <div
                                             key={sub.id}
-                                            className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5"
+                                            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100"
                                         >
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <p className="font-medium text-white">
+                                                    <p className="font-bold text-gray-900">
                                                         {sub.service_name || serviceTypeLabels[sub.service_type]}
                                                     </p>
                                                     <SubscriptionBadge status={sub.status} />
                                                 </div>
-                                                <p className="text-sm text-gray-400">
+                                                <p className="text-sm text-gray-500">
                                                     {serviceTypeLabels[sub.service_type]}
                                                     {sub.commission_percent > 0 && ` • ${sub.commission_percent}% commission`}
                                                 </p>
@@ -492,8 +492,8 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                             </div>
                                             <div className="text-right flex items-center gap-4">
                                                 <div>
-                                                    <p className="text-lg font-bold text-white">€{sub.monthly_amount}</p>
-                                                    <p className="text-xs text-gray-500">/mois</p>
+                                                    <p className="text-lg font-bold text-gray-900">€{sub.monthly_amount}</p>
+                                                    <p className="text-xs text-gray-400 font-medium">/mois</p>
                                                 </div>
                                                 {sub.status === 'active' && (
                                                     <button
@@ -531,30 +531,30 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                     <table className="w-full">
                                         <thead>
                                             <tr className="text-left text-sm text-gray-500">
-                                                <th className="pb-3">N° Facture</th>
-                                                <th className="pb-3">Date</th>
-                                                <th className="pb-3">Statut</th>
-                                                <th className="pb-3 text-right">Montant</th>
+                                                <th className="pb-3 font-semibold">N° Facture</th>
+                                                <th className="pb-3 font-semibold">Date</th>
+                                                <th className="pb-3 font-semibold">Statut</th>
+                                                <th className="pb-3 text-right font-semibold">Montant</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-white/5">
+                                        <tbody className="divide-y divide-gray-50">
                                             {client.invoices.slice(0, 5).map((invoice) => (
                                                 <tr key={invoice.id} className="text-sm">
-                                                    <td className="py-3">
+                                                    <td className="py-3 font-medium text-gray-900">
                                                         <Link
                                                             href={`/admin/invoices/${invoice.id}`}
-                                                            className="text-blue-400 hover:underline"
+                                                            className="text-blue-600 hover:underline"
                                                         >
                                                             {invoice.invoice_number}
                                                         </Link>
                                                     </td>
-                                                    <td className="py-3 text-gray-400">
+                                                    <td className="py-3 text-gray-500 font-medium">
                                                         {new Date(invoice.issued_at).toLocaleDateString('fr-FR')}
                                                     </td>
                                                     <td className="py-3">
                                                         <InvoiceBadge status={invoice.status} />
                                                     </td>
-                                                    <td className="py-3 text-right text-white font-medium">
+                                                    <td className="py-3 text-right text-gray-900 font-bold">
                                                         €{invoice.total.toFixed(2)}
                                                     </td>
                                                 </tr>

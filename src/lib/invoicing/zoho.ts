@@ -159,21 +159,42 @@ class ZohoClient {
         };
         vat_reg_no?: string;
     }): Promise<{ contact: ZohoContact }> {
-        return this.request('/contacts', {
-            method: 'POST',
-            body: JSON.stringify({
-                contact_name: params.contact_name,
-                company_name: params.company_name,
-                contact_type: 'customer',
-                billing_address: params.billing_address,
-                contact_persons: [{
-                    email: params.email,
-                    phone: params.phone,
-                    is_primary_contact: true,
-                }],
-                vat_reg_no: params.vat_reg_no,
-            }),
-        });
+        const payload: any = {
+            contact_name: params.contact_name,
+            company_name: params.company_name,
+            contact_type: 'customer',
+            billing_address: params.billing_address,
+            contact_persons: [{
+                email: params.email,
+                phone: params.phone,
+                is_primary_contact: true,
+            }],
+        };
+
+        if (params.vat_reg_no && params.vat_reg_no.trim().length > 0) {
+            payload.vat_reg_no = params.vat_reg_no;
+        }
+
+        try {
+            console.log('Creating Zoho Contact with payload:', JSON.stringify(payload, null, 2));
+            return await this.request('/contacts', {
+                method: 'POST',
+                body: JSON.stringify(payload),
+            });
+        } catch (error: any) {
+            console.error('Zoho Contact Create Failed:', error);
+
+            // Retry without VAT number if that was the issue
+            if (payload.vat_reg_no && (error.message?.includes('vat_reg_no') || error.message?.includes('Invalid Element'))) {
+                console.warn('Retrying Zoho Contact creation without VAT number...');
+                delete payload.vat_reg_no;
+                return this.request('/contacts', {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                });
+            }
+            throw error;
+        }
     }
 
     async getContact(id: string): Promise<{ contact: ZohoContact }> {
@@ -351,6 +372,50 @@ class ZohoClient {
         return this.request(`/invoices/${id}/status/void`, {
             method: 'POST',
         });
+    }
+
+    // ==========================================================================
+    // ESTIMATES (QUOTES)
+    // ==========================================================================
+
+    async createEstimate(input: {
+        customer_id: string;
+        date?: string;
+        expiry_date?: string;
+        line_items: ZohoInvoiceLineItem[];
+        notes?: string;
+        terms?: string;
+        reference_number?: string;
+        discount?: number; // percent or amount? Zoho uses discount on line item usually, or total discount
+        is_discount_before_tax?: boolean;
+        discount_type?: 'entity_level' | 'item_level';
+    }): Promise<{ estimate: { estimate_id: string; estimate_number: string; total: number } }> {
+        const today = new Date().toISOString().split('T')[0];
+        const expiryDate = input.expiry_date || (() => {
+            const exp = new Date();
+            exp.setDate(exp.getDate() + 30);
+            return exp.toISOString().split('T')[0];
+        })();
+
+        return this.request('/estimates', {
+            method: 'POST',
+            body: JSON.stringify({
+                customer_id: input.customer_id,
+                date: input.date || today,
+                expiry_date: expiryDate,
+                line_items: input.line_items,
+                notes: input.notes,
+                terms: input.terms,
+                reference_number: input.reference_number,
+                discount: input.discount,
+                is_discount_before_tax: input.is_discount_before_tax || true,
+                discount_type: input.discount_type || 'entity_level',
+            }),
+        });
+    }
+
+    async findEstimateByNumber(estimateNumber: string): Promise<{ estimates: any[] }> {
+        return this.request(`/estimates?estimate_number=${estimateNumber}`);
     }
 
     // ==========================================================================

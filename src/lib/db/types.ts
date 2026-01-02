@@ -14,6 +14,14 @@ export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 export type ContractStatus = 'draft' | 'sent' | 'signed' | 'expired' | 'cancelled';
 export type QuoteStatus = 'draft' | 'sent' | 'signed' | 'expired' | 'declined';
 
+export interface CommissionConfig {
+  type: 'legacy_percent' | 'legacy_fixed' | 'hybrid';
+  base_fee?: number;
+  percent?: number;
+  threshold?: number;
+  fixed_amount?: number;
+}
+
 // =============================================================================
 // DATABASE MODELS
 // =============================================================================
@@ -29,6 +37,10 @@ export interface Client {
   postal_code: string | null;
   country: string;
   vat_number: string | null;
+  commission_config: CommissionConfig | null;
+
+  zoho_contact_id: string | null;
+  payment_method: 'sepa' | 'manual' | 'card' | 'transfer';
 
   status: ClientStatus;
   client_type: ClientType;
@@ -147,6 +159,7 @@ export interface GloriaFoodReport {
 
   report_month: string;
   total_ttc: number;
+  average_order_value: number;
   commission_percent: number;
   commission_amount: number;
 

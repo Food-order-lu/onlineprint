@@ -1,12 +1,20 @@
 // GoCardless API Client
 // Direct Debit / SEPA integration
 
-const GOCARDLESS_ACCESS_TOKEN = process.env.GOCARDLESS_ACCESS_TOKEN || '';
-const GOCARDLESS_ENVIRONMENT = process.env.GOCARDLESS_ENVIRONMENT || 'sandbox'; // 'sandbox' or 'live'
+// Read env vars dynamically to ensure they're loaded
+function getAccessToken() {
+    return process.env.GOCARDLESS_ACCESS_TOKEN || '';
+}
 
-const BASE_URL = GOCARDLESS_ENVIRONMENT === 'live'
-    ? 'https://api.gocardless.com'
-    : 'https://api-sandbox.gocardless.com';
+function getEnvironment() {
+    return process.env.GOCARDLESS_ENVIRONMENT || 'sandbox';
+}
+
+function getBaseUrl() {
+    return getEnvironment() === 'live'
+        ? 'https://api.gocardless.com'
+        : 'https://api-sandbox.gocardless.com';
+}
 
 // =============================================================================
 // TYPES
@@ -84,20 +92,28 @@ export interface BillingRequestFlow {
 class GoCardlessClient {
     private async request<T>(
         endpoint: string,
-        options: RequestInit = {}
+        options: RequestInit = {},
+        idempotencyKey?: string
     ): Promise<T> {
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
+        const headers: Record<string, string> = {
+            'Authorization': `Bearer ${getAccessToken()}`,
+            'GoCardless-Version': '2015-07-06',
+            'Content-Type': 'application/json',
+            ...(options.headers as any || {}),
+        };
+
+        if (idempotencyKey) {
+            headers['Idempotency-Key'] = idempotencyKey;
+        }
+
+        const response = await fetch(`${getBaseUrl()}${endpoint}`, {
             ...options,
-            headers: {
-                'Authorization': `Bearer ${GOCARDLESS_ACCESS_TOKEN}`,
-                'GoCardless-Version': '2015-07-06',
-                'Content-Type': 'application/json',
-                ...options.headers,
-            },
+            headers,
         });
 
         if (!response.ok) {
             const error = await response.json();
+            console.error('GoCardless API Error:', JSON.stringify(error, null, 2));
             throw new Error(error.error?.message || `GoCardless API error: ${response.status}`);
         }
 
@@ -118,7 +134,8 @@ class GoCardlessClient {
         company_name?: string;
         description?: string;
         metadata?: Record<string, string>;
-    }): Promise<{ billing_request: BillingRequest }> {
+        idempotencyKey?: string;
+    }): Promise<{ billing_requests: BillingRequest }> {
         // Split name for GoCardless
         const nameParts = params.customer_name.split(' ');
         const given_name = nameParts[0] || '';
@@ -136,7 +153,7 @@ class GoCardlessClient {
                     metadata: params.metadata,
                 },
             }),
-        });
+        }, params.idempotencyKey);
     }
 
     /**
@@ -146,12 +163,6 @@ class GoCardlessClient {
         billing_request_id: string;
         redirect_uri: string;
         exit_uri: string;
-        customer_details?: {
-            email: string;
-            given_name: string;
-            family_name: string;
-            company_name?: string;
-        };
     }): Promise<{ billing_request_flows: BillingRequestFlow }> {
         return this.request('/billing_request_flows', {
             method: 'POST',
@@ -159,8 +170,6 @@ class GoCardlessClient {
                 billing_request_flows: {
                     redirect_uri: params.redirect_uri,
                     exit_uri: params.exit_uri,
-                    lock_customer_details: !!params.customer_details,
-                    prefilled_customer: params.customer_details,
                     links: {
                         billing_request: params.billing_request_id,
                     },
@@ -236,6 +245,7 @@ class GoCardlessClient {
         reference?: string;
         charge_date?: string; // YYYY-MM-DD, defaults to earliest possible
         metadata?: Record<string, string>;
+        idempotencyKey?: string;
     }): Promise<{ payments: GoCardlessPayment }> {
         return this.request('/payments', {
             method: 'POST',
@@ -252,7 +262,7 @@ class GoCardlessClient {
                     },
                 },
             }),
-        });
+        }, params.idempotencyKey);
     }
 
     async getPayment(id: string): Promise<{ payments: GoCardlessPayment }> {

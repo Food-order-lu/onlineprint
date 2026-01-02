@@ -61,6 +61,8 @@ CREATE TYPE task_type AS ENUM (
     'follow_up_payment',
     'setup_sepa_mandate',
     'send_cancellation',
+    'generate_monthly_invoice',
+    'process_gloriafood_report',
     'other'
 );
 

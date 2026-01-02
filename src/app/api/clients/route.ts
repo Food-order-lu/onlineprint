@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
     getClients,
     createClient,
+    updateClient,
     getClientWithSubscriptions,
 } from '@/lib/db/supabase';
 import type { CreateClientInput, ClientStatus, ClientType } from '@/lib/db/types';
@@ -84,9 +85,39 @@ export async function POST(request: NextRequest) {
             sepa_exception: body.sepa_exception || false,
             sepa_exception_reason: body.sepa_exception_reason || null,
             notes: body.notes || null,
+            commission_config: body.commission_config || null,
+            payment_method: body.payment_method || 'sepa',
+            zoho_contact_id: null,
         };
 
         const client = await createClient(clientInput);
+
+        // Sync to Zoho Books
+        try {
+            // Import dynamically to avoid circular dependencies if any, or just import at top
+            const { zoho } = await import('@/lib/invoicing/zoho');
+
+            console.log(`Syncing client ${client.email} to Zoho...`);
+            const zohoContact = await zoho.getOrCreateContact({
+                email: client.email,
+                company_name: client.company_name,
+                contact_name: client.contact_name,
+                phone: client.phone || undefined,
+                address: client.address || undefined,
+                city: client.city || undefined,
+                postal_code: client.postal_code || undefined,
+                country: client.country || 'Luxembourg',
+                vat_number: client.vat_number || undefined,
+            });
+            console.log(`Synced to Zoho Contact ID: ${zohoContact.contact_id}`);
+
+            // Update client with zoho_contact_id
+            await updateClient(client.id, { zoho_contact_id: zohoContact.contact_id });
+
+        } catch (zohoError) {
+            console.error('Failed to sync client to Zoho:', zohoError);
+            // We don't block the response, just log the error
+        }
 
         return NextResponse.json({ client }, { status: 201 });
     } catch (error) {
@@ -101,7 +132,7 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json(
-            { error: 'Failed to create client' },
+            { error: error instanceof Error ? error.message : 'Failed to create client' },
             { status: 500 }
         );
     }

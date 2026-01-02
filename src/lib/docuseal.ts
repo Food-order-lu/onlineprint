@@ -31,7 +31,7 @@ export interface DocuSealSubmissionData {
 
 export class DocuSealClient {
   private apiKey: string;
-  private baseUrl = 'https://api.docuseal.com';
+  private baseUrl = 'https://api.docuseal.eu'; // EU cloud endpoint
 
   constructor() {
     this.apiKey = process.env.DOCUSEAL_API_KEY || '';
@@ -98,15 +98,15 @@ export class DocuSealClient {
             file: pdfBase64,
             fields: [
               {
-                name: 'Signature Client',
+                name: 'Bon pour accord',
                 role: 'First Party',
-                type: 'signature',
+                type: 'signature',  // Changed to signature for handwriting
                 areas: [{
                   page: 1,
-                  x: 0.1,  // 10% from left
-                  y: 0.85, // 85% from top (near bottom)
-                  w: 0.3,  // 30% width
-                  h: 0.08  // 8% height
+                  x: 0.05,   // Left side
+                  y: 0.92,   // Very bottom of page - 92% from top
+                  w: 0.40,   // 40% width
+                  h: 0.025   // 2.5% height - smaller for text
                 }]
               },
               {
@@ -115,10 +115,22 @@ export class DocuSealClient {
                 type: 'date',
                 areas: [{
                   page: 1,
-                  x: 0.1,
-                  y: 0.94,
-                  w: 0.2,
-                  h: 0.04
+                  x: 0.55,   // Right side
+                  y: 0.92,   // Same row as Bon pour accord
+                  w: 0.25,   // 25% width
+                  h: 0.02    // 2% height
+                }]
+              },
+              {
+                name: 'Signature Client',
+                role: 'First Party',
+                type: 'signature',
+                areas: [{
+                  page: 1,
+                  x: 0.05,   // Left aligned
+                  y: 0.95,   // Below date row - 95% from top
+                  w: 0.50,   // 50% width
+                  h: 0.035   // 3.5% height for signature
                 }]
               }
             ]
