@@ -1,6 +1,8 @@
 # Rivego Automation System - Project Context
 
 > **For Antigravity AI**: This document provides full context on the Rivego project to enable seamless continuation across sessions.
+>
+> ⚠️ **IMPORTANT**: You MUST update this document at the end of each work session with any new features, changes, or important decisions made. Keep the "Completed Features" and "Recent Changes" sections current.
 
 ## 🎯 What is Rivego?
 
@@ -178,4 +180,14 @@ Upload SQL files from `src/lib/db/migrations/` to Supabase SQL Editor.
 
 ---
 
-*Last updated: January 2026*
+## 📋 Recent Changes
+
+| Date | Changes |
+|------|---------|
+| **2026-01-02** | Added Oracle server details, Mutagen sync, Git workflow to PROJECT-CONTEXT. Created end-session workflow. |
+| **2025-12-28** | Standardized admin UI to white theme. Fixed login redirection. Created shared admin layout. |
+| **2025-12-27** | Implemented recurring task generation (CRON). Added new task types for billing and GloriaFood. |
+
+---
+
+*Last updated: 2026-01-02*
