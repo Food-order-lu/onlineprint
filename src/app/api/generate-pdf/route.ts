@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
         const data = body as QuoteData;
 
         // Render the PDF to a stream
-        const pdfStream = await renderToStream(createElement(QuotePDF, { data }));
+        const pdfStream = await renderToStream(createElement(QuotePDF, { data }) as any);
 
         // Convert the stream to a Response
         // We need to construct a ReadableStream from the NodeJS stream returned by renderToStream

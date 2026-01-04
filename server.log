@@ -9,146 +9,533 @@
 
 ✓ Starting...
 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-✓ Ready in 1270ms
+✓ Ready in 1335ms
+ GET / 200 in 2.4s (compile: 1616ms, proxy.ts: 92ms, render: 716ms)
+ GET / 200 in 228ms (compile: 13ms, proxy.ts: 28ms, render: 188ms)
 ⚠ Cross origin request detected from 141.253.116.210 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
- GET / 200 in 1303ms (compile: 692ms, proxy.ts: 83ms, render: 528ms)
- HEAD / 200 in 170ms (compile: 6ms, proxy.ts: 8ms, render: 157ms)
- GET / 200 in 358ms (compile: 6ms, proxy.ts: 6ms, render: 346ms)
- GET /admin/login 200 in 158ms (compile: 102ms, proxy.ts: 8ms, render: 47ms)
- GET /admin 200 in 80ms (compile: 41ms, proxy.ts: 6ms, render: 33ms)
- GET /admin/clients 200 in 81ms (compile: 47ms, proxy.ts: 6ms, render: 28ms)
- GET /api/clients? 200 in 1423ms (compile: 82ms, proxy.ts: 4ms, render: 1337ms)
- GET /api/clients? 200 in 219ms (compile: 4ms, proxy.ts: 5ms, render: 210ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 650ms (compile: 593ms, proxy.ts: 6ms, render: 51ms)
- GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 1073ms (compile: 731ms, proxy.ts: 4ms, render: 338ms)
- GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 245ms (compile: 27ms, proxy.ts: 4ms, render: 213ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/subscriptions/new 404 in 253ms (compile: 79ms, proxy.ts: 5ms, render: 169ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/subscriptions/new 404 in 227ms (compile: 91ms, proxy.ts: 31ms, render: 104ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 467ms (compile: 31ms, proxy.ts: 4ms, render: 432ms)
- GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 663ms (compile: 125ms, proxy.ts: 24ms, render: 515ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoice 404 in 33ms (compile: 7ms, proxy.ts: 4ms, render: 22ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoice 404 in 122ms (compile: 7ms, proxy.ts: 4ms, render: 112ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 314ms (compile: 28ms, proxy.ts: 4ms, render: 282ms)
- GET /admin/clients 200 in 34ms (compile: 8ms, proxy.ts: 5ms, render: 21ms)
- GET /api/clients? 200 in 269ms (compile: 3ms, proxy.ts: 6ms, render: 260ms)
- GET /api/clients? 200 in 161ms (compile: 2ms, proxy.ts: 3ms, render: 155ms)
- GET /admin 200 in 26ms (compile: 3ms, proxy.ts: 3ms, render: 19ms)
- GET /admin/payments 200 in 65ms (compile: 39ms, proxy.ts: 4ms, render: 22ms)
-Payment Error: TypeError: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2f$supabase$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.supabaseAdmin.from is not a function
-    at POST (src/app/api/gocardless/create-payment/route.ts:51:14)
-  49 |         // Check active mandate
-  50 |         const { data: mandates } = await supabaseAdmin
-> 51 |             .from('gocardless_mandates')
-     |              ^
-  52 |             .select('*')
-  53 |             .eq('client_id', client_id)
-  54 |             .eq('status', 'active')
- POST /api/gocardless/create-payment 500 in 470ms (compile: 44ms, proxy.ts: 5ms, render: 421ms)
-Payment Error: TypeError: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2f$supabase$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.supabaseAdmin.from is not a function
-    at POST (src/app/api/gocardless/create-payment/route.ts:51:14)
-  49 |         // Check active mandate
-  50 |         const { data: mandates } = await supabaseAdmin
-> 51 |             .from('gocardless_mandates')
-     |              ^
-  52 |             .select('*')
-  53 |             .eq('client_id', client_id)
-  54 |             .eq('status', 'active')
- POST /api/gocardless/create-payment 500 in 214ms (compile: 4ms, proxy.ts: 4ms, render: 207ms)
- GET /admin 200 in 28ms (compile: 4ms, proxy.ts: 4ms, render: 21ms)
- GET /admin/clients 200 in 29ms (compile: 3ms, proxy.ts: 3ms, render: 22ms)
- GET /api/clients? 200 in 294ms (compile: 3ms, proxy.ts: 4ms, render: 288ms)
- GET /api/clients? 200 in 205ms (compile: 3ms, proxy.ts: 3ms, render: 199ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 85ms (compile: 28ms, proxy.ts: 4ms, render: 53ms)
- GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 291ms (compile: 64ms, proxy.ts: 8ms, render: 219ms)
- GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 235ms (compile: 20ms, proxy.ts: 11ms, render: 204ms)
- GET /admin 200 in 49ms (compile: 4ms, proxy.ts: 4ms, render: 41ms)
- GET /admin/dashboard 200 in 111ms (compile: 84ms, proxy.ts: 4ms, render: 23ms)
- GET /admin 200 in 24ms (compile: 3ms, proxy.ts: 3ms, render: 17ms)
- GET /admin/reports 200 in 465ms (compile: 420ms, proxy.ts: 3ms, render: 42ms)
-Generating invoice draft for report 1
-Invoice Generation Error: Error: You are not authorized to perform this operation
-    at ZohoClient.request (src/lib/invoicing/zoho.ts:139:19)
-    at async ZohoClient.getOrCreateContact (src/lib/invoicing/zoho.ts:403:30)
-    at async POST (src/app/api/invoicing/create-draft/route.ts:29:25)
-  137 |
-  138 |         if (data.code !== 0) {
-> 139 |             throw new Error(data.message || `Zoho API error: ${data.code}`);
-      |                   ^
-  140 |         }
-  141 |
-  142 |         return data;
- POST /api/invoicing/create-draft 500 in 1202ms (compile: 261ms, proxy.ts: 6ms, render: 935ms)
+ GET /admin/login 200 in 176ms (compile: 105ms, proxy.ts: 10ms, render: 61ms)
+ GET /admin 200 in 75ms (compile: 48ms, proxy.ts: 4ms, render: 22ms)
+ GET /admin/dashboard 200 in 86ms (compile: 51ms, proxy.ts: 5ms, render: 30ms)
+ GET /admin 200 in 35ms (compile: 5ms, proxy.ts: 8ms, render: 22ms)
+ GET /admin/payments 200 in 85ms (compile: 49ms, proxy.ts: 8ms, render: 28ms)
+ GET /admin 200 in 34ms (compile: 4ms, proxy.ts: 8ms, render: 23ms)
+ GET /admin/tasks 200 in 89ms (compile: 54ms, proxy.ts: 7ms, render: 28ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 769ms (compile: 208ms, proxy.ts: 9ms, render: 552ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 916ms (compile: 266ms, proxy.ts: 6ms, render: 643ms)
+ GET /admin 200 in 33ms (compile: 5ms, proxy.ts: 6ms, render: 23ms)
+ GET /admin/clients 200 in 72ms (compile: 43ms, proxy.ts: 4ms, render: 25ms)
+ GET /api/clients? 200 in 455ms (compile: 73ms, proxy.ts: 4ms, render: 378ms)
+ GET /api/clients? 200 in 480ms (compile: 29ms, proxy.ts: 8ms, render: 443ms)
+ GET /admin/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 653ms (compile: 600ms, proxy.ts: 5ms, render: 48ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 1066ms (compile: 762ms, proxy.ts: 5ms, render: 299ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 968ms (compile: 650ms, proxy.ts: 8ms, render: 310ms)
+ GET /admin/clients 200 in 55ms (compile: 6ms, proxy.ts: 10ms, render: 39ms)
+ GET /api/clients? 200 in 281ms (compile: 3ms, proxy.ts: 4ms, render: 274ms)
+ GET /api/clients? 200 in 298ms (compile: 7ms, proxy.ts: 4ms, render: 288ms)
+ GET /admin 200 in 46ms (compile: 6ms, proxy.ts: 4ms, render: 35ms)
+ GET /admin/quote 200 in 239ms (compile: 204ms, proxy.ts: 4ms, render: 32ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 704ms (compile: 43ms, proxy.ts: 17ms, render: 645ms)
+Initiating DocuSeal Session for Quote DEV-202601-509 (tiaosgiggj@gmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-509.pdf
+Template created: {
+  id: 353652,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'signature',
+      required: true,
+      uuid: 'ad5c925c-f331-4588-9a24-37fb651e1b17',
+      submitter_uuid: 'b986effc-3c40-435b-afbb-83e0d9779bab',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: 'd6c30329-eeda-427c-9314-96df471a99a4',
+      submitter_uuid: 'b986effc-3c40-435b-afbb-83e0d9779bab',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: 'd6a66dd7-8567-4e61-8fa0-87a5131b8596',
+      submitter_uuid: 'b986effc-3c40-435b-afbb-83e0d9779bab',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-509.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-509.pdf',
+      attachment_uuid: '4f1fcc2f-f387-4511-840f-98962ee57e2c'
+    }
+  ],
+  slug: 'FPXoFgM8wrrhiF',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: 'b986effc-3c40-435b-afbb-83e0d9779bab'
+    }
+  ],
+  created_at: '2026-01-02T23:25:25.603Z',
+  updated_at: '2026-01-02T23:25:25.984Z',
+  author_id: 14767,
+  external_id: '4aa080fd-c463-4f85-a3e6-d4f9e54ee1b3',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: '4aa080fd-c463-4f85-a3e6-d4f9e54ee1b3',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4278682,
+      uuid: '4f1fcc2f-f387-4511-840f-98962ee57e2c',
+      url: 'https://docuseal.eu/file/WyJiNDczZDM1NC03ZjY4LTQ3ODUtODQ2OC1lNGMwNzdjNTAzZmIiLCJibG9iIiwxNzY3Mzk4NzI1XQ--73618ffa1b7d58c4e6aaa5cd0802124a067fa2346540f92c2ecc0667632bf1c8/Devis_DEV-202601-509.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyI2MDg0ZTM4NS1iNTk2LTRlMjMtYWQxZS1iY2Y0ZDAxN2Y5OTEiLCJibG9iIiwxNzY3Mzk4NzI1XQ--b06e08049fd3be10092f1ce38deb113e83a1e8b3b3485b58c67f952cdb25c70e/0.png',
+      filename: 'Devis_DEV-202601-509.pdf.pdf'
+    }
+  ]
+}
+Using new template ID: 353652
+DocuSeal Request: {
+  "template_id": "353652",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "tiaosgiggj@gmail.com",
+      "name": "foisfjsdjl"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 692033,
+    slug: 'CjL7RccPzo2Fn2',
+    uuid: 'b986effc-3c40-435b-afbb-83e0d9779bab',
+    name: 'foisfjsdjl',
+    email: 'tiaosgiggj@gmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 534436,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-02T23:25:26.046Z',
+    updated_at: '2026-01-02T23:25:26.046Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/CjL7RccPzo2Fn2'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 864ms (compile: 281ms, proxy.ts: 6ms, render: 576ms)
+ GET /admin/quote 200 in 950ms (compile: 4ms, proxy.ts: 4ms, render: 943ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 182ms (compile: 3ms, proxy.ts: 11ms, render: 167ms)
+Initiating DocuSeal Session for Quote DEV-202601-467 (tiagoj@gmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-467.pdf
+Template created: {
+  id: 353653,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'signature',
+      required: true,
+      uuid: 'e9199d1e-24b5-49af-9ecd-17e072a5f8c1',
+      submitter_uuid: '9466a282-cdfd-435f-9306-5c0d7c3ff061',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: '46ac5407-801c-45d2-9f69-3e36d84b4a40',
+      submitter_uuid: '9466a282-cdfd-435f-9306-5c0d7c3ff061',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: 'e900997e-0edb-4cf2-93ed-d6450dc307f0',
+      submitter_uuid: '9466a282-cdfd-435f-9306-5c0d7c3ff061',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-467.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-467.pdf',
+      attachment_uuid: 'd10f7424-717a-4c7a-bc62-6509ff865d61'
+    }
+  ],
+  slug: 'QPC9zZK9Guu49f',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: '9466a282-cdfd-435f-9306-5c0d7c3ff061'
+    }
+  ],
+  created_at: '2026-01-02T23:26:36.599Z',
+  updated_at: '2026-01-02T23:26:36.975Z',
+  author_id: 14767,
+  external_id: 'b34bbf1c-b7f3-4e65-b539-4376f06d8598',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: 'b34bbf1c-b7f3-4e65-b539-4376f06d8598',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4278684,
+      uuid: 'd10f7424-717a-4c7a-bc62-6509ff865d61',
+      url: 'https://docuseal.eu/file/WyJhMDM0OTNiOS01MzcwLTQ5YzQtOThhZC0zZWMzNTBiNWYxMjQiLCJibG9iIiwxNzY3Mzk4Nzk2XQ--379dbc516d360dc7883acb4444fcd0b98f52937d2c87dbde320f6cf53398ea20/Devis_DEV-202601-467.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyJmZDY0ZGVmNi03NmNlLTQyMDQtYmM2Yi0wMzFhODM2MTA1OGIiLCJibG9iIiwxNzY3Mzk4Nzk2XQ--7ab2c84e4fbc8b87dab909f26b5d3cd408fada3b5e30114bfb379001e177c18d/0.png',
+      filename: 'Devis_DEV-202601-467.pdf.pdf'
+    }
+  ]
+}
+Using new template ID: 353653
+DocuSeal Request: {
+  "template_id": "353653",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "tiagoj@gmail.com",
+      "name": "Tiago Ribeiro"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 692034,
+    slug: 'besoFTjXngn25L',
+    uuid: '9466a282-cdfd-435f-9306-5c0d7c3ff061',
+    name: 'Tiago Ribeiro',
+    email: 'tiagoj@gmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 534437,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-02T23:26:37.025Z',
+    updated_at: '2026-01-02T23:26:37.025Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/besoFTjXngn25L'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 541ms (compile: 4ms, proxy.ts: 12ms, render: 525ms)
+✓ Compiled in 408ms
+ GET / 200 in 204ms (compile: 18ms, proxy.ts: 10ms, render: 176ms)
+ GET /admin/quote 200 in 612ms (compile: 181ms, proxy.ts: 4ms, render: 428ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 557ms (compile: 5ms, proxy.ts: 6ms, render: 547ms)
+Initiating DocuSeal Session for Quote DEV-202601-536 (tiago@gmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-536.pdf
+Template created: {
+  id: 353654,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'signature',
+      required: true,
+      uuid: '0242e0ef-cae4-4c43-8e1f-aa5fb6a7a1e7',
+      submitter_uuid: '953b5271-ebb5-4f98-884b-3306d6d5a86c',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: '3d7e602f-6521-4b45-8a4f-a241feebac50',
+      submitter_uuid: '953b5271-ebb5-4f98-884b-3306d6d5a86c',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: '3f15a673-9a13-4163-bdb5-af8cb2761b82',
+      submitter_uuid: '953b5271-ebb5-4f98-884b-3306d6d5a86c',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-536.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-536.pdf',
+      attachment_uuid: '11af32e4-c0e9-45f9-ae4d-014e611080a4'
+    }
+  ],
+  slug: 'CNhRKSJY8XCNFb',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: '953b5271-ebb5-4f98-884b-3306d6d5a86c'
+    }
+  ],
+  created_at: '2026-01-02T23:30:37.619Z',
+  updated_at: '2026-01-02T23:30:38.011Z',
+  author_id: 14767,
+  external_id: 'ae803c47-0528-4811-a668-7f1c4712cc15',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: 'ae803c47-0528-4811-a668-7f1c4712cc15',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4278696,
+      uuid: '11af32e4-c0e9-45f9-ae4d-014e611080a4',
+      url: 'https://docuseal.eu/file/WyI5MDBmOGNiMC0zMWYzLTRiYjQtOGZkMS05OTMzMWY3MmZiN2UiLCJibG9iIiwxNzY3Mzk5MDM4XQ--b945116b358b3d52b43bf074e4489fda0c31cf201fc8fb95ce85012993a1053d/Devis_DEV-202601-536.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyIzZjRkZTkxNi1iZTMwLTQ1MTAtOTEzOC03M2UyNzUzMTg3N2MiLCJibG9iIiwxNzY3Mzk5MDM4XQ--3e6116e3a85a5965fb75e81deccd5ba50bfcff145b8aff3e98c22c6ee7b82665/0.png',
+      filename: 'Devis_DEV-202601-536.pdf.pdf'
+    }
+  ]
+}
+Using new template ID: 353654
+DocuSeal Request: {
+  "template_id": "353654",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "tiago@gmail.com",
+      "name": "Tiago Ribeiro"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 692035,
+    slug: '7NWdenbPvVdazW',
+    uuid: '953b5271-ebb5-4f98-884b-3306d6d5a86c',
+    name: 'Tiago Ribeiro',
+    email: 'tiago@gmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 534438,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-02T23:30:38.060Z',
+    updated_at: '2026-01-02T23:30:38.060Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/7NWdenbPvVdazW'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 554ms (compile: 11ms, proxy.ts: 6ms, render: 536ms)
+ GET /admin/quote 200 in 149ms (compile: 4ms, proxy.ts: 7ms, render: 138ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 335ms (compile: 3ms, proxy.ts: 17ms, render: 315ms)
+Initiating DocuSeal Session for Quote DEV-202601-502 (tiagoribeiro2609@hotmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-502.pdf
+Template created: {
+  id: 353656,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'text',
+      required: true,
+      uuid: '864e0850-e552-48fa-9387-f13c29513f50',
+      submitter_uuid: '1aa8c33c-5dae-4a3c-bae0-5fa799fce094',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: '487ae118-3b90-460a-9ffd-e309f8154ed2',
+      submitter_uuid: '1aa8c33c-5dae-4a3c-bae0-5fa799fce094',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: 'b12f4628-cb8c-4e23-8bcb-c8c04a308b04',
+      submitter_uuid: '1aa8c33c-5dae-4a3c-bae0-5fa799fce094',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-502.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-502.pdf',
+      attachment_uuid: 'f6cbc133-4009-4eb1-b7ad-2c720d148c65'
+    }
+  ],
+  slug: 'bT8uJ3L1Br4ikR',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: '1aa8c33c-5dae-4a3c-bae0-5fa799fce094'
+    }
+  ],
+  created_at: '2026-01-02T23:39:18.202Z',
+  updated_at: '2026-01-02T23:39:18.589Z',
+  author_id: 14767,
+  external_id: '01701e5f-567d-4cf2-bdfe-69e31936a8e3',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: '01701e5f-567d-4cf2-bdfe-69e31936a8e3',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4278712,
+      uuid: 'f6cbc133-4009-4eb1-b7ad-2c720d148c65',
+      url: 'https://docuseal.eu/file/WyJjZGQ4YzVkNy1hOGY4LTRmNmUtYWJiMS0yMGNmOWViMTU1NDUiLCJibG9iIiwxNzY3Mzk5NTU4XQ--4abd43892c085d9040fb913446462b556da71a33976c5558b7fb6e21fe3f6428/Devis_DEV-202601-502.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyJlODdlYzY2NC04YTgxLTQyNGEtYjBiMy1mYzQxODAxMGJjMjgiLCJibG9iIiwxNzY3Mzk5NTU4XQ--766069d8621d960abf55025fdb6839e54117110ea5152643314fd0a21332f8db/0.png',
+      filename: 'Devis_DEV-202601-502.pdf.pdf'
+    }
+  ]
+}
+Using new template ID: 353656
+DocuSeal Request: {
+  "template_id": "353656",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "tiagoribeiro2609@hotmail.com",
+      "name": "Tiago Ribeiro"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 692038,
+    slug: '8T4MGZynMcJyZZ',
+    uuid: '1aa8c33c-5dae-4a3c-bae0-5fa799fce094',
+    name: 'Tiago Ribeiro',
+    email: 'tiagoribeiro2609@hotmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 534441,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-02T23:39:18.633Z',
+    updated_at: '2026-01-02T23:39:18.633Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/8T4MGZynMcJyZZ'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 630ms (compile: 61ms, proxy.ts: 6ms, render: 564ms)
+ GET / 200 in 388ms (compile: 3ms, proxy.ts: 5ms, render: 380ms)
 Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
     at ignore-listed frames
- POST / 404 in 648ms (compile: 9ms, proxy.ts: 10ms, render: 630ms)
+ POST / 404 in 733ms (compile: 4ms, proxy.ts: 6ms, render: 723ms)
+ GET / 200 in 192ms (compile: 5ms, proxy.ts: 5ms, render: 183ms)
 Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
     at ignore-listed frames
- POST / 404 in 642ms (compile: 10ms, proxy.ts: 9ms, render: 623ms)
+ POST / 404 in 647ms (compile: 3ms, proxy.ts: 4ms, render: 639ms)
 Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
     at ignore-listed frames
- POST / 404 in 614ms (compile: 8ms, proxy.ts: 10ms, render: 596ms)
- GET / 200 in 186ms (compile: 5ms, proxy.ts: 6ms, render: 175ms)
- GET /robots.txt 404 in 113ms (compile: 10ms, proxy.ts: 3ms, render: 99ms)
+ POST / 404 in 694ms (compile: 6ms, proxy.ts: 10ms, render: 678ms)
+ HEAD / 200 in 107ms (compile: 3ms, proxy.ts: 4ms, render: 100ms)
 Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
     at ignore-listed frames
- POST / 404 in 675ms (compile: 4ms, proxy.ts: 50ms, render: 621ms)
+ POST / 404 in 652ms (compile: 4ms, proxy.ts: 6ms, render: 642ms)
+ GET / 200 in 180ms (compile: 7ms, proxy.ts: 10ms, render: 163ms)
 Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
     at ignore-listed frames
- POST / 404 in 615ms (compile: 6ms, proxy.ts: 15ms, render: 595ms)
- GET / 200 in 28.8s (compile: 4ms, proxy.ts: 9ms, render: 28.7s)
+ POST / 404 in 669ms (compile: 8ms, proxy.ts: 11ms, render: 649ms)
+ GET / 200 in 204ms (compile: 11ms, proxy.ts: 13ms, render: 180ms)
+ GET / 200 in 28.1s (compile: 4ms, proxy.ts: 3ms, render: 28.1s)
+ GET / 200 in 164ms (compile: 4ms, proxy.ts: 4ms, render: 157ms)
+ GET / 200 in 435ms (compile: 3ms, proxy.ts: 4ms, render: 427ms)
+ GET / 200 in 151ms (compile: 4ms, proxy.ts: 5ms, render: 142ms)
+ GET / 200 in 177ms (compile: 4ms, proxy.ts: 3ms, render: 169ms)
 Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
     at ignore-listed frames
- POST / 404 in 646ms (compile: 8ms, proxy.ts: 5ms, render: 633ms)
-Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
-Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
-    at ignore-listed frames
- POST / 404 in 627ms (compile: 7ms, proxy.ts: 14ms, render: 607ms)
-⨯ Error: aborted
-    at ignore-listed frames
- HEAD / 200 in 154ms (compile: 5ms, proxy.ts: 4ms, render: 144ms)
-Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
-Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
-    at ignore-listed frames
- POST / 404 in 612ms (compile: 5ms, proxy.ts: 4ms, render: 602ms)
- GET / 200 in 189ms (compile: 6ms, proxy.ts: 5ms, render: 179ms)
-Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
-Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
-    at ignore-listed frames
- POST / 404 in 603ms (compile: 6ms, proxy.ts: 5ms, render: 593ms)
- GET / 200 in 187ms (compile: 7ms, proxy.ts: 11ms, render: 169ms)
- GET / 200 in 157ms (compile: 3ms, proxy.ts: 6ms, render: 148ms)
-Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
-Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
-    at ignore-listed frames
- POST / 404 in 592ms (compile: 3ms, proxy.ts: 4ms, render: 585ms)
- GET / 200 in 204ms (compile: 4ms, proxy.ts: 9ms, render: 192ms)
- GET /explore/repos 404 in 117ms (compile: 10ms, proxy.ts: 4ms, render: 103ms)
- GET /explore/repos 404 in 101ms (compile: 8ms, proxy.ts: 4ms, render: 89ms)
- GET / 200 in 158ms (compile: 4ms, proxy.ts: 4ms, render: 150ms)
- OPTIONS / 400 in 8ms (proxy.ts: 4ms)
- OPTIONS / 400 in 8ms (proxy.ts: 4ms)
- GET /nice%20ports%2C/Tri%6Eity.txt%2ebak 404 in 304ms (compile: 36ms, proxy.ts: 3ms, render: 265ms)
- GET /health 404 in 208ms (compile: 21ms, proxy.ts: 14ms, render: 172ms)
- GET /cgi-mod/header_logo.cgi?size=big 404 in 214ms (compile: 43ms, proxy.ts: 13ms, render: 158ms)
- GET / 200 in 283ms (compile: 7ms, proxy.ts: 6ms, render: 270ms)
- GET / 200 in 308ms (compile: 135ms, proxy.ts: 6ms, render: 167ms)
- GET /ise/img/rm-logo_small.png 404 in 87ms (compile: 7ms, proxy.ts: 4ms, render: 76ms)
- GET / 200 in 193ms (compile: 7ms, proxy.ts: 11ms, render: 175ms)
- GET /images/logo.png 404 in 279ms (compile: 182ms, proxy.ts: 9ms, render: 88ms)
- GET /dashboard 404 in 161ms (compile: 27ms, proxy.ts: 35ms, render: 98ms)
-Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
-Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
-    at ignore-listed frames
- POST / 404 in 639ms (compile: 3ms, proxy.ts: 8ms, render: 628ms)
- GET / 200 in 196ms (compile: 6ms, proxy.ts: 12ms, render: 178ms)
- GET / 200 in 14.5s (compile: 6ms, proxy.ts: 3ms, render: 14.4s)
+ POST / 404 in 678ms (compile: 4ms, proxy.ts: 4ms, render: 670ms)
 Error: aborted
     at ignore-listed frames {
   code: 'ECONNRESET'
@@ -161,48 +548,1182 @@ Error: aborted
     at ignore-listed frames {
   code: 'ECONNRESET'
 }
+Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 670ms (compile: 11ms, proxy.ts: 8ms, render: 651ms)
+ GET / 200 in 197ms (compile: 13ms, proxy.ts: 10ms, render: 174ms)
 Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
     at ignore-listed frames
- POST / 404 in 615ms (compile: 7ms, proxy.ts: 8ms, render: 600ms)
- GET / 200 in 170ms (compile: 4ms, proxy.ts: 9ms, render: 157ms)
- GET / 200 in 162ms (compile: 9ms, proxy.ts: 8ms, render: 145ms)
- GET /admin/login 200 in 53ms (compile: 7ms, proxy.ts: 4ms, render: 43ms)
- GET /admin 200 in 48ms (compile: 4ms, proxy.ts: 4ms, render: 40ms)
- GET /admin/quote 200 in 105ms (compile: 51ms, proxy.ts: 3ms, render: 51ms)
+ POST / 404 in 644ms (compile: 4ms, proxy.ts: 4ms, render: 637ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 659ms (compile: 6ms, proxy.ts: 11ms, render: 642ms)
+ GET /.env 404 in 236ms (compile: 93ms, proxy.ts: 10ms, render: 134ms)
+ GET /.git/config 404 in 329ms (compile: 30ms, proxy.ts: 3ms, render: 296ms)
+ GET / 200 in 189ms (compile: 7ms, proxy.ts: 6ms, render: 176ms)
+ GET /admin/login 200 in 71ms (compile: 9ms, proxy.ts: 7ms, render: 55ms)
+ GET /admin 200 in 50ms (compile: 6ms, proxy.ts: 3ms, render: 41ms)
+ GET /admin/payments 200 in 35ms (compile: 5ms, proxy.ts: 4ms, render: 25ms)
+ POST /api/gocardless/create-mandate 200 in 822ms (compile: 45ms, proxy.ts: 10ms, render: 767ms)
+ POST /api/gocardless/create-mandate 200 in 460ms (compile: 3ms, proxy.ts: 4ms, render: 453ms)
+ POST /api/gocardless/create-mandate 200 in 433ms (compile: 3ms, proxy.ts: 5ms, render: 424ms)
+ POST /api/gocardless/create-mandate 200 in 478ms (compile: 3ms, proxy.ts: 6ms, render: 469ms)
+ POST /api/gocardless/create-mandate 200 in 450ms (compile: 3ms, proxy.ts: 7ms, render: 440ms)
+ GET /admin 200 in 30ms (compile: 3ms, proxy.ts: 3ms, render: 23ms)
+ GET /admin/reports 200 in 81ms (compile: 50ms, proxy.ts: 4ms, render: 28ms)
+Generating invoice draft for report 2
+Invoice Generation Error: Error: Your trial of Zoho Books is over. Please upgrade to a paid plan to enjoy our service.
+    at ZohoClient.request (src/lib/invoicing/zoho.ts:139:19)
+    at async ZohoClient.createInvoice (src/lib/invoicing/zoho.ts:241:24)
+    at async POST (src/app/api/invoicing/create-draft/route.ts:46:29)
+  137 |
+  138 |         if (data.code !== 0) {
+> 139 |             throw new Error(data.message || `Zoho API error: ${data.code}`);
+      |                   ^
+  140 |         }
+  141 |
+  142 |         return data;
+ POST /api/invoicing/create-draft 500 in 1244ms (compile: 79ms, proxy.ts: 6ms, render: 1159ms)
+ GET /admin 200 in 28ms (compile: 4ms, proxy.ts: 4ms, render: 21ms)
+ GET /admin/quote 200 in 52ms (compile: 9ms, proxy.ts: 5ms, render: 38ms)
 🔍 VIES lookup: LU35916651
 ✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
- POST /api/vies 200 in 1141ms (compile: 228ms, proxy.ts: 27ms, render: 886ms)
+ POST /api/vies 200 in 264ms (compile: 3ms, proxy.ts: 5ms, render: 256ms)
+Initiating DocuSeal Session for Quote DEV-202601-771 (Ribeirgo@hotmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-771.pdf
+Template created: {
+  id: 353839,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'text',
+      required: true,
+      uuid: '14b5a31a-7a08-483e-a67f-1eee1427f01b',
+      submitter_uuid: 'c67e37b8-9e1d-4659-87e1-ff29b3077a47',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: '146f09be-a747-404c-a902-471401c5d1c2',
+      submitter_uuid: 'c67e37b8-9e1d-4659-87e1-ff29b3077a47',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: 'e5bf3d3e-03e2-4eba-b7f8-d27bb1dd736d',
+      submitter_uuid: 'c67e37b8-9e1d-4659-87e1-ff29b3077a47',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-771.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-771.pdf',
+      attachment_uuid: 'e96d455a-656d-4ba8-ab1c-e675b65edc21'
+    }
+  ],
+  slug: 'C4mQnogPzjwSnC',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: 'c67e37b8-9e1d-4659-87e1-ff29b3077a47'
+    }
+  ],
+  created_at: '2026-01-03T15:06:26.576Z',
+  updated_at: '2026-01-03T15:06:26.957Z',
+  author_id: 14767,
+  external_id: '5a9300b2-a797-4c0b-a8a0-a747aa5c8cef',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: '5a9300b2-a797-4c0b-a8a0-a747aa5c8cef',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4280930,
+      uuid: 'e96d455a-656d-4ba8-ab1c-e675b65edc21',
+      url: 'https://docuseal.eu/file/WyI3MWFjMTg0NS05NGRjLTRjMGMtYmYzOC01YTdkNTZkM2M2YzAiLCJibG9iIiwxNzY3NDU1MTg2XQ--c5be101e9fbcce7d3df69c16561a734b0aa16a0b91df8be0caba89ca70ebd5b0/Devis_DEV-202601-771.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyI1NmQzZmI3YS1mZTg1LTQyMDMtYjBlOC0yNzVhNTY4YzliMGMiLCJibG9iIiwxNzY3NDU1MTg2XQ--898d4ca868cf701a2cecd6aae61b158a5f37abc810b4a59debabce2aa047a5f7/0.png',
+      filename: 'Devis_DEV-202601-771.pdf.pdf'
+    }
+  ]
+}
+Using new template ID: 353839
+DocuSeal Request: {
+  "template_id": "353839",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "Ribeirgo@hotmail.com",
+      "name": "Tiago"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 692458,
+    slug: 'jTVKWtjHTgVHTQ',
+    uuid: 'c67e37b8-9e1d-4659-87e1-ff29b3077a47',
+    name: 'Tiago',
+    email: 'ribeirgo@hotmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 534782,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-03T15:06:27.000Z',
+    updated_at: '2026-01-03T15:06:27.000Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/jTVKWtjHTgVHTQ'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 617ms (compile: 4ms, proxy.ts: 5ms, render: 608ms)
+ GET /admin 200 in 127ms (compile: 3ms, proxy.ts: 5ms, render: 119ms)
+ GET /admin/quote 200 in 33ms (compile: 3ms, proxy.ts: 3ms, render: 26ms)
+ GET /admin/dashboard 200 in 32ms (compile: 4ms, proxy.ts: 6ms, render: 22ms)
+ GET /admin 200 in 32ms (compile: 7ms, proxy.ts: 3ms, render: 21ms)
+ GET /admin/clients 200 in 29ms (compile: 6ms, proxy.ts: 4ms, render: 20ms)
+ GET /api/clients? 200 in 434ms (compile: 17ms, proxy.ts: 8ms, render: 409ms)
+ GET /api/clients? 200 in 470ms (compile: 12ms, proxy.ts: 6ms, render: 452ms)
+ GET /admin/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 113ms (compile: 47ms, proxy.ts: 3ms, render: 63ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 420ms (compile: 139ms, proxy.ts: 23ms, render: 258ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 448ms (compile: 161ms, proxy.ts: 28ms, render: 260ms)
+ GET /admin/clients 200 in 38ms (compile: 4ms, proxy.ts: 3ms, render: 31ms)
+ GET /api/clients? 200 in 339ms (compile: 3ms, proxy.ts: 4ms, render: 332ms)
+ GET /api/clients? 200 in 337ms (compile: 21ms, proxy.ts: 4ms, render: 312ms)
+ GET /admin 200 in 39ms (compile: 5ms, proxy.ts: 5ms, render: 29ms)
+ GET /admin/tasks 200 in 36ms (compile: 5ms, proxy.ts: 4ms, render: 27ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 279ms (compile: 15ms, proxy.ts: 6ms, render: 258ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 387ms (compile: 12ms, proxy.ts: 4ms, render: 371ms)
+ GET /admin 200 in 30ms (compile: 5ms, proxy.ts: 5ms, render: 20ms)
+ GET /admin/dashboard 200 in 31ms (compile: 3ms, proxy.ts: 3ms, render: 24ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 688ms (compile: 8ms, proxy.ts: 10ms, render: 669ms)
+ GET /admin 200 in 39ms (compile: 4ms, proxy.ts: 4ms, render: 30ms)
+ GET /admin/reports 200 in 28ms (compile: 4ms, proxy.ts: 3ms, render: 21ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 697ms (compile: 8ms, proxy.ts: 11ms, render: 678ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 694ms (compile: 7ms, proxy.ts: 5ms, render: 682ms)
+Generating invoice draft for report 2
+Invoice Generation Error: Error: Your trial of Zoho Books is over. Please upgrade to a paid plan to enjoy our service.
+    at ZohoClient.request (src/lib/invoicing/zoho.ts:139:19)
+    at async ZohoClient.createInvoice (src/lib/invoicing/zoho.ts:241:24)
+    at async POST (src/app/api/invoicing/create-draft/route.ts:46:29)
+  137 |
+  138 |         if (data.code !== 0) {
+> 139 |             throw new Error(data.message || `Zoho API error: ${data.code}`);
+      |                   ^
+  140 |         }
+  141 |
+  142 |         return data;
+ POST /api/invoicing/create-draft 500 in 542ms (compile: 5ms, proxy.ts: 5ms, render: 532ms)
+Generating invoice draft for report 2
+ POST /api/invoicing/create-draft 200 in 580ms (compile: 5ms, proxy.ts: 4ms, render: 571ms)
+ GET /admin 200 in 29ms (compile: 4ms, proxy.ts: 4ms, render: 22ms)
+ GET /admin 200 in 34ms (compile: 3ms, proxy.ts: 4ms, render: 27ms)
+ GET /admin 200 in 36ms (compile: 5ms, proxy.ts: 3ms, render: 28ms)
+ GET /admin 200 in 34ms (compile: 4ms, proxy.ts: 4ms, render: 26ms)
+ GET /admin/dashboard 200 in 44ms (compile: 6ms, proxy.ts: 4ms, render: 34ms)
+ GET /admin 200 in 33ms (compile: 5ms, proxy.ts: 3ms, render: 25ms)
+ GET /admin/tasks 200 in 67ms (compile: 6ms, proxy.ts: 6ms, render: 54ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 787ms (compile: 3ms, proxy.ts: 6ms, render: 779ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 938ms (compile: 3ms, proxy.ts: 5ms, render: 930ms)
+ GET /admin 200 in 39ms (compile: 3ms, proxy.ts: 4ms, render: 32ms)
+ GET /admin 200 in 27ms (compile: 3ms, proxy.ts: 4ms, render: 20ms)
+ GET /admin/quote 200 in 41ms (compile: 4ms, proxy.ts: 7ms, render: 30ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 215ms (compile: 18ms, proxy.ts: 5ms, render: 193ms)
+Initiating DocuSeal Session for Quote DEV-202601-013 (ribti036@gmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-013.pdf
+Template created: {
+  id: 353840,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'text',
+      required: true,
+      uuid: 'e1e0eecf-57cf-48d0-a637-cf52a6fa534a',
+      submitter_uuid: 'c8f45ff6-49ff-4b62-8455-ad3223a1bfe8',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: '8887f75f-f582-4b4f-9ab1-5d50ff9ea597',
+      submitter_uuid: 'c8f45ff6-49ff-4b62-8455-ad3223a1bfe8',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: '2d103217-ba2b-4b1b-b5fc-ad0a072ce1db',
+      submitter_uuid: 'c8f45ff6-49ff-4b62-8455-ad3223a1bfe8',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-013.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-013.pdf',
+      attachment_uuid: '941c1784-6bdd-42ff-aa65-e7761925fe36'
+    }
+  ],
+  slug: 'RC7TPSki9K5ZJL',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: 'c8f45ff6-49ff-4b62-8455-ad3223a1bfe8'
+    }
+  ],
+  created_at: '2026-01-03T15:16:38.339Z',
+  updated_at: '2026-01-03T15:16:38.771Z',
+  author_id: 14767,
+  external_id: '072fe86e-f26e-4986-bab1-784e8372f09c',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: '072fe86e-f26e-4986-bab1-784e8372f09c',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4280941,
+      uuid: '941c1784-6bdd-42ff-aa65-e7761925fe36',
+      url: 'https://docuseal.eu/file/WyI4Zjc2OWU0ZC1kNTk1LTQ0MDYtOGU5Ny1mZDZkMTRmYzVlZWYiLCJibG9iIiwxNzY3NDU1Nzk4XQ--a40d310c8fa32f23d93c7e9b1ebbbe376eb7c9a0655634927cc2098f72f309e7/Devis_DEV-202601-013.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyIyMjI0NzM4Mi1hMjc4LTRjZTItOWQzZS0wZjZiOTBkYjNkYWYiLCJibG9iIiwxNzY3NDU1Nzk4XQ--0855622fbb82268d6ae8d3d70b5c4a055193db9275df7c6665c98e4fa5aef269/0.png',
+      filename: 'Devis_DEV-202601-013.pdf.pdf'
+    }
+  ]
+}
+Using new template ID: 353840
+DocuSeal Request: {
+  "template_id": "353840",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "ribti036@gmail.com",
+      "name": "aegeargd"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 692461,
+    slug: 'bZM7qkxp7ejZDt',
+    uuid: 'c8f45ff6-49ff-4b62-8455-ad3223a1bfe8',
+    name: 'aegeargd',
+    email: 'ribti036@gmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 534784,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-03T15:16:38.816Z',
+    updated_at: '2026-01-03T15:16:38.816Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/bZM7qkxp7ejZDt'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 892ms (compile: 3ms, proxy.ts: 4ms, render: 885ms)
+ GET /admin 200 in 117ms (compile: 3ms, proxy.ts: 3ms, render: 111ms)
+ GET /apple-touch-icon-precomposed.png 404 in 132ms (compile: 8ms, proxy.ts: 3ms, render: 120ms)
+ GET /apple-touch-icon.png 404 in 129ms (compile: 30ms, proxy.ts: 4ms, render: 94ms)
+ GET /admin 200 in 110ms (compile: 4ms, proxy.ts: 3ms, render: 103ms)
+ GET /admin/payments 200 in 43ms (compile: 12ms, proxy.ts: 4ms, render: 26ms)
+ POST /api/gocardless/create-mandate 200 in 769ms (compile: 5ms, proxy.ts: 5ms, render: 759ms)
+ GET /admin/payments 200 in 145ms (compile: 5ms, proxy.ts: 5ms, render: 135ms)
+Verifying mandate: {
+  id: '6655cba2-5bc1-441a-b3dd-4d3ddb058273',
+  client_id: 'fac185ec-8a11-4b32-944f-9bab29ba0b59',
+  mandate_id: null,
+  customer_id: null,
+  billing_request_id: 'BRQ01KE272V7PQXJS8GWNZSSCS6NY',
+  status: 'pending',
+  iban_last4: null,
+  bank_name: null,
+  created_at: '2026-01-03T15:19:44.891263+00:00',
+  activated_at: null,
+  cancelled_at: null
+}
+GC Billing Request Status: fulfilled
+ GET /api/gocardless/verify-mandate?client_id=fac185ec-8a11-4b32-944f-9bab29ba0b59 200 in 338ms (compile: 60ms, proxy.ts: 4ms, render: 274ms)
+ GET /admin/payments 200 in 105ms (compile: 3ms, proxy.ts: 3ms, render: 98ms)
+Verifying mandate: {
+  id: '7e8f9b08-b0ed-4ac2-8712-ef1654adab06',
+  client_id: '95549f3e-598d-4852-bfeb-b3c359d8cfc8',
+  mandate_id: null,
+  customer_id: null,
+  billing_request_id: 'BRQ01KE2667SD5DWY4X5VE21H9F3A',
+  status: 'pending',
+  iban_last4: null,
+  bank_name: null,
+  created_at: '2026-01-03T15:04:07.46456+00:00',
+  activated_at: null,
+  cancelled_at: null
+}
+GC Billing Request Status: pending
+ GET /api/gocardless/verify-mandate?client_id=95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 218ms (compile: 3ms, proxy.ts: 4ms, render: 211ms)
+ GET /admin/payments 200 in 104ms (compile: 4ms, proxy.ts: 3ms, render: 97ms)
+Verifying mandate: {
+  id: '7e8f9b08-b0ed-4ac2-8712-ef1654adab06',
+  client_id: '95549f3e-598d-4852-bfeb-b3c359d8cfc8',
+  mandate_id: null,
+  customer_id: null,
+  billing_request_id: 'BRQ01KE2667SD5DWY4X5VE21H9F3A',
+  status: 'pending',
+  iban_last4: null,
+  bank_name: null,
+  created_at: '2026-01-03T15:04:07.46456+00:00',
+  activated_at: null,
+  cancelled_at: null
+}
+GC Billing Request Status: pending
+ GET /api/gocardless/verify-mandate?client_id=95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 174ms (compile: 3ms, proxy.ts: 3ms, render: 168ms)
+ GET /admin/payments 200 in 101ms (compile: 4ms, proxy.ts: 3ms, render: 93ms)
+Payment Error: TypeError: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2f$supabase$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.supabaseAdmin.from is not a function
+    at POST (src/app/api/gocardless/create-payment/route.ts:51:14)
+  49 |         // Check active mandate
+  50 |         const { data: mandates } = await supabaseAdmin
+> 51 |             .from('gocardless_mandates')
+     |              ^
+  52 |             .select('*')
+  53 |             .eq('client_id', client_id)
+  54 |             .eq('status', 'active')
+ POST /api/gocardless/create-payment 500 in 316ms (compile: 48ms, proxy.ts: 4ms, render: 264ms)
+Payment Error: TypeError: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2f$supabase$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.supabaseAdmin.from is not a function
+    at POST (src/app/api/gocardless/create-payment/route.ts:51:14)
+  49 |         // Check active mandate
+  50 |         const { data: mandates } = await supabaseAdmin
+> 51 |             .from('gocardless_mandates')
+     |              ^
+  52 |             .select('*')
+  53 |             .eq('client_id', client_id)
+  54 |             .eq('status', 'active')
+ POST /api/gocardless/create-payment 500 in 725ms (compile: 3ms, proxy.ts: 5ms, render: 717ms)
+ GET /admin 200 in 56ms (compile: 9ms, proxy.ts: 13ms, render: 34ms)
+ GET /admin/tasks 200 in 39ms (compile: 3ms, proxy.ts: 4ms, render: 32ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 432ms (compile: 3ms, proxy.ts: 5ms, render: 424ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 333ms (compile: 3ms, proxy.ts: 4ms, render: 326ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 381ms (compile: 4ms, proxy.ts: 5ms, render: 372ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 659ms (compile: 3ms, proxy.ts: 4ms, render: 652ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 712ms (compile: 4ms, proxy.ts: 6ms, render: 703ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 707ms (compile: 7ms, proxy.ts: 6ms, render: 693ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 694ms (compile: 7ms, proxy.ts: 10ms, render: 676ms)
+ HEAD / 200 in 127ms (compile: 4ms, proxy.ts: 7ms, render: 115ms)
+⨯ Error: aborted
+    at ignore-listed frames
+ GET / 200 in 469ms (compile: 6ms, proxy.ts: 3ms, render: 459ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST /adfa 404 in 419ms (compile: 8ms, proxy.ts: 5ms, render: 406ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 683ms (compile: 3ms, proxy.ts: 4ms, render: 675ms)
+ GET / 200 in 190ms (compile: 4ms, proxy.ts: 5ms, render: 181ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 713ms (compile: 7ms, proxy.ts: 4ms, render: 702ms)
+ GET / 200 in 184ms (compile: 9ms, proxy.ts: 7ms, render: 168ms)
+ GET / 200 in 192ms (compile: 6ms, proxy.ts: 4ms, render: 182ms)
+ HEAD / 200 in 127ms (compile: 4ms, proxy.ts: 6ms, render: 117ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 709ms (compile: 7ms, proxy.ts: 4ms, render: 697ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST /_next 404 in 344ms (compile: 9ms, proxy.ts: 6ms, render: 328ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 728ms (compile: 4ms, proxy.ts: 5ms, render: 718ms)
+Error: Failed to find Server Action "c3a144622dd5b5046f1ccb6007fea3f3710057de". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 732ms (compile: 4ms, proxy.ts: 6ms, render: 721ms)
+ GET / 200 in 174ms (compile: 9ms, proxy.ts: 10ms, render: 155ms)
+ GET /robots.txt 404 in 127ms (compile: 23ms, proxy.ts: 6ms, render: 98ms)
+ GET / 200 in 159ms (compile: 5ms, proxy.ts: 4ms, render: 150ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST /adfa 404 in 725ms (compile: 32ms, proxy.ts: 11ms, render: 682ms)
+ GET / 200 in 253ms (compile: 9ms, proxy.ts: 9ms, render: 235ms)
+ GET / 200 in 177ms (compile: 8ms, proxy.ts: 4ms, render: 166ms)
+ GET /robots.txt 404 in 124ms (compile: 8ms, proxy.ts: 7ms, render: 108ms)
+ GET / 200 in 377ms (compile: 8ms, proxy.ts: 10ms, render: 359ms)
+ GET / 200 in 28.8s (compile: 6ms, proxy.ts: 5ms, render: 28.8s)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 742ms (compile: 13ms, proxy.ts: 8ms, render: 720ms)
+ GET / 200 in 13.5s (compile: 10ms, proxy.ts: 8ms, render: 13.5s)
+Error: Failed to find Server Action "c3a144622dd5b5046f1ccb6007fea3f3710057de". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 709ms (compile: 5ms, proxy.ts: 5ms, render: 699ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 741ms (compile: 7ms, proxy.ts: 5ms, render: 729ms)
+ GET / 200 in 182ms (compile: 5ms, proxy.ts: 5ms, render: 172ms)
+ GET / 200 in 149ms (compile: 5ms, proxy.ts: 4ms, render: 140ms)
+ GET / 200 in 171ms (compile: 6ms, proxy.ts: 3ms, render: 163ms)
+ GET /cgi-bin/main.pl 404 in 129ms (compile: 11ms, proxy.ts: 4ms, render: 114ms)
+ GET /api/session/properties 404 in 116ms (compile: 9ms, proxy.ts: 4ms, render: 104ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 693ms (compile: 5ms, proxy.ts: 4ms, render: 684ms)
+ GET / 200 in 183ms (compile: 10ms, proxy.ts: 8ms, render: 166ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 724ms (compile: 8ms, proxy.ts: 4ms, render: 712ms)
+ HEAD / 200 in 113ms (compile: 5ms, proxy.ts: 4ms, render: 104ms)
+ GET / 200 in 161ms (compile: 6ms, proxy.ts: 4ms, render: 150ms)
+ GET / 200 in 202ms (compile: 10ms, proxy.ts: 4ms, render: 188ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 703ms (compile: 3ms, proxy.ts: 5ms, render: 695ms)
+ HEAD / 200 in 124ms (compile: 6ms, proxy.ts: 4ms, render: 114ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 742ms (compile: 9ms, proxy.ts: 6ms, render: 726ms)
+ GET / 200 in 174ms (compile: 8ms, proxy.ts: 5ms, render: 162ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST /adfa 404 in 737ms (compile: 12ms, proxy.ts: 6ms, render: 719ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 743ms (compile: 6ms, proxy.ts: 5ms, render: 732ms)
+ HEAD / 200 in 111ms (compile: 4ms, proxy.ts: 4ms, render: 103ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 725ms (compile: 4ms, proxy.ts: 5ms, render: 716ms)
+ HEAD / 200 in 105ms (compile: 5ms, proxy.ts: 5ms, render: 95ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 727ms (compile: 4ms, proxy.ts: 5ms, render: 718ms)
+ HEAD / 200 in 128ms (compile: 6ms, proxy.ts: 4ms, render: 118ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 730ms (compile: 7ms, proxy.ts: 5ms, render: 717ms)
+ HEAD / 200 in 109ms (compile: 5ms, proxy.ts: 4ms, render: 99ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 762ms (compile: 10ms, proxy.ts: 5ms, render: 747ms)
+ GET / 200 in 205ms (compile: 6ms, proxy.ts: 6ms, render: 193ms)
+ GET /admin/login 200 in 59ms (compile: 11ms, proxy.ts: 4ms, render: 44ms)
+ GET /admin 200 in 28ms (compile: 3ms, proxy.ts: 3ms, render: 22ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 711ms (compile: 6ms, proxy.ts: 4ms, render: 701ms)
+ HEAD / 200 in 124ms (compile: 4ms, proxy.ts: 4ms, render: 116ms)
+ GET /admin/dashboard 200 in 62ms (compile: 4ms, proxy.ts: 4ms, render: 53ms)
+ GET /admin 200 in 31ms (compile: 4ms, proxy.ts: 4ms, render: 24ms)
+ GET /admin/quote 200 in 49ms (compile: 5ms, proxy.ts: 4ms, render: 40ms)
+ GET /admin/dashboard 200 in 36ms (compile: 4ms, proxy.ts: 6ms, render: 26ms)
+ GET /admin 200 in 30ms (compile: 3ms, proxy.ts: 5ms, render: 22ms)
+ GET /admin/clients 200 in 38ms (compile: 3ms, proxy.ts: 5ms, render: 30ms)
+ GET /api/clients? 200 in 1400ms (compile: 9ms, proxy.ts: 5ms, render: 1387ms)
+ GET /api/clients? 200 in 225ms (compile: 5ms, proxy.ts: 4ms, render: 216ms)
+ GET /admin 200 in 31ms (compile: 6ms, proxy.ts: 3ms, render: 22ms)
+ GET /admin/clients 200 in 34ms (compile: 3ms, proxy.ts: 4ms, render: 28ms)
+ GET /api/clients? 200 in 332ms (compile: 5ms, proxy.ts: 7ms, render: 320ms)
+ GET /api/clients? 200 in 574ms (compile: 4ms, proxy.ts: 3ms, render: 567ms)
+ GET /admin/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 132ms (compile: 53ms, proxy.ts: 11ms, render: 69ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 438ms (compile: 100ms, proxy.ts: 13ms, render: 326ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 294ms (compile: 41ms, proxy.ts: 26ms, render: 227ms)
+ GET /admin 200 in 32ms (compile: 4ms, proxy.ts: 4ms, render: 25ms)
+ GET /admin/payments 200 in 85ms (compile: 6ms, proxy.ts: 4ms, render: 75ms)
+ GET /admin 200 in 40ms (compile: 4ms, proxy.ts: 5ms, render: 30ms)
+ GET /admin/reports 200 in 32ms (compile: 4ms, proxy.ts: 4ms, render: 25ms)
+ GET /admin 200 in 34ms (compile: 3ms, proxy.ts: 3ms, render: 28ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 732ms (compile: 3ms, proxy.ts: 4ms, render: 724ms)
+ GET /admin/dashboard 200 in 34ms (compile: 4ms, proxy.ts: 4ms, render: 26ms)
+ HEAD / 200 in 124ms (compile: 3ms, proxy.ts: 4ms, render: 117ms)
+ GET /admin 200 in 35ms (compile: 4ms, proxy.ts: 4ms, render: 28ms)
+ GET /admin/clients 200 in 195ms (compile: 83ms, proxy.ts: 34ms, render: 78ms)
+ GET /api/clients? 200 in 376ms (compile: 3ms, proxy.ts: 5ms, render: 367ms)
+ GET /api/clients? 200 in 192ms (compile: 3ms, proxy.ts: 5ms, render: 184ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 116ms (compile: 50ms, proxy.ts: 4ms, render: 62ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 316ms (compile: 82ms, proxy.ts: 11ms, render: 224ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 246ms (compile: 20ms, proxy.ts: 13ms, render: 213ms)
+ GET /admin/clients 200 in 54ms (compile: 7ms, proxy.ts: 9ms, render: 38ms)
+ GET /api/clients? 200 in 338ms (compile: 5ms, proxy.ts: 3ms, render: 330ms)
+ GET /api/clients? 200 in 224ms (compile: 3ms, proxy.ts: 5ms, render: 216ms)
+ GET /admin 200 in 35ms (compile: 4ms, proxy.ts: 4ms, render: 26ms)
+ GET /admin/quote 200 in 41ms (compile: 6ms, proxy.ts: 3ms, render: 32ms)
+ GET /admin/dashboard 200 in 36ms (compile: 3ms, proxy.ts: 4ms, render: 29ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 727ms (compile: 4ms, proxy.ts: 6ms, render: 717ms)
+ GET /admin 200 in 54ms (compile: 12ms, proxy.ts: 10ms, render: 33ms)
+ GET /admin/clients 200 in 35ms (compile: 6ms, proxy.ts: 4ms, render: 25ms)
+ GET /api/clients? 200 in 876ms (compile: 7ms, proxy.ts: 9ms, render: 859ms)
+ GET /api/clients? 200 in 214ms (compile: 3ms, proxy.ts: 3ms, render: 208ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 106ms (compile: 44ms, proxy.ts: 4ms, render: 58ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 306ms (compile: 92ms, proxy.ts: 8ms, render: 206ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 207ms (compile: 18ms, proxy.ts: 13ms, render: 176ms)
+ GET /admin/clients 200 in 32ms (compile: 4ms, proxy.ts: 3ms, render: 25ms)
+ GET /api/clients? 200 in 345ms (compile: 7ms, proxy.ts: 3ms, render: 334ms)
+ GET /api/clients? 200 in 240ms (compile: 3ms, proxy.ts: 3ms, render: 233ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 129ms (compile: 51ms, proxy.ts: 5ms, render: 73ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 390ms (compile: 99ms, proxy.ts: 7ms, render: 284ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 239ms (compile: 19ms, proxy.ts: 11ms, render: 209ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/invoices 404 in 46ms (compile: 12ms, proxy.ts: 4ms, render: 31ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/invoices 404 in 108ms (compile: 10ms, proxy.ts: 3ms, render: 95ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 356ms (compile: 81ms, proxy.ts: 4ms, render: 271ms)
+ GET /admin/clients 200 in 33ms (compile: 7ms, proxy.ts: 4ms, render: 22ms)
+ GET /api/clients? 200 in 294ms (compile: 7ms, proxy.ts: 4ms, render: 283ms)
+ GET /api/clients? 200 in 220ms (compile: 3ms, proxy.ts: 3ms, render: 214ms)
+ GET / 200 in 173ms (compile: 15ms, proxy.ts: 4ms, render: 154ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 767ms (compile: 4ms, proxy.ts: 6ms, render: 756ms)
+ GET /admin 200 in 49ms (compile: 12ms, proxy.ts: 9ms, render: 28ms)
+ GET /admin/quote 200 in 71ms (compile: 8ms, proxy.ts: 4ms, render: 59ms)
+ GET /.well-known/security.txt 404 in 100ms (compile: 9ms, proxy.ts: 4ms, render: 87ms)
+ GET /admin/quote 200 in 124ms (compile: 3ms, proxy.ts: 4ms, render: 117ms)
+ GET /admin/dashboard 200 in 55ms (compile: 9ms, proxy.ts: 6ms, render: 39ms)
+ GET /admin 200 in 36ms (compile: 4ms, proxy.ts: 5ms, render: 27ms)
+ GET /admin/quote 200 in 40ms (compile: 5ms, proxy.ts: 4ms, render: 32ms)
+ GET /admin/dashboard 200 in 29ms (compile: 3ms, proxy.ts: 3ms, render: 22ms)
+✓ Compiled in 1238ms
+ GET /admin/dashboard 200 in 650ms (compile: 272ms, proxy.ts: 4ms, render: 375ms)
+ GET /admin 200 in 33ms (compile: 4ms, proxy.ts: 4ms, render: 26ms)
+ GET /admin/clients 200 in 245ms (compile: 133ms, proxy.ts: 4ms, render: 108ms)
+ GET /api/clients? 200 in 1158ms (compile: 242ms, proxy.ts: 30ms, render: 886ms)
+ GET /api/clients? 200 in 222ms (compile: 4ms, proxy.ts: 4ms, render: 214ms)
+ GET /admin 200 in 31ms (compile: 3ms, proxy.ts: 4ms, render: 24ms)
+ GET /admin/dashboard 200 in 53ms (compile: 3ms, proxy.ts: 4ms, render: 46ms)
+ GET /admin 200 in 26ms (compile: 4ms, proxy.ts: 3ms, render: 19ms)
+ GET /admin/payments 200 in 172ms (compile: 129ms, proxy.ts: 4ms, render: 39ms)
+ POST /api/gocardless/create-mandate 200 in 594ms (compile: 52ms, proxy.ts: 5ms, render: 537ms)
+ GET /admin/payments 200 in 242ms (compile: 11ms, proxy.ts: 7ms, render: 224ms)
+ GET /admin 200 in 73ms (compile: 8ms, proxy.ts: 5ms, render: 60ms)
+ GET /admin/clients 200 in 32ms (compile: 3ms, proxy.ts: 3ms, render: 26ms)
+ GET /api/clients? 200 in 460ms (compile: 3ms, proxy.ts: 3ms, render: 454ms)
+ GET /api/clients? 200 in 206ms (compile: 3ms, proxy.ts: 3ms, render: 200ms)
+ GET /admin 200 in 36ms (compile: 4ms, proxy.ts: 4ms, render: 27ms)
+ GET /admin/payments 200 in 30ms (compile: 3ms, proxy.ts: 3ms, render: 24ms)
+Verifying mandate: {
+  id: 'e656b53d-0b1f-4516-8e2c-04f026f420de',
+  client_id: 'a14b50d8-2e6c-41ab-b0a5-c9160fdba132',
+  mandate_id: null,
+  customer_id: null,
+  billing_request_id: 'BRQ01KE4DV1DXRH0E11KBF3YPD779',
+  status: 'pending',
+  iban_last4: null,
+  bank_name: null,
+  created_at: '2026-01-04T11:56:17.952273+00:00',
+  activated_at: null,
+  cancelled_at: null
+}
+GC Billing Request Status: fulfilled
+ GET /api/gocardless/verify-mandate?client_id=a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 470ms (compile: 53ms, proxy.ts: 4ms, render: 413ms)
+ GET /admin/payments 200 in 119ms (compile: 7ms, proxy.ts: 6ms, render: 106ms)
+ GET /admin 200 in 41ms (compile: 3ms, proxy.ts: 4ms, render: 33ms)
+ GET /admin/clients 200 in 28ms (compile: 3ms, proxy.ts: 3ms, render: 21ms)
+ GET /api/clients? 200 in 296ms (compile: 13ms, proxy.ts: 5ms, render: 278ms)
+ GET /api/clients? 200 in 276ms (compile: 3ms, proxy.ts: 3ms, render: 270ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 264ms (compile: 161ms, proxy.ts: 3ms, render: 100ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 637ms (compile: 279ms, proxy.ts: 8ms, render: 351ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 583ms (compile: 17ms, proxy.ts: 10ms, render: 556ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoice 404 in 60ms (compile: 13ms, proxy.ts: 4ms, render: 43ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoice 404 in 113ms (compile: 9ms, proxy.ts: 5ms, render: 99ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 1101ms (compile: 44ms, proxy.ts: 3ms, render: 1054ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 409ms (compile: 93ms, proxy.ts: 12ms, render: 304ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/edit 200 in 666ms (compile: 613ms, proxy.ts: 3ms, render: 49ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 282ms (compile: 59ms, proxy.ts: 4ms, render: 219ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 239ms (compile: 10ms, proxy.ts: 17ms, render: 211ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 101ms (compile: 45ms, proxy.ts: 3ms, render: 53ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 413ms (compile: 97ms, proxy.ts: 9ms, render: 307ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 293ms (compile: 27ms, proxy.ts: 14ms, render: 252ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/edit 200 in 153ms (compile: 61ms, proxy.ts: 4ms, render: 87ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 522ms (compile: 125ms, proxy.ts: 12ms, render: 385ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 303ms (compile: 17ms, proxy.ts: 11ms, render: 275ms)
+ PATCH /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 384ms (compile: 51ms, proxy.ts: 4ms, render: 329ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 151ms (compile: 47ms, proxy.ts: 6ms, render: 99ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 248ms (compile: 26ms, proxy.ts: 32ms, render: 190ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 301ms (compile: 35ms, proxy.ts: 12ms, render: 254ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 350ms (compile: 103ms, proxy.ts: 9ms, render: 238ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoice 404 in 42ms (compile: 9ms, proxy.ts: 4ms, render: 30ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoice 404 in 131ms (compile: 10ms, proxy.ts: 3ms, render: 118ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 320ms (compile: 66ms, proxy.ts: 8ms, render: 247ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/subscriptions/new 404 in 43ms (compile: 6ms, proxy.ts: 4ms, render: 33ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/subscriptions/new 404 in 91ms (compile: 6ms, proxy.ts: 3ms, render: 81ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 323ms (compile: 62ms, proxy.ts: 5ms, render: 256ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoices 404 in 33ms (compile: 6ms, proxy.ts: 5ms, render: 21ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoices 404 in 96ms (compile: 8ms, proxy.ts: 8ms, render: 80ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 307ms (compile: 47ms, proxy.ts: 4ms, render: 256ms)
+Cancellation link for rivego.lu@hotmail.com: http://localhost:3000/cancel/bf6cab0af6222f1ad9df40b5c1b8bf713fcd0be1ee01c270fb077a7cf5736b16
+ POST /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/cancel 200 in 1138ms (compile: 893ms, proxy.ts: 4ms, render: 241ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 360ms (compile: 46ms, proxy.ts: 4ms, render: 310ms)
+ GET /admin/clients 200 in 28ms (compile: 4ms, proxy.ts: 4ms, render: 20ms)
+ GET /api/clients? 200 in 226ms (compile: 4ms, proxy.ts: 7ms, render: 215ms)
+ GET /api/clients? 200 in 230ms (compile: 3ms, proxy.ts: 3ms, render: 224ms)
+ GET /admin 200 in 49ms (compile: 7ms, proxy.ts: 11ms, render: 31ms)
+ GET /admin/dashboard 200 in 53ms (compile: 4ms, proxy.ts: 6ms, render: 44ms)
+ GET /admin 200 in 32ms (compile: 3ms, proxy.ts: 3ms, render: 26ms)
+ GET /admin/quote 200 in 71ms (compile: 10ms, proxy.ts: 5ms, render: 56ms)
 🔍 VIES lookup: BE0477472701
 ✅ VIES valid: SA ODOO | Autoliquidation: true
- POST /api/vies 200 in 446ms (compile: 3ms, proxy.ts: 6ms, render: 437ms)
-Error: Attempted to call QuotePDF() from the server but QuotePDF is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.
-    at ignore-listed frames {
-  componentStack: '\n' +
-    '    at <anonymous> (/home/ubuntu/Rivego/src/components/pdf/QuotePDF.tsx/__nextjs-internal-proxy.mjs:9:24)'
+ POST /api/vies 200 in 250ms (compile: 4ms, proxy.ts: 4ms, render: 242ms)
+Initiating DocuSeal Session for Quote DEV-202601-845 (rivego.lu@hotmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-845.pdf
+Template created: {
+  id: 353919,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'text',
+      required: true,
+      uuid: '54da0227-5127-4c1f-847c-6c4ef5d8519f',
+      submitter_uuid: '4b0308e9-034d-4daf-b3eb-5b8f994121bf',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: 'f829fc45-39b1-42ff-808e-7a655d5a5cab',
+      submitter_uuid: '4b0308e9-034d-4daf-b3eb-5b8f994121bf',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: '0d0e78ca-0ab5-47b8-acca-3dad63f5fef2',
+      submitter_uuid: '4b0308e9-034d-4daf-b3eb-5b8f994121bf',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-845.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-845.pdf',
+      attachment_uuid: '70b3e65a-3978-4231-bde9-6a376bb105e5'
+    }
+  ],
+  slug: 'DFPpZZn1JZM8AN',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: '4b0308e9-034d-4daf-b3eb-5b8f994121bf'
+    }
+  ],
+  created_at: '2026-01-04T12:38:40.629Z',
+  updated_at: '2026-01-04T12:38:41.030Z',
+  author_id: 14767,
+  external_id: 'fabee2d8-cf7b-4e2e-8ea9-3a387c62dafd',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: 'fabee2d8-cf7b-4e2e-8ea9-3a387c62dafd',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4282767,
+      uuid: '70b3e65a-3978-4231-bde9-6a376bb105e5',
+      url: 'https://docuseal.eu/file/WyJiNzg3MTIyYy1iMGNkLTRiNjktODhhMi1iYjJlMTgyOGE0YTgiLCJibG9iIiwxNzY3NTMyNzIxXQ--6cac4804f595bd8c3d7b5e236914a46363c369c38a7aa63e2ec1107ba88c8b8d/Devis_DEV-202601-845.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyI5OTZhNmRlZi04NTBhLTRjOTEtYTU2Ny1mNmYwNWRiOTc1OWMiLCJibG9iIiwxNzY3NTMyNzIxXQ--c5a338bbf2fe53149874289fcde0da488fc4682673ed1614fdc023fab89d1ff8/0.png',
+      filename: 'Devis_DEV-202601-845.pdf.pdf'
+    }
+  ]
 }
-PDF Generation Error: TypeError: Cannot read properties of null (reading 'props')
-    at POST (src/app/api/generate-pdf/route.ts:12:47)
-  10 |
-  11 |         // Render the PDF to a stream
-> 12 |         const pdfStream = await renderToStream(createElement(QuotePDF, { data }));
-     |                                               ^
-  13 |
-  14 |         // Convert the stream to a Response
-  15 |         // We need to construct a ReadableStream from the NodeJS stream returned by renderToStream
- POST /api/generate-pdf 500 in 1143ms (compile: 889ms, proxy.ts: 5ms, render: 249ms)
- GET /admin/reports 200 in 138ms (compile: 15ms, proxy.ts: 5ms, render: 119ms)
- GET /admin 200 in 31ms (compile: 4ms, proxy.ts: 3ms, render: 23ms)
- GET /admin/clients 200 in 40ms (compile: 5ms, proxy.ts: 3ms, render: 31ms)
- GET /api/clients? 200 in 1258ms (compile: 15ms, proxy.ts: 9ms, render: 1233ms)
- GET /api/clients? 200 in 179ms (compile: 4ms, proxy.ts: 4ms, render: 172ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 126ms (compile: 44ms, proxy.ts: 3ms, render: 79ms)
- GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 392ms (compile: 87ms, proxy.ts: 16ms, render: 289ms)
- GET /api/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 328ms (compile: 17ms, proxy.ts: 10ms, render: 300ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoices 404 in 38ms (compile: 11ms, proxy.ts: 6ms, render: 21ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f/invoices 404 in 105ms (compile: 11ms, proxy.ts: 4ms, render: 91ms)
- GET /admin/clients/5634b5cb-b2c5-424b-9dba-07a85a70ce7f 200 in 322ms (compile: 38ms, proxy.ts: 4ms, render: 280ms)
- GET /admin/clients 200 in 32ms (compile: 7ms, proxy.ts: 5ms, render: 20ms)
- GET /api/clients? 200 in 383ms (compile: 3ms, proxy.ts: 3ms, render: 376ms)
- GET /api/clients? 200 in 215ms (compile: 3ms, proxy.ts: 3ms, render: 209ms)
-[?25h
+Using new template ID: 353919
+DocuSeal Request: {
+  "template_id": "353919",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "rivego.lu@hotmail.com",
+      "name": "Tiago Ribeiro"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 692963,
+    slug: 'fnGbSjjYLhFXxH',
+    uuid: '4b0308e9-034d-4daf-b3eb-5b8f994121bf',
+    name: 'Tiago Ribeiro',
+    email: 'rivego.lu@hotmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 535202,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-04T12:38:41.079Z',
+    updated_at: '2026-01-04T12:38:41.079Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/fnGbSjjYLhFXxH'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 601ms (compile: 6ms, proxy.ts: 9ms, render: 587ms)
+ GET /admin/quote 200 in 132ms (compile: 5ms, proxy.ts: 4ms, render: 124ms)
+ GET /admin/quote 200 in 135ms (compile: 3ms, proxy.ts: 3ms, render: 129ms)
+ GET /admin 200 in 29ms (compile: 3ms, proxy.ts: 4ms, render: 22ms)
+ GET /admin/clients 200 in 65ms (compile: 9ms, proxy.ts: 5ms, render: 51ms)
+ GET /api/clients? 200 in 827ms (compile: 4ms, proxy.ts: 3ms, render: 820ms)
+ GET /api/clients? 200 in 224ms (compile: 9ms, proxy.ts: 5ms, render: 211ms)
+ GET / 200 in 182ms (compile: 3ms, proxy.ts: 3ms, render: 175ms)
+ GET / 200 in 569ms (compile: 4ms, proxy.ts: 4ms, render: 562ms)
+ GET / 200 in 201ms (compile: 10ms, proxy.ts: 4ms, render: 188ms)
+ GET / 200 in 196ms (compile: 10ms, proxy.ts: 3ms, render: 182ms)
+ GET / 200 in 153ms (compile: 4ms, proxy.ts: 3ms, render: 146ms)
+ GET /api/clients?status=inactive 200 in 271ms (compile: 3ms, proxy.ts: 3ms, render: 265ms)
+Error fetching clients: Error: invalid input value for enum client_status: "prospect"
+    at getClients (src/lib/db/supabase.ts:164:22)
+    at async GET (src/app/api/clients/route.ts:20:25)
+  162 |
+  163 |     const { data, error } = await supabaseAdmin.select<Client>('clients', query);
+> 164 |     if (error) throw new Error(error.message);
+      |                      ^
+  165 |     return data || [];
+  166 | }
+  167 |
+ GET /api/clients?status=prospect 500 in 386ms (compile: 3ms, proxy.ts: 3ms, render: 380ms)
+ GET /api/clients?status=pending_cancellation 200 in 270ms (compile: 3ms, proxy.ts: 4ms, render: 262ms)
+ GET /api/clients? 200 in 271ms (compile: 3ms, proxy.ts: 3ms, render: 265ms)
+ GET /admin/clients 200 in 160ms (compile: 3ms, proxy.ts: 5ms, render: 152ms)
+ GET /api/clients? 200 in 234ms (compile: 3ms, proxy.ts: 3ms, render: 228ms)
+ GET /api/clients?status=pending_cancellation 200 in 192ms (compile: 3ms, proxy.ts: 3ms, render: 186ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 123ms (compile: 58ms, proxy.ts: 3ms, render: 61ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 492ms (compile: 149ms, proxy.ts: 8ms, render: 335ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 289ms (compile: 26ms, proxy.ts: 19ms, render: 244ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 330ms (compile: 49ms, proxy.ts: 3ms, render: 277ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 465ms (compile: 55ms, proxy.ts: 3ms, render: 407ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoice 404 in 38ms (compile: 10ms, proxy.ts: 4ms, render: 24ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/invoice 404 in 112ms (compile: 11ms, proxy.ts: 5ms, render: 95ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 317ms (compile: 49ms, proxy.ts: 4ms, render: 264ms)
+ GET /admin/clients 200 in 29ms (compile: 3ms, proxy.ts: 3ms, render: 23ms)
+ GET /api/clients? 200 in 476ms (compile: 6ms, proxy.ts: 4ms, render: 466ms)
+ GET /api/clients? 200 in 193ms (compile: 3ms, proxy.ts: 3ms, render: 186ms)
+ GET /admin/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 204ms (compile: 49ms, proxy.ts: 4ms, render: 152ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 955ms (compile: 322ms, proxy.ts: 38ms, render: 595ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 291ms (compile: 17ms, proxy.ts: 11ms, render: 263ms)
+ HEAD / 200 in 150ms (compile: 9ms, proxy.ts: 6ms, render: 134ms)
+ GET /admin/clients 200 in 34ms (compile: 4ms, proxy.ts: 4ms, render: 27ms)
+ GET /api/clients? 200 in 324ms (compile: 3ms, proxy.ts: 5ms, render: 316ms)
+ GET /api/clients? 200 in 226ms (compile: 3ms, proxy.ts: 3ms, render: 220ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 126ms (compile: 48ms, proxy.ts: 3ms, render: 75ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 509ms (compile: 115ms, proxy.ts: 8ms, render: 387ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 277ms (compile: 29ms, proxy.ts: 16ms, render: 232ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/edit 200 in 120ms (compile: 50ms, proxy.ts: 5ms, render: 64ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 530ms (compile: 118ms, proxy.ts: 10ms, render: 402ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 275ms (compile: 22ms, proxy.ts: 11ms, render: 243ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 125ms (compile: 50ms, proxy.ts: 4ms, render: 72ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 568ms (compile: 136ms, proxy.ts: 7ms, render: 425ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 313ms (compile: 29ms, proxy.ts: 38ms, render: 246ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/subscriptions/new 404 in 43ms (compile: 13ms, proxy.ts: 3ms, render: 26ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/subscriptions/new 404 in 102ms (compile: 7ms, proxy.ts: 5ms, render: 90ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 430ms (compile: 80ms, proxy.ts: 4ms, render: 346ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/edit 200 in 123ms (compile: 52ms, proxy.ts: 4ms, render: 67ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 510ms (compile: 115ms, proxy.ts: 11ms, render: 383ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 317ms (compile: 43ms, proxy.ts: 15ms, render: 258ms)
+ PATCH /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 270ms (compile: 54ms, proxy.ts: 4ms, render: 212ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 235ms (compile: 123ms, proxy.ts: 8ms, render: 104ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 164ms (compile: 22ms, proxy.ts: 15ms, render: 127ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 316ms (compile: 22ms, proxy.ts: 15ms, render: 279ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 298ms (compile: 14ms, proxy.ts: 12ms, render: 272ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/edit 200 in 128ms (compile: 51ms, proxy.ts: 3ms, render: 74ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 357ms (compile: 107ms, proxy.ts: 7ms, render: 243ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 265ms (compile: 19ms, proxy.ts: 13ms, render: 232ms)
+ PATCH /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 183ms (compile: 49ms, proxy.ts: 4ms, render: 130ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 273ms (compile: 133ms, proxy.ts: 8ms, render: 132ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 217ms (compile: 29ms, proxy.ts: 27ms, render: 160ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 263ms (compile: 11ms, proxy.ts: 7ms, render: 245ms)
+ GET /api/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 253ms (compile: 18ms, proxy.ts: 13ms, render: 222ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/invoice 404 in 41ms (compile: 7ms, proxy.ts: 4ms, render: 30ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a/invoice 404 in 106ms (compile: 7ms, proxy.ts: 3ms, render: 95ms)
+ GET /admin/clients/06b496ea-09e2-4644-bcab-67e34dbb964a 200 in 326ms (compile: 50ms, proxy.ts: 3ms, render: 272ms)
+ GET /admin/clients 200 in 36ms (compile: 3ms, proxy.ts: 3ms, render: 29ms)
+ GET /api/clients? 200 in 322ms (compile: 3ms, proxy.ts: 3ms, render: 316ms)
+ GET /api/clients? 200 in 226ms (compile: 4ms, proxy.ts: 4ms, render: 218ms)
+ GET /admin 200 in 55ms (compile: 3ms, proxy.ts: 7ms, render: 45ms)
+ GET /admin/tasks 200 in 49ms (compile: 16ms, proxy.ts: 5ms, render: 28ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 382ms (compile: 68ms, proxy.ts: 6ms, render: 309ms)
+Error fetching tasks: Error: Could not find the table 'public.tasks' in the schema cache
+    at GET (src/app/api/tasks/route.ts:45:26)
+  43 |         const { data: tasks, error } = await supabaseAdmin.select<Task>('tasks', query);
+  44 |
+> 45 |         if (error) throw new Error(error.message);
+     |                          ^
+  46 |
+  47 |         // Enrich with client info
+  48 |         const enrichedTasks = await Promise.all((tasks || []).map(async (task) => {
+ GET /api/tasks? 500 in 547ms (compile: 39ms, proxy.ts: 26ms, render: 482ms)
+ GET /admin 200 in 30ms (compile: 4ms, proxy.ts: 4ms, render: 22ms)
+✓ Compiled in 344ms
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 396ms (compile: 6ms, proxy.ts: 5ms, render: 385ms)
+ HEAD / 200 in 201ms (compile: 13ms, proxy.ts: 10ms, render: 178ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 399ms (compile: 5ms, proxy.ts: 6ms, render: 388ms)
+✓ Compiled in 408ms
+✓ Compiled in 132ms
+ GET /admin 200 in 124ms (compile: 10ms, proxy.ts: 4ms, render: 110ms)
+ GET /admin/quote 200 in 47ms (compile: 12ms, proxy.ts: 4ms, render: 31ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 224ms (compile: 6ms, proxy.ts: 4ms, render: 214ms)
+🔍 VIES lookup: LU35916651
+✅ VIES valid: RIVEGO TRADE & MARKETING GROUP SARL-S | Autoliquidation: false
+ POST /api/vies 200 in 151ms (compile: 5ms, proxy.ts: 4ms, render: 142ms)
+Initiating DocuSeal Session for Quote DEV-202601-779 (tiagoribeiro2609@hotmail.com)...
+Creating DocuSeal Template from PDF: Devis_DEV-202601-779.pdf
+Template created: {
+  id: 353958,
+  archived_at: null,
+  fields: [
+    {
+      name: 'Bon pour accord',
+      type: 'text',
+      required: true,
+      uuid: '4058efd5-fb72-466e-8628-e798d3b51f4b',
+      submitter_uuid: '0e6f5c45-3164-4200-9888-c0f9b69b12b2',
+      areas: [Array]
+    },
+    {
+      name: 'Date',
+      type: 'date',
+      required: true,
+      uuid: '2133a621-e8a6-4e87-835c-c3add65e1595',
+      submitter_uuid: '0e6f5c45-3164-4200-9888-c0f9b69b12b2',
+      areas: [Array]
+    },
+    {
+      name: 'Signature Client',
+      type: 'signature',
+      required: true,
+      uuid: 'd8d07693-d15e-4936-83d4-0ddfedd88f09',
+      submitter_uuid: '0e6f5c45-3164-4200-9888-c0f9b69b12b2',
+      areas: [Array]
+    }
+  ],
+  name: 'Devis_DEV-202601-779.pdf',
+  preferences: {},
+  schema: [
+    {
+      name: 'Devis_DEV-202601-779.pdf',
+      attachment_uuid: '23ad5c90-14fd-4176-aa28-d1af64fc9a81'
+    }
+  ],
+  slug: 'nRyxYCXpSnyS3i',
+  source: 'api',
+  submitters: [
+    {
+      name: 'First Party',
+      uuid: '0e6f5c45-3164-4200-9888-c0f9b69b12b2'
+    }
+  ],
+  created_at: '2026-01-04T14:39:21.172Z',
+  updated_at: '2026-01-04T14:39:21.562Z',
+  author_id: 14767,
+  external_id: '5cbd2fba-48ba-4f23-b49c-948ef78ea57a',
+  folder_id: 20770,
+  shared_link: true,
+  application_key: '5cbd2fba-48ba-4f23-b49c-948ef78ea57a',
+  folder_name: 'Default',
+  author: {
+    id: 14767,
+    email: 'login+test@rivego.lu',
+    first_name: 'Testing',
+    last_name: 'Environment'
+  },
+  documents: [
+    {
+      id: 4283083,
+      uuid: '23ad5c90-14fd-4176-aa28-d1af64fc9a81',
+      url: 'https://docuseal.eu/file/WyI4MGI5YjYwNC0zYzQ5LTRhNWItODc2Ny1hYjgyOWM1ODQxOTciLCJibG9iIiwxNzY3NTM5OTYxXQ--98eca24d3df679e72f9a0ff9191495bab6c7c6d88234508bf358f89e1b119c29/Devis_DEV-202601-779.pdf.pdf',
+      preview_image_url: 'https://docuseal.eu/file/WyIxODRhOGIyZi0xNTM5LTRjNTgtYjFjZS1iMTkxOWI1ZWJmOGYiLCJibG9iIiwxNzY3NTM5OTYxXQ--e8ad8a3249304090a0912bcd280e3ad6ff326181e0c34e6e610e1b161e43549c/0.png',
+      filename: 'Devis_DEV-202601-779.pdf.pdf'
+    }
+  ]
+}
+Using new template ID: 353958
+DocuSeal Request: {
+  "template_id": "353958",
+  "send_email": false,
+  "submitters": [
+    {
+      "email": "tiagoribeiro2609@hotmail.com",
+      "name": "Tiago Ribeiro"
+    }
+  ]
+}
+DocuSeal Submission Response: [
+  {
+    id: 693065,
+    slug: 'LLvTeBFHtrkSjk',
+    uuid: '0e6f5c45-3164-4200-9888-c0f9b69b12b2',
+    name: 'Tiago Ribeiro',
+    email: 'tiagoribeiro2609@hotmail.com',
+    phone: null,
+    completed_at: null,
+    declined_at: null,
+    external_id: null,
+    submission_id: 535274,
+    metadata: {},
+    opened_at: null,
+    sent_at: null,
+    created_at: '2026-01-04T14:39:21.607Z',
+    updated_at: '2026-01-04T14:39:21.607Z',
+    status: 'awaiting',
+    application_key: null,
+    values: [],
+    preferences: { send_email: false, send_sms: false },
+    role: 'First Party',
+    embed_src: 'https://docuseal.eu/s/LLvTeBFHtrkSjk'
+  }
+]
+ POST /api/invoicing/sign-docuseal 200 in 593ms (compile: 9ms, proxy.ts: 8ms, render: 576ms)
+ GET /admin/quote 200 in 138ms (compile: 3ms, proxy.ts: 4ms, render: 131ms)
+ GET /admin/dashboard 200 in 52ms (compile: 10ms, proxy.ts: 6ms, render: 36ms)
+ GET /admin 200 in 30ms (compile: 4ms, proxy.ts: 5ms, render: 22ms)
+ GET /admin/clients 200 in 45ms (compile: 7ms, proxy.ts: 3ms, render: 34ms)
+ GET /api/clients? 200 in 1346ms (compile: 6ms, proxy.ts: 4ms, render: 1337ms)
+ GET /api/clients? 200 in 277ms (compile: 6ms, proxy.ts: 3ms, render: 268ms)
+ GET /admin/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 256ms (compile: 147ms, proxy.ts: 4ms, render: 105ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 449ms (compile: 138ms, proxy.ts: 13ms, render: 299ms)
+ GET /api/clients/95549f3e-598d-4852-bfeb-b3c359d8cfc8 200 in 531ms (compile: 29ms, proxy.ts: 22ms, render: 480ms)
+ GET /admin/clients 200 in 137ms (compile: 4ms, proxy.ts: 5ms, render: 128ms)
+ GET /api/clients? 200 in 280ms (compile: 7ms, proxy.ts: 3ms, render: 270ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 120ms (compile: 53ms, proxy.ts: 4ms, render: 63ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 451ms (compile: 120ms, proxy.ts: 10ms, render: 321ms)
+ GET /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 661ms (compile: 25ms, proxy.ts: 15ms, render: 621ms)
+Contract generation error: TypeError: Cannot read properties of undefined (reading 'reduce')
+    at POST (src/app/api/clients/[id]/generate-contract/route.ts:44:49)
+  42 |             oneTimeTotal: '0.00',
+  43 |             oneTimeAmountTtc: '0.00',
+> 44 |             monthlyAmount: client.subscriptions.reduce((sum, s) => sum + s.monthly_amount, 0).toFixed(2),
+     |                                                 ^
+  45 |             monthlyAmountTtc: (client.subscriptions.reduce((sum, s) => sum + s.monthly_amount, 0) * 1.17).toFixed(2),
+  46 |
+  47 |             discountPercent: 0,
+ POST /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/generate-contract 500 in 1329ms (compile: 1103ms, proxy.ts: 5ms, render: 220ms)
+Contract generation error: TypeError: Cannot read properties of undefined (reading 'reduce')
+    at POST (src/app/api/clients/[id]/generate-contract/route.ts:44:49)
+  42 |             oneTimeTotal: '0.00',
+  43 |             oneTimeAmountTtc: '0.00',
+> 44 |             monthlyAmount: client.subscriptions.reduce((sum, s) => sum + s.monthly_amount, 0).toFixed(2),
+     |                                                 ^
+  45 |             monthlyAmountTtc: (client.subscriptions.reduce((sum, s) => sum + s.monthly_amount, 0) * 1.17).toFixed(2),
+  46 |
+  47 |             discountPercent: 0,
+ POST /api/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/generate-contract 500 in 495ms (compile: 52ms, proxy.ts: 4ms, render: 440ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/subscriptions/new 404 in 51ms (compile: 23ms, proxy.ts: 5ms, render: 23ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132/subscriptions/new 404 in 99ms (compile: 21ms, proxy.ts: 3ms, render: 75ms)
+ GET /admin/clients/a14b50d8-2e6c-41ab-b0a5-c9160fdba132 200 in 938ms (compile: 68ms, proxy.ts: 3ms, render: 866ms)
+ GET /admin/clients 200 in 42ms (compile: 6ms, proxy.ts: 5ms, render: 30ms)
+ GET /api/clients? 200 in 356ms (compile: 3ms, proxy.ts: 3ms, render: 350ms)
+ GET /api/clients? 200 in 225ms (compile: 3ms, proxy.ts: 3ms, render: 219ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 145ms (compile: 80ms, proxy.ts: 3ms, render: 61ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 453ms (compile: 114ms, proxy.ts: 11ms, render: 328ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 353ms (compile: 36ms, proxy.ts: 18ms, render: 299ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 365ms (compile: 52ms, proxy.ts: 3ms, render: 310ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 433ms (compile: 117ms, proxy.ts: 10ms, render: 306ms)
+ GET / 200 in 227ms (compile: 7ms, proxy.ts: 8ms, render: 213ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 367ms (compile: 130ms, proxy.ts: 7ms, render: 231ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 446ms (compile: 81ms, proxy.ts: 10ms, render: 356ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 338ms (compile: 55ms, proxy.ts: 7ms, render: 276ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 394ms (compile: 76ms, proxy.ts: 6ms, render: 312ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 308ms (compile: 52ms, proxy.ts: 3ms, render: 253ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 376ms (compile: 102ms, proxy.ts: 7ms, render: 268ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 294ms (compile: 49ms, proxy.ts: 3ms, render: 241ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 333ms (compile: 53ms, proxy.ts: 8ms, render: 272ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 314ms (compile: 54ms, proxy.ts: 5ms, render: 255ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 483ms (compile: 118ms, proxy.ts: 9ms, render: 355ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 287ms (compile: 59ms, proxy.ts: 4ms, render: 225ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 316ms (compile: 65ms, proxy.ts: 4ms, render: 247ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 298ms (compile: 54ms, proxy.ts: 4ms, render: 240ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 301ms (compile: 61ms, proxy.ts: 4ms, render: 236ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 378ms (compile: 98ms, proxy.ts: 4ms, render: 276ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 412ms (compile: 59ms, proxy.ts: 4ms, render: 349ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 368ms (compile: 71ms, proxy.ts: 8ms, render: 289ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 1094ms (compile: 59ms, proxy.ts: 3ms, render: 1032ms)
+ GET /admin/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 299ms (compile: 55ms, proxy.ts: 3ms, render: 241ms)
+ GET /api/clients/e17e5177-adcb-435e-9a66-12cec9782538 200 in 430ms (compile: 74ms, proxy.ts: 7ms, render: 349ms)
+✓ Compiled in 215ms
+✓ Compiled in 179ms
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 973ms (compile: 96ms, proxy.ts: 57ms, render: 819ms)
+ HEAD / 200 in 260ms (compile: 18ms, proxy.ts: 10ms, render: 233ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 373ms (compile: 3ms, proxy.ts: 7ms, render: 363ms)
+ HEAD / 200 in 130ms (compile: 3ms, proxy.ts: 4ms, render: 123ms)
+Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+ POST / 404 in 783ms (compile: 9ms, proxy.ts: 4ms, render: 771ms)
+ HEAD / 200 in 126ms (compile: 4ms, proxy.ts: 4ms, render: 118ms)
+ GET / 200 in 160ms (compile: 3ms, proxy.ts: 3ms, render: 154ms)

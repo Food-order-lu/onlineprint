@@ -1,5 +1,0 @@
-# Uploads Directory
-
-This directory stores uploaded files (PDFs, images, etc.).
-
-In production, configure cloud storage (S3, Google Cloud Storage, etc.).

@@ -262,6 +262,12 @@ export default function AdminClientsPage() {
                                         <Mail size={14} className="text-gray-400" />
                                         <span className="truncate">{client.email}</span>
                                     </div>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <div className={`w-2.5 h-2.5 rounded-full ${client.has_mandate ? 'bg-green-500' : 'bg-red-500'}`} />
+                                        <span className={`text-xs font-medium ${client.has_mandate ? 'text-green-600' : 'text-red-500'}`}>
+                                            {client.has_mandate ? 'Mandat SEPA Actif' : 'Pas de Mandat SEPA'}
+                                        </span>
+                                    </div>
                                     <div className="flex items-center justify-between pt-4">
                                         <TypeBadge type={client.client_type} />
                                         <div className="text-right">

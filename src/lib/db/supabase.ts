@@ -6,6 +6,7 @@ import {
     Subscription,
     Invoice,
     Quote,
+    Contract,
     GoCardlessMandate,
     ClientWithSubscriptions,
     ClientStatus,
@@ -343,6 +344,19 @@ export async function generateQuoteNumber(): Promise<string> {
 
     const count = (data?.length || 0) + 1;
     return `DEV-${year}${month}-${String(count).padStart(3, '0')}`;
+}
+
+// =============================================================================
+// HELPER FUNCTIONS - CONTRACTS
+// =============================================================================
+
+export async function getContractsByClient(clientId: string): Promise<Contract[]> {
+    const { data, error } = await supabaseAdmin.select<Contract>(
+        'contracts',
+        `client_id=eq.${clientId}&order=created_at.desc`
+    );
+    if (error) throw new Error(error.message);
+    return data || [];
 }
 
 // =============================================================================

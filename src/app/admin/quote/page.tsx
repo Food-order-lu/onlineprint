@@ -554,15 +554,8 @@ export default function QuoteBuilderPage() {
 
                                             const json = await res.json();
                                             if (json.success && json.url) {
-                                                // 4. Open Signing URL
-                                                window.open(json.url, '_blank');
-                                                btn.innerHTML = '✅ Ouverture...';
-
-                                                // Optional: Reset button after a delay
-                                                setTimeout(() => {
-                                                    btn.innerHTML = originalText;
-                                                    btn.disabled = false;
-                                                }, 3000);
+                                                // 4. Navigate to Signing URL (same tab to avoid popup blocker)
+                                                window.location.href = json.url;
                                             } else {
                                                 alert(`Erreur DocuSeal: ${json.error}`);
                                                 btn.innerHTML = originalText;

@@ -7,7 +7,8 @@ import {
     getClientWithSubscriptions,
     updateClient,
     deleteClient,
-    getInvoicesByClient
+    getInvoicesByClient,
+    getContractsByClient
 } from '@/lib/db/supabase';
 
 interface RouteParams {
@@ -31,10 +32,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         // Get invoices
         const invoices = await getInvoicesByClient(id);
 
+        // Get contracts
+        const contracts = await getContractsByClient(id);
+
         return NextResponse.json({
             client: {
                 ...clientWithSubs,
                 invoices,
+                contracts,
             }
         });
     } catch (error) {

@@ -56,7 +56,7 @@ export default function EditClientPage({ params }: { params: Promise<{ id: strin
         watch,
         formState: { errors }
     } = useForm<ClientFormData>({
-        resolver: zodResolver(clientSchema),
+        resolver: zodResolver(clientSchema) as any,
         defaultValues: {
             commission_mode: 'hybrid',
             commission_base_fee: 60,

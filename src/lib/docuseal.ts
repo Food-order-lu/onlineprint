@@ -100,13 +100,13 @@ export class DocuSealClient {
               {
                 name: 'Bon pour accord',
                 role: 'First Party',
-                type: 'signature',  // Changed to signature for handwriting
+                type: 'text',  // Text field for "Bon pour accord" handwritten mention
                 areas: [{
                   page: 1,
-                  x: 0.05,   // Left side
-                  y: 0.92,   // Very bottom of page - 92% from top
+                  x: 0.05,   // Left side - aligned with "Mention manuscrite"
+                  y: 0.77,   // Position at "Acceptation du devis" section
                   w: 0.40,   // 40% width
-                  h: 0.025   // 2.5% height - smaller for text
+                  h: 0.02    // 2% height for text
                 }]
               },
               {
@@ -115,8 +115,8 @@ export class DocuSealClient {
                 type: 'date',
                 areas: [{
                   page: 1,
-                  x: 0.55,   // Right side
-                  y: 0.92,   // Same row as Bon pour accord
+                  x: 0.55,   // Right side - aligned with "Date" label
+                  y: 0.77,   // Same row as Bon pour accord
                   w: 0.25,   // 25% width
                   h: 0.02    // 2% height
                 }]
@@ -127,10 +127,10 @@ export class DocuSealClient {
                 type: 'signature',
                 areas: [{
                   page: 1,
-                  x: 0.05,   // Left aligned
-                  y: 0.95,   // Below date row - 95% from top
-                  w: 0.50,   // 50% width
-                  h: 0.035   // 3.5% height for signature
+                  x: 0.05,   // Left aligned with signature box
+                  y: 0.81,   // Below "Bon pour accord" row
+                  w: 0.45,   // 45% width - match signature box width
+                  h: 0.04    // 4% height for signature
                 }]
               }
             ]

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
     CheckCircle,
     Download,
@@ -204,9 +204,15 @@ export default function SignQuoteClient({ demoQuote: initialQuote }: { demoQuote
         }
     }, [quote, signed]);
 
+    const router = useRouter();
+
     const handleSignComplete = (data: any) => {
         console.log('Signature completed:', data);
         setSigned(true);
+        // Redirect to success page for next steps - Force top level redirect in case of iframe
+        if (typeof window !== 'undefined') {
+            window.top!.location.href = `/quote/${quoteId}/success`;
+        }
     };
 
     const handleDownloadContract = async () => {

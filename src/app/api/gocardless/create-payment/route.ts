@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { gocardless } from '@/lib/gocardless/client';
-import { supabaseAdmin, getClientById } from '@/lib/db/supabase';
+import { supabaseAdmin, getClientById, getMandateByClient } from '@/lib/db/supabase';
 import { randomUUID } from 'crypto';
 
 // POST /api/gocardless/create-payment
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
         // 1. Get Idempotency Key (From Header or Generate)
         // This prevents double-charging if the request is retried
-        const idempotencyKey = request.headers.get('Idempotency-Key') || randomUUID();
+        const idempotencyKey = (request.headers.get('Idempotency-Key') || randomUUID()) as string;
 
         // 2. Validate Input
         if (!client_id || !amount) {
@@ -47,19 +47,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Check active mandate
-        const { data: mandates } = await supabaseAdmin
-            .from('gocardless_mandates')
-            .select('*')
-            .eq('client_id', client_id)
-            .eq('status', 'active')
-            .order('created_at', { ascending: false })
-            .limit(1);
+        // Check active mandate
+        // Use helper function which abstracts the custom Supabase client query
+        const activeMandate = await getMandateByClient(client_id); // Imported from @/lib/db/supabase
 
-        const activeMandate = mandates?.[0];
-
-        if (!activeMandate) {
+        if (!activeMandate || !activeMandate.mandate_id) {
             return NextResponse.json(
-                { error: 'No active mandate found for this client.' },
+                { error: 'No active mandate ID found for this client.' },
                 { status: 400 }
             );
         }

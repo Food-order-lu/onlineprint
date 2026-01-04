@@ -47,6 +47,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
                 sepa_exception: false,
                 sepa_exception_reason: null,
                 notes: null,
+                commission_config: null,
+                zoho_contact_id: null,
+                payment_method: 'manual',
             });
 
             clientId = newClient.id;

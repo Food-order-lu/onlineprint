@@ -224,16 +224,47 @@ export const ContractPDF = ({ data }: { data: ContractData }) => (
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>6. Conditions financières</Text>
 
-                <Text style={[styles.text, styles.bold, { marginTop: 4 }]}>6.1 Frais ponctuels (Création & Setup)</Text>
-                <Text style={styles.text}>HT : {data.oneTimeTotal} €</Text>
-                <Text style={styles.text}>TTC : {data.oneTimeAmountTtc} €</Text>
+                <View style={{ marginBottom: 10 }}>
+                    <Text style={[styles.text, styles.bold, { borderBottomWidth: 1, borderBottomColor: '#eee', paddingBottom: 2 }]}>
+                        6.1 Services Ponctuels (One-Off)
+                    </Text>
+                    <Text style={styles.text}>Ces frais couvrent la conception, création, et mise en place initiale.</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
+                        <Text style={styles.text}>Total HT :</Text>
+                        <Text style={styles.bold}>{data.oneTimeTotal} €</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.text}>TVA (17%) :</Text>
+                        <Text style={styles.text}>{(parseFloat(data.oneTimeAmountTtc) - parseFloat(data.oneTimeTotal)).toFixed(2)} €</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 2 }}>
+                        <Text style={styles.bold}>Total TTC :</Text>
+                        <Text style={styles.bold}>{data.oneTimeAmountTtc} €</Text>
+                    </View>
+                </View>
 
-                <Text style={[styles.text, styles.bold, { marginTop: 4 }]}>6.2 Abonnement mensuel (Hébergement, Maintenance & Services)</Text>
-                <Text style={styles.text}>HT : {data.monthlyAmount} €</Text>
-                <Text style={styles.text}>TTC : {data.monthlyAmountTtc} €</Text>
+                <View>
+                    <Text style={[styles.text, styles.bold, { borderBottomWidth: 1, borderBottomColor: '#eee', paddingBottom: 2 }]}>
+                        6.2 Services Mensuels (Récurrents)
+                    </Text>
+                    <Text style={styles.text}>Ces frais couvrent l'hébergement, la maintenance, les licences logicielles et le support.</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
+                        <Text style={styles.text}>Mensualité HT :</Text>
+                        <Text style={styles.bold}>{data.monthlyAmount} € / mois</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.text}>TVA (17%) :</Text>
+                        <Text style={styles.text}>{(parseFloat(data.monthlyAmountTtc) - parseFloat(data.monthlyAmount)).toFixed(2)} €</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 2 }}>
+                        <Text style={styles.bold}>Mensualité TTC :</Text>
+                        <Text style={styles.bold}>{data.monthlyAmountTtc} € / mois</Text>
+                    </View>
+                </View>
 
-                <Text style={[styles.text, { marginTop: 4 }]}>Les factures sont émises mensuellement et automatiquement.</Text>
-                <Text style={styles.text}>TVA applicable : taux luxembourgeois en vigueur (17 %).</Text>
+                <Text style={[styles.text, { marginTop: 8, fontSize: 9, color: '#666' }]}>
+                    Les factures récurrentes sont émises mensuellement. Le paiement s'effectue par prélèvement automatique SEPA.
+                </Text>
             </View>
 
             {/* 7. Remises */}
@@ -312,7 +343,10 @@ export const ContractPDF = ({ data }: { data: ContractData }) => (
             {/* 13. Résiliation */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>13. Résiliation</Text>
-                <Text style={styles.text}>Chaque Partie peut résilier le contrat à tout moment, moyennant un préavis écrit de deux (2) mois.</Text>
+                <Text style={styles.text}>
+                    Le présent contrat peut être résilié par l'une ou l'autre des Parties moyennant un <Text style={styles.bold}>préavis écrit de deux (2) mois</Text> avant la fin de la période contractuelle en cours.
+                </Text>
+                <Text style={styles.text}>La résiliation doit être notifiée par lettre recommandée avec accusé de réception ou par email avec confirmation de lecture.</Text>
                 <Text style={styles.text}>En cas de manquement grave non corrigé sous 30 jours après mise en demeure, la résiliation pourra être immédiate.</Text>
             </View>
 

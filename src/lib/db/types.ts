@@ -225,32 +225,18 @@ export interface Contract {
   client_id: string;
   quote_id: string | null;
 
-  contract_number: string;
-
-  docuseal_submission_id: string | null;
-  docuseal_template_id: string | null;
-
+  document_url: string;
   status: ContractStatus;
 
-  services: ContractService[];
-  terms: string | null;
-
-  start_date: string | null;
-  end_date: string | null;
   signed_at: string | null;
-
-  pdf_url: string | null;
+  valid_from: string | null;
+  valid_until: string | null;
 
   created_at: string;
   updated_at: string;
 }
 
-export interface ContractService {
-  service_type: ServiceType;
-  service_name: string;
-  monthly_amount?: number;
-  one_time_amount?: number;
-}
+
 
 export interface CancellationRequest {
   id: string;

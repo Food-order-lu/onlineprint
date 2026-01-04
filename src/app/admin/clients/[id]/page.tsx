@@ -65,6 +65,15 @@ interface Mandate {
     created_at: string;
 }
 
+interface Contract {
+    id: string;
+    document_url: string;
+    status: 'draft' | 'sent' | 'signed' | 'expired' | 'terminated';
+    signed_at: string | null;
+    valid_from: string | null;
+    valid_until: string | null;
+}
+
 interface Client {
     id: string;
     company_name: string;
@@ -86,6 +95,7 @@ interface Client {
     created_at: string;
     subscriptions: Subscription[];
     invoices: Invoice[];
+    contracts: Contract[];
     mandate: Mandate | null;
     total_monthly: number;
 }
@@ -227,6 +237,42 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
         }
     }
 
+    // Generate Contract PDF
+    async function handleGenerateContract() {
+        setLoading(true); // Re-using loading state or create a new one?
+        // Let's use a local loading state to not hide the whole UI
+    }
+
+    const [generatingContract, setGeneratingContract] = useState(false);
+
+    async function generateContract() {
+        setGeneratingContract(true);
+        try {
+            const response = await fetch(`/api/clients/${resolvedParams.id}/generate-contract`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({}) // Can pass quoteId if needed later
+            });
+
+            if (!response.ok) throw new Error('Failed to generate contract');
+
+            // Handle PDF download
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Contrat-${client?.company_name}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (e) {
+            console.error(e);
+            alert('Erreur lors de la génération du contrat');
+        } finally {
+            setGeneratingContract(false);
+        }
+    }
+
     if (loading) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
@@ -287,6 +333,16 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                             <CreditCard size={14} />
                             {client.client_type === 'new' ? 'SEPA' : 'Legacy'}
                         </span>
+
+                        {/* Generate Contract Button in Header */}
+                        <button
+                            onClick={generateContract}
+                            disabled={generatingContract}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                        >
+                            {generatingContract ? <Loader2 size={16} className="animate-spin" /> : <FileSignature size={16} />}
+                            Générer Contrat
+                        </button>
                     </div>
                 </div>
 
@@ -451,6 +507,56 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
 
                     {/* Right column - Subscriptions & Invoices */}
                     <div className="lg:col-span-2 space-y-6">
+
+                        {/* Contracts */}
+                        <Section title="Contrats" icon={FileSignature}>
+                            {client.contracts && client.contracts.length > 0 ? (
+                                <div className="space-y-3">
+                                    {client.contracts.map((contract) => (
+                                        <div key={contract.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <p className="font-bold text-gray-900">Contrat de Service</p>
+                                                    <span className={`px-2 py-0.5 border rounded text-xs font-semibold ${contract.status === 'signed' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-200'
+                                                        }`}>
+                                                        {contract.status === 'signed' ? 'Signé' : contract.status}
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-gray-500">
+                                                    Signé le {contract.signed_at ? new Date(contract.signed_at).toLocaleDateString('fr-FR') : '-'}
+                                                </p>
+                                                {contract.valid_until && (
+                                                    <p className="text-xs text-gray-400 mt-1">
+                                                        Valide jusqu'au {new Date(contract.valid_until).toLocaleDateString('fr-FR')}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <a
+                                                href={contract.document_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-3 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                                            >
+                                                Voir PDF
+                                            </a>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-6">
+                                    <FileText size={32} className="text-gray-300 mx-auto mb-2" />
+                                    <p className="text-gray-500">Aucun contrat signé</p>
+                                    <button
+                                        onClick={generateContract}
+                                        disabled={generatingContract}
+                                        className="mt-2 text-sm text-blue-500 hover:underline disabled:opacity-50"
+                                    >
+                                        {generatingContract ? 'Génération...' : 'Générer un contrat'}
+                                    </button>
+                                </div>
+                            )}
+                        </Section>
+
                         {/* Subscriptions */}
                         <Section
                             title="Abonnements"
