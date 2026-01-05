@@ -62,7 +62,6 @@ export default function DashboardGlobalPage() {
                 >
                     <ArrowUpRight size={20} />
                 </button> 
-                */} 
                 */}
             </div>
 

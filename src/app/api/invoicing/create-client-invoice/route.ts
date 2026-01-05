@@ -68,18 +68,20 @@ export async function POST(request: NextRequest) {
         const localInvoice = await createInvoice({
             client_id,
             invoice_number: zohoInvoice.invoice_number,
-            subtotal_ht: subtotal,
+            subtotal: subtotal,
             vat_rate: vatRate,
             vat_amount: vatAmount,
-            total_ttc: total,
-            payment_method: client.payment_method || 'transfer',
-            status: 'pending',
+            total: total,
+
+            status: 'sent',
             external_id: zohoInvoice.invoice_id,
             external_provider: 'zoho',
             gocardless_payment_id: null,
             issued_at: new Date().toISOString(),
             due_at: dueDate.toISOString(),
             paid_at: null,
+            period_start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+            period_end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString(),
         });
 
         // 6. Mark one-time charges as invoiced

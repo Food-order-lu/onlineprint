@@ -100,7 +100,7 @@ export async function POST(
         const stream = await renderToStream(ContractPDF({ data: contractData }));
         const buffer = await streamToBuffer(stream as NodeJS.ReadableStream);
 
-        return new NextResponse(buffer, {
+        return new NextResponse(buffer as any, {
             headers: {
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': `attachment; filename="Contrat-${client.company_name}.pdf"`,

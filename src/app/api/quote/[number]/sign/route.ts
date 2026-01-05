@@ -50,6 +50,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
                 commission_config: null,
                 zoho_contact_id: null,
                 payment_method: 'manual',
+                referral_code: null,
+                referred_by: null,
             });
 
             clientId = newClient.id;

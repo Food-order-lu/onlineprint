@@ -136,6 +136,8 @@ export async function GET(request: NextRequest) {
                     issued_at: new Date().toISOString(),
                     due_at: dueDate.toISOString(),
                     paid_at: null,
+                    period_start: new Date(today.getFullYear(), today.getMonth(), 1).toISOString(),
+                    period_end: new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString(),
                 });
 
                 // 7. Mark one-time charges as invoiced

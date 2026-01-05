@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { zoho } from '@/lib/invoicing/zoho';
 import { supabaseAdmin } from '@/lib/db/supabase';
+import type { OneTimeCharge } from '@/lib/db/types';
 
 // POST /api/invoicing/create-draft
 export async function POST(request: NextRequest) {
@@ -30,13 +31,12 @@ export async function POST(request: NextRequest) {
         let clientId = report_data.client_id;
 
         if (!clientId) {
-            const { data: clients } = await supabaseAdmin
-                .from('clients')
-                .select('id')
-                .eq('email', clientDetails.email || '')
-                .single();
+            const { data: clients } = await supabaseAdmin.select<{ id: string }>(
+                'clients',
+                `email=eq.${clientDetails.email || ''}`
+            );
 
-            if (clients) clientId = clients.id;
+            if (clients && clients.length > 0) clientId = clients[0].id;
         }
 
         if (!clientId) {
@@ -63,14 +63,14 @@ export async function POST(request: NextRequest) {
 
         // 4. Create OneTimeCharge (Pending)
         // This will be picked up by the cron job on the 7th
-        const { data: charge, error: chargeError } = await supabaseAdmin.insert('one_time_charges', {
+        const { data: charge, error: chargeError } = await supabaseAdmin.insert<OneTimeCharge>('one_time_charges', {
             client_id: clientId,
             description: description,
             amount: commissionAmount,
             invoiced: false,
             invoice_id: null,
             created_at: new Date().toISOString()
-        }).select().single();
+        });
 
         if (chargeError) throw new Error(chargeError.message);
 
@@ -79,9 +79,8 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            invoice_id: invoice.invoice_id,
-            invoice_number: invoice.invoice_number,
-            status: 'draft'
+            charge_id: charge && charge.length > 0 ? charge[0].id : null,
+            status: 'queued'
         });
 
     } catch (error) {

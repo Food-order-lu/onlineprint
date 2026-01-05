@@ -88,6 +88,8 @@ export async function POST(request: NextRequest) {
             commission_config: body.commission_config || null,
             payment_method: body.payment_method || 'sepa',
             zoho_contact_id: null,
+            referral_code: body.referral_code || null,
+            referred_by: body.referred_by || null,
         };
 
         const client = await createClient(clientInput);
