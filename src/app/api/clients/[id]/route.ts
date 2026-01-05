@@ -8,8 +8,11 @@ import {
     updateClient,
     deleteClient,
     getInvoicesByClient,
-    getContractsByClient
+    getContractsByClient,
+    getQuotesByClient,
+    supabaseAdmin
 } from '@/lib/db/supabase';
+import type { OneTimeCharge } from '@/lib/db/types';
 
 interface RouteParams {
     params: Promise<{ id: string }>;
@@ -35,11 +38,22 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         // Get contracts
         const contracts = await getContractsByClient(id);
 
+        // Get quotes (including signed quotes)
+        const quotes = await getQuotesByClient(id);
+
+        // Get one-time charges (services ponctuels)
+        const { data: oneTimeCharges } = await supabaseAdmin.select<OneTimeCharge>(
+            'one_time_charges',
+            `client_id=eq.${id}&order=created_at.desc`
+        );
+
         return NextResponse.json({
             client: {
                 ...clientWithSubs,
                 invoices,
                 contracts,
+                quotes,
+                oneTimeCharges: oneTimeCharges || [],
             }
         });
     } catch (error) {

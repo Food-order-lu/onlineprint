@@ -1,25 +1,35 @@
-
 import { NextRequest, NextResponse } from 'next/server';
-import { generateContractPDF } from '@/components/pdf/ContractPDF';
-import { getClientById, getQuoteById, supabaseAdmin } from '@/lib/db/supabase';
+import { ContractPDF, ContractData } from '@/components/pdf/ContractPDF';
+import { getClientWithSubscriptions, getQuoteById } from '@/lib/db/supabase';
+import { renderToStream } from '@react-pdf/renderer';
+
+// Helper to convert stream to buffer
+async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
+    const chunks: Buffer[] = [];
+    return new Promise((resolve, reject) => {
+        stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+        stream.on('error', (err) => reject(err));
+        stream.on('end', () => resolve(Buffer.concat(chunks)));
+    });
+}
 
 // POST /api/clients/[id]/generate-contract
 export async function POST(
     request: NextRequest,
-    context: { params: Promise<{ id: string }> } // Correct Next.js 15 route param type
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const { id } = await context.params;
         const body = await request.json();
         const { quoteId } = body; // Optional: specify which quote to base contract on
 
-        const client = await getClientById(id);
+        const client = await getClientWithSubscriptions(id);
         if (!client) {
             return NextResponse.json({ error: 'Client not found' }, { status: 404 });
         }
 
         // Mock data logic if no quoteId provided, or fetch quote
-        let contractData: any = {
+        let contractData: ContractData = {
             companyName: 'RIVEGO Trade and Marketing Group S.à r.l.-S',
             companyAddress: '7, rue Jean-Pierre Sauvage, L-2514 Kirchberg',
             companyRcs: 'B257577',
@@ -41,8 +51,8 @@ export async function POST(
 
             oneTimeTotal: '0.00',
             oneTimeAmountTtc: '0.00',
-            monthlyAmount: client.subscriptions.reduce((sum, s) => sum + s.monthly_amount, 0).toFixed(2),
-            monthlyAmountTtc: (client.subscriptions.reduce((sum, s) => sum + s.monthly_amount, 0) * 1.17).toFixed(2),
+            monthlyAmount: (client.subscriptions || []).reduce((sum, s) => sum + s.monthly_amount, 0).toFixed(2),
+            monthlyAmountTtc: ((client.subscriptions || []).reduce((sum, s) => sum + s.monthly_amount, 0) * 1.17).toFixed(2),
 
             discountPercent: 0,
             discountEuros: 0,
@@ -86,11 +96,9 @@ export async function POST(
             }
         }
 
-        // Generate PDF
-        const pdfBlob = await generateContractPDF(contractData);
-
-        // Convert Blob to Buffer
-        const buffer = Buffer.from(await pdfBlob.arrayBuffer());
+        // Generate PDF Stream (Server Side)
+        const stream = await renderToStream(ContractPDF({ data: contractData }));
+        const buffer = await streamToBuffer(stream as NodeJS.ReadableStream);
 
         return new NextResponse(buffer, {
             headers: {

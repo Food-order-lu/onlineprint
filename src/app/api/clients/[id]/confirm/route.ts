@@ -3,9 +3,10 @@
 // Called by admin to confirm a new client after quote signature
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin, getClientById, updateClient } from '@/lib/db/supabase';
+import { supabaseAdmin, getClientById, updateClient, createSubscription } from '@/lib/db/supabase';
 import { generateProjectTasks } from '@/lib/tasks/generator';
 import { createDepositInvoiceOnQuoteSign } from '@/lib/invoicing/zoho';
+import type { Quote, QuoteItem, ServiceType } from '@/lib/db/types';
 
 interface RouteParams {
     params: Promise<{ id: string }>;
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         let quoteNumber = null;
         let totalTtc = 0;
         let hasRecurring = false;
+        let quoteId = null;
 
         if (confirmTask?.metadata) {
             try {
@@ -51,6 +53,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
                 quoteNumber = meta.quote_number;
                 totalTtc = meta.total_ttc || 0;
                 hasRecurring = meta.has_recurring || false;
+                quoteId = meta.quote_id || null;
             } catch (e) {
                 console.error('Failed to parse task metadata:', e);
             }
@@ -116,27 +119,51 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
             }
         }
 
-        // 8. Create subscriptions if recurring services
-        if (hasRecurring && projectId) {
-            // Create a task to set them up manually
-            await supabaseAdmin.insert('tasks', {
-                client_id: clientId,
-                project_id: projectId,
-                type: 'setup_subscriptions',
-                title: `Configurer abonnements mensuels: ${client.company_name}`,
-                description: 'Créer les abonnements récurrents et configurer le prélèvement SEPA.',
-                status: 'pending',
-                priority: 'high',
-                auto_generated: true,
-            });
+        // 8. AUTO-CREATE SUBSCRIPTIONS from quote recurring items
+        let subscriptionsCreated = 0;
+        if (hasRecurring && quoteNumber) {
+            try {
+                // Find the quote by quote_number
+                const { data: quotes } = await supabaseAdmin.select<Quote>(
+                    'quotes',
+                    `quote_number=eq.${quoteNumber}&limit=1`
+                );
+
+                const quote = quotes?.[0];
+
+                if (quote && quote.items && Array.isArray(quote.items)) {
+                    // Create subscription for each recurring item
+                    for (const item of quote.items as QuoteItem[]) {
+                        if (item.is_recurring) {
+                            await createSubscription({
+                                client_id: clientId,
+                                service_type: (item.service_type || 'other') as ServiceType,
+                                service_name: item.description,
+                                description: `Créé depuis le devis ${quoteNumber}`,
+                                monthly_amount: item.total, // Item total is the monthly amount
+                                commission_percent: 0,
+                                status: 'active',
+                                started_at: new Date().toISOString().split('T')[0],
+                                cancelled_at: null,
+                            });
+                            subscriptionsCreated++;
+                        }
+                    }
+                    console.log(`Created ${subscriptionsCreated} subscriptions from quote ${quoteNumber}`);
+                }
+            } catch (subError) {
+                console.error('Failed to create subscriptions from quote:', subError);
+                // Non-blocking - continue anyway
+            }
         }
 
         return NextResponse.json({
             success: true,
-            message: 'Client confirmé avec succès. Projet et tâches créés.',
+            message: `Client confirmé avec succès. ${subscriptionsCreated} abonnements créés automatiquement.`,
             clientId,
             projectId,
             depositInvoiceId,
+            subscriptionsCreated,
         });
 
     } catch (error) {

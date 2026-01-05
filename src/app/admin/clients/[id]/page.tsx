@@ -74,6 +74,23 @@ interface Contract {
     valid_until: string | null;
 }
 
+interface Quote {
+    id: string;
+    quote_number: string;
+    status: 'draft' | 'sent' | 'signed' | 'expired' | 'declined';
+    total: number;
+    signed_at: string | null;
+    created_at: string;
+}
+
+interface OneTimeCharge {
+    id: string;
+    description: string;
+    amount: number;
+    invoiced: boolean;
+    created_at: string;
+}
+
 interface Client {
     id: string;
     company_name: string;
@@ -96,6 +113,8 @@ interface Client {
     subscriptions: Subscription[];
     invoices: Invoice[];
     contracts: Contract[];
+    quotes: Quote[];
+    oneTimeCharges: OneTimeCharge[];
     mandate: Mandate | null;
     total_monthly: number;
 }
@@ -178,6 +197,21 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     const [error, setError] = useState<string | null>(null);
     const [cancelling, setCancelling] = useState(false);
 
+    // Modal states
+    const [showAddSubscription, setShowAddSubscription] = useState(false);
+    const [showAddCharge, setShowAddCharge] = useState(false);
+    const [addingSubscription, setAddingSubscription] = useState(false);
+    const [addingCharge, setAddingCharge] = useState(false);
+
+    // Form states
+    const [newSubscription, setNewSubscription] = useState({
+        service_type: 'hosting' as ServiceType,
+        service_name: '',
+        monthly_amount: '',
+        commission_percent: '0',
+    });
+    const [newCharge, setNewCharge] = useState({ description: '', amount: '' });
+
     useEffect(() => {
         async function fetchClient() {
             try {
@@ -199,8 +233,8 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
         if (!confirm('Êtes-vous sûr de vouloir annuler cet abonnement ?')) return;
 
         try {
-            const response = await fetch(`/api/subscriptions/${subscriptionId}/cancel`, {
-                method: 'POST',
+            const response = await fetch(`/api/subscriptions/${subscriptionId}`, {
+                method: 'DELETE',
             });
             if (!response.ok) throw new Error('Failed to cancel subscription');
 
@@ -244,6 +278,72 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     }
 
     const [generatingContract, setGeneratingContract] = useState(false);
+
+    // Add subscription
+    async function handleAddSubscription() {
+        if (!newSubscription.monthly_amount) {
+            alert('Veuillez entrer un montant mensuel');
+            return;
+        }
+        setAddingSubscription(true);
+        try {
+            const response = await fetch('/api/subscriptions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    client_id: resolvedParams.id,
+                    service_type: newSubscription.service_type,
+                    service_name: newSubscription.service_name || null,
+                    monthly_amount: parseFloat(newSubscription.monthly_amount),
+                    commission_percent: parseFloat(newSubscription.commission_percent),
+                }),
+            });
+            if (!response.ok) throw new Error('Failed to add subscription');
+
+            // Refresh client data
+            const clientResponse = await fetch(`/api/clients/${resolvedParams.id}`);
+            const data = await clientResponse.json();
+            setClient(data.client);
+            setShowAddSubscription(false);
+            setNewSubscription({ service_type: 'hosting', service_name: '', monthly_amount: '', commission_percent: '0' });
+        } catch (err) {
+            alert(err instanceof Error ? err.message : 'Erreur');
+        } finally {
+            setAddingSubscription(false);
+        }
+    }
+
+    // Add one-time charge
+    async function handleAddCharge() {
+        if (!newCharge.description || !newCharge.amount) {
+            alert('Veuillez remplir tous les champs');
+            return;
+        }
+        setAddingCharge(true);
+        try {
+            const response = await fetch('/api/one-time-charges', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    client_id: resolvedParams.id,
+                    description: newCharge.description,
+                    amount: parseFloat(newCharge.amount),
+                }),
+            });
+            if (!response.ok) throw new Error('Failed to add charge');
+
+            // Refresh client data
+            const clientResponse = await fetch(`/api/clients/${resolvedParams.id}`);
+            const data = await clientResponse.json();
+            setClient(data.client);
+            setShowAddCharge(false);
+            setNewCharge({ description: '', amount: '' });
+        } catch (err) {
+            alert(err instanceof Error ? err.message : 'Erreur');
+        } finally {
+            setAddingCharge(false);
+        }
+    }
 
     async function generateContract() {
         setGeneratingContract(true);
@@ -557,18 +657,65 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                             )}
                         </Section>
 
+                        {/* Quotes / Devis */}
+                        <Section title="Devis" icon={FileText}>
+                            {client.quotes && client.quotes.length > 0 ? (
+                                <div className="space-y-3">
+                                    {client.quotes.map((quote) => (
+                                        <div key={quote.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <p className="font-bold text-gray-900">{quote.quote_number}</p>
+                                                    <span className={`px-2 py-0.5 border rounded text-xs font-semibold ${quote.status === 'signed' ? 'bg-green-50 text-green-600 border-green-100' :
+                                                        quote.status === 'sent' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                                            'bg-gray-50 text-gray-500 border-gray-200'
+                                                        }`}>
+                                                        {quote.status === 'signed' ? 'Signé' :
+                                                            quote.status === 'sent' ? 'Envoyé' :
+                                                                quote.status === 'draft' ? 'Brouillon' :
+                                                                    quote.status === 'expired' ? 'Expiré' : 'Refusé'}
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-gray-500">
+                                                    {quote.signed_at
+                                                        ? `Signé le ${new Date(quote.signed_at).toLocaleDateString('fr-FR')}`
+                                                        : `Créé le ${new Date(quote.created_at).toLocaleDateString('fr-FR')}`
+                                                    }
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <p className="text-lg font-bold text-gray-900">€{quote.total.toFixed(2)}</p>
+                                                <Link
+                                                    href={`/quote/${quote.quote_number}/sign`}
+                                                    target="_blank"
+                                                    className="px-3 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                                                >
+                                                    Voir
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-6">
+                                    <FileText size={32} className="text-gray-300 mx-auto mb-2" />
+                                    <p className="text-gray-500">Aucun devis</p>
+                                </div>
+                            )}
+                        </Section>
+
                         {/* Subscriptions */}
                         <Section
                             title="Abonnements"
                             icon={Euro}
                             action={
-                                <Link
-                                    href={`/admin/clients/${client.id}/subscriptions/new`}
+                                <button
+                                    onClick={() => setShowAddSubscription(true)}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
                                 >
                                     <Plus size={16} />
                                     Ajouter
-                                </Link>
+                                </button>
                             }
                         >
                             {client.subscriptions.length === 0 ? (
@@ -696,9 +843,168 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                 </div>
                             </div>
                         )}
+
+                        {/* One-Time Charges / Services Ponctuels */}
+                        <Section
+                            title="Services Ponctuels"
+                            icon={Receipt}
+                            action={
+                                <button
+                                    onClick={() => setShowAddCharge(true)}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+                                >
+                                    <Plus size={16} />
+                                    Ajouter
+                                </button>
+                            }
+                        >
+                            {client.oneTimeCharges && client.oneTimeCharges.length > 0 ? (
+                                <div className="space-y-3">
+                                    {client.oneTimeCharges.filter(c => !c.invoiced).map((charge) => (
+                                        <div key={charge.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+                                            <div>
+                                                <p className="font-bold text-gray-900">{charge.description}</p>
+                                                <p className="text-sm text-gray-500">
+                                                    Ajouté le {new Date(charge.created_at).toLocaleDateString('fr-FR')}
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-lg font-bold text-gray-900">€{charge.amount.toFixed(2)}</p>
+                                                <span className="text-xs text-orange-600 font-semibold">À facturer</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-6">
+                                    <Receipt size={32} className="text-gray-300 mx-auto mb-2" />
+                                    <p className="text-gray-500">Aucun service ponctuel en attente</p>
+                                </div>
+                            )}
+                        </Section>
                     </div>
                 </div>
             </div>
+
+            {/* Add Subscription Modal */}
+            {showAddSubscription && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Ajouter un abonnement</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Type de service</label>
+                                <select
+                                    value={newSubscription.service_type}
+                                    onChange={(e) => setNewSubscription({ ...newSubscription, service_type: e.target.value as ServiceType })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                >
+                                    {Object.entries(serviceTypeLabels).map(([key, label]) => (
+                                        <option key={key} value={key}>{label}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nom du service (optionnel)</label>
+                                <input
+                                    type="text"
+                                    value={newSubscription.service_name}
+                                    onChange={(e) => setNewSubscription({ ...newSubscription, service_name: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    placeholder="Ex: Pack Business"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Montant mensuel (€)</label>
+                                <input
+                                    type="number"
+                                    value={newSubscription.monthly_amount}
+                                    onChange={(e) => setNewSubscription({ ...newSubscription, monthly_amount: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    placeholder="0.00"
+                                    min="0"
+                                    step="0.01"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Commission (%)</label>
+                                <input
+                                    type="number"
+                                    value={newSubscription.commission_percent}
+                                    onChange={(e) => setNewSubscription({ ...newSubscription, commission_percent: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    placeholder="0"
+                                    min="0"
+                                    max="100"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={() => setShowAddSubscription(false)}
+                                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={handleAddSubscription}
+                                disabled={addingSubscription}
+                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 disabled:opacity-50"
+                            >
+                                {addingSubscription ? 'Ajout...' : 'Ajouter'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Add One-Time Charge Modal */}
+            {showAddCharge && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Ajouter un service ponctuel</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <input
+                                    type="text"
+                                    value={newCharge.description}
+                                    onChange={(e) => setNewCharge({ ...newCharge, description: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    placeholder="Ex: Création logo, développement supplémentaire..."
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Montant (€)</label>
+                                <input
+                                    type="number"
+                                    value={newCharge.amount}
+                                    onChange={(e) => setNewCharge({ ...newCharge, amount: e.target.value })}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    placeholder="0.00"
+                                    min="0"
+                                    step="0.01"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={() => setShowAddCharge(false)}
+                                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={handleAddCharge}
+                                disabled={addingCharge}
+                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 disabled:opacity-50"
+                            >
+                                {addingCharge ? 'Ajout...' : 'Ajouter'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -27,6 +27,7 @@ export interface DocuSealSubmissionData {
   documents?: DocuSealDocument[];
   send_email: boolean;
   submitters: DocuSealSubmitter[];
+  redirect_url?: string;
 }
 
 export class DocuSealClient {
@@ -98,15 +99,15 @@ export class DocuSealClient {
             file: pdfBase64,
             fields: [
               {
-                name: 'Bon pour accord',
+                name: 'Mention (Bon pour accord)',
                 role: 'First Party',
-                type: 'text',  // Text field for "Bon pour accord" handwritten mention
+                type: 'signature',  // Handwritten mention as signature field
                 areas: [{
                   page: 1,
-                  x: 0.05,   // Left side - aligned with "Mention manuscrite"
-                  y: 0.77,   // Position at "Acceptation du devis" section
-                  w: 0.40,   // 40% width
-                  h: 0.02    // 2% height for text
+                  x: 0.05,
+                  y: 0.65,   // Moved UP further from 0.72
+                  w: 0.40,
+                  h: 0.04
                 }]
               },
               {
@@ -115,10 +116,10 @@ export class DocuSealClient {
                 type: 'date',
                 areas: [{
                   page: 1,
-                  x: 0.55,   // Right side - aligned with "Date" label
-                  y: 0.77,   // Same row as Bon pour accord
-                  w: 0.25,   // 25% width
-                  h: 0.02    // 2% height
+                  x: 0.55,
+                  y: 0.65,   // Moved UP further from 0.72
+                  w: 0.25,
+                  h: 0.02
                 }]
               },
               {
@@ -127,10 +128,10 @@ export class DocuSealClient {
                 type: 'signature',
                 areas: [{
                   page: 1,
-                  x: 0.05,   // Left aligned with signature box
-                  y: 0.81,   // Below "Bon pour accord" row
-                  w: 0.45,   // 45% width - match signature box width
-                  h: 0.04    // 4% height for signature
+                  x: 0.05,
+                  y: 0.69,   // Moved UP further from 0.76 (was 0.77 in previous edit comment, meant 0.77->0.76? No, 0.81->0.77->0.69)
+                  w: 0.45,
+                  h: 0.04
                 }]
               }
             ]
@@ -156,7 +157,7 @@ export class DocuSealClient {
   /**
    * Helper to initialize a submission - optionally creates template from PDF first
    */
-  async initSigningSession(data: { templateId?: string, documents?: DocuSealDocument[], email: string, name?: string }) {
+  async initSigningSession(data: { templateId?: string, documents?: DocuSealDocument[], email: string, name?: string, redirect_url?: string }) {
     if (!data.templateId && !data.documents) {
       throw new Error("Must provide either templateId or documents");
     }
@@ -181,6 +182,7 @@ export class DocuSealClient {
           name: data.name,
         },
       ],
+      redirect_url: data.redirect_url,
     };
 
     return this.createSubmission(payload);

@@ -53,13 +53,17 @@ export default function DashboardGlobalPage() {
         <div className="min-h-screen bg-white p-6 md:p-12">
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord Global</h1>
+                {/* 
+{/* 
                 <button
                     onClick={() => setShowObjectives(!showObjectives)}
                     className={`p-2 rounded-xl transition-colors ${showObjectives ? 'bg-blue-50 text-blue-600' : 'bg-gray-50 text-gray-400 hover:text-gray-600'}`}
                     title="Mode Direction"
                 >
                     <ArrowUpRight size={20} />
-                </button>
+                </button> 
+                */} 
+                */}
             </div>
 
             {/* Hidden Commercial Objectives Section */}

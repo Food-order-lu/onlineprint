@@ -25,41 +25,54 @@ export async function POST(request: NextRequest) {
             };
         }
 
-        // 2. Get or Create Zoho Contact
-        const contact = await zoho.getOrCreateContact({
-            ...clientDetails,
-            email: clientDetails.email || 'billing@rivego.lu'
-        });
+        // 2. Find Client in DB (required for OneTimeCharge)
+        // We need the local UUID, not just Zoho ID
+        let clientId = report_data.client_id;
 
-        // 3. Prepare Line Items
-        const commissionAmount = report_data.commission_amount;
-        const taxPercentage = 17;
+        if (!clientId) {
+            const { data: clients } = await supabaseAdmin
+                .from('clients')
+                .select('id')
+                .eq('email', clientDetails.email || '')
+                .single();
 
-        let itemName = 'Commission sur ventes';
-        if (report_data.commission_percentage && report_data.commission_percentage > 0) {
-            itemName = `Commission sur ventes (${report_data.commission_percentage}%)`;
-        } else {
-            itemName = 'Forfait système de commande';
+            if (clients) clientId = clients.id;
         }
 
-        // 4. Create Invoice in Zoho (Draft)
-        const { invoice } = await zoho.createInvoice({
-            customer_id: contact.contact_id,
-            date: new Date().toISOString().split('T')[0],
-            due_date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 15 days terms
-            notes: `Commission sur ventes du mois de ${report_data.month}. CA: ${report_data.turnover}€`,
-            terms: 'Paiement à 15 jours.',
-            is_draft: true,
-            line_items: [
-                {
-                    name: itemName,
-                    description: `Commission sur CA de ${report_data.turnover}€ pour ${report_data.month}`,
-                    rate: commissionAmount,
-                    quantity: 1,
-                    tax_percentage: taxPercentage
-                }
-            ]
-        });
+        if (!clientId) {
+            console.error(`Client not found for report ${report_id} (${clientDetails.email})`);
+            return NextResponse.json(
+                { error: 'Client not found in database. Cannot queue charge.' },
+                { status: 404 }
+            );
+        }
+
+        // 3. Prepare OneTimeCharge
+        const commissionAmount = report_data.commission_amount;
+
+        let description = 'Commission sur ventes';
+        if (report_data.commission_percentage && report_data.commission_percentage > 0) {
+            description = `Commission sur ventes (${report_data.commission_percentage}%) - ${report_data.month}`;
+        } else {
+            description = `Forfait système de commande - ${report_data.month}`;
+        }
+
+        if (report_data.turnover) {
+            description += ` (CA: ${report_data.turnover}€)`;
+        }
+
+        // 4. Create OneTimeCharge (Pending)
+        // This will be picked up by the cron job on the 7th
+        const { data: charge, error: chargeError } = await supabaseAdmin.insert('one_time_charges', {
+            client_id: clientId,
+            description: description,
+            amount: commissionAmount,
+            invoiced: false,
+            invoice_id: null,
+            created_at: new Date().toISOString()
+        }).select().single();
+
+        if (chargeError) throw new Error(chargeError.message);
 
         // 5. Update Local DB (if reports were real)
         // For now, we return success

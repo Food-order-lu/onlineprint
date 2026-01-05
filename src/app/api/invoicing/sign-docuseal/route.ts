@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
                 file: pdf_base64,
                 // Optional: We can specify fields here or let DocuSeal auto-detect if we didn't use the helper
                 // The helper in lib/docuseal.ts (createTemplateFromPdf) enables Signature and Date fields manually.
-            }]
+            }],
+            redirect_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://platform.rivego.lu'}/admin`
         });
 
         // submission response usually contains the 'slug' or an array of submitters with 'slug'

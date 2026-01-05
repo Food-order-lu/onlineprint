@@ -239,6 +239,16 @@ export async function createSubscription(input: Omit<Subscription, 'id' | 'creat
     return data[0];
 }
 
+export async function getSubscriptionById(id: string): Promise<Subscription | null> {
+    const { data, error } = await supabaseAdmin.selectOne<Subscription>(
+        'subscriptions',
+        `id=eq.${id}`
+    );
+    if (error) throw new Error(error.message);
+    return data || null;
+}
+
+
 export async function cancelSubscription(id: string): Promise<Subscription> {
     const { data, error } = await supabaseAdmin.update<Subscription>(
         'subscriptions',
@@ -356,6 +366,31 @@ export async function getContractsByClient(clientId: string): Promise<Contract[]
         `client_id=eq.${clientId}&order=created_at.desc`
     );
     if (error) throw new Error(error.message);
+    return data || [];
+}
+
+export async function getQuotesByClient(clientId: string): Promise<Quote[]> {
+    // Quotes are linked by client_id if set, otherwise try to match by email
+    const client = await getClientById(clientId);
+    if (!client) return [];
+
+    // Try client_id lookup first
+    let { data, error } = await supabaseAdmin.select<Quote>(
+        'quotes',
+        `client_id=eq.${clientId}&order=created_at.desc`
+    );
+    if (error) throw new Error(error.message);
+
+    // If no quotes with client_id, try matching by email
+    if (!data || data.length === 0) {
+        const emailResult = await supabaseAdmin.select<Quote>(
+            'quotes',
+            `client_email=eq.${client.email}&order=created_at.desc`
+        );
+        if (emailResult.error) throw new Error(emailResult.error.message);
+        data = emailResult.data;
+    }
+
     return data || [];
 }
 

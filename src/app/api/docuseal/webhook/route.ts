@@ -105,7 +105,38 @@ export async function POST(request: NextRequest) {
                     console.error('Failed to send emails:', emailErr);
                 }
 
-                // 5. Create Deposit Invoice (20%) in Zoho
+                // 5. AUTO-CREATE SUBSCRIPTIONS from quote recurring items
+                // This ensures the client is immediately operational
+                let subscriptionsCreated = 0;
+                if (quote.items && Array.isArray(quote.items)) {
+                    try {
+                        const { createSubscription } = await import('@/lib/db/supabase');
+                        for (const item of quote.items) {
+                            // Check if item is recurring (price monthly > 0 implies recurring in this logic if explicit flag missing, 
+                            // but usually we check is_recurring flag. I'll check both for safety or just is_recurring if typed)
+                            // Assuming item has is_recurring based on confirm/route.ts usage
+                            if ((item as any).is_recurring) {
+                                await createSubscription({
+                                    client_id: client.id,
+                                    service_type: ((item as any).service_type || 'other') as any,
+                                    service_name: item.description,
+                                    description: `Créé automatiquement (Signature Devis ${quoteNumber})`,
+                                    monthly_amount: item.total,
+                                    commission_percent: 0,
+                                    status: 'active',
+                                    started_at: new Date().toISOString().split('T')[0],
+                                    cancelled_at: null,
+                                });
+                                subscriptionsCreated++;
+                            }
+                        }
+                        console.log(`Created ${subscriptionsCreated} subscriptions from quote ${quoteNumber}`);
+                    } catch (subError) {
+                        console.error('Failed to auto-create subscriptions:', subError);
+                    }
+                }
+
+                // 6. Create Deposit Invoice (20%) in Zoho
                 // Only if quote total > 0 via Zoho helper
                 if (quote.total > 0) {
                     try {
