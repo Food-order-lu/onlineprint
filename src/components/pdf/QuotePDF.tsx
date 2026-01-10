@@ -401,14 +401,19 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                     <Text style={[styles.tableHeaderText, styles.colTotal]}>Total</Text>
                 </View>
 
-                {data.oneTimeItems.map((item, index) => (
-                    <View key={index} style={[styles.tableRow, index % 2 !== 0 ? styles.tableRowAlt : {}]}>
-                        <Text style={[styles.cellText, styles.colDescription]}>{item.description}</Text>
-                        <Text style={[styles.cellText, styles.colQty]}>{item.quantity}</Text>
-                        <Text style={[styles.cellText, styles.colPrice]}>{item.unitPrice.toFixed(2)} €</Text>
-                        <Text style={[styles.cellTextBold, styles.colTotal]}>{item.total.toFixed(2)} €</Text>
-                    </View>
-                ))}
+                {data.oneTimeItems.map((item, index) => {
+                    const isDiscount = item.total < 0;
+                    const textStyle = isDiscount ? { color: '#E74C3C' } : {};
+
+                    return (
+                        <View key={index} style={[styles.tableRow, index % 2 !== 0 ? styles.tableRowAlt : {}]}>
+                            <Text style={[styles.cellText, styles.colDescription, textStyle]}>{item.description}</Text>
+                            <Text style={[styles.cellText, styles.colQty, textStyle]}>{item.quantity}</Text>
+                            <Text style={[styles.cellText, styles.colPrice, textStyle]}>{item.unitPrice.toFixed(2)} €</Text>
+                            <Text style={[styles.cellTextBold, styles.colTotal, textStyle]}>{item.total.toFixed(2)} €</Text>
+                        </View>
+                    );
+                })}
 
                 <View style={styles.tableTotalRow}>
                     <Text style={styles.tableTotalLabel}>Total Unique HT:</Text>
@@ -426,14 +431,19 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                     <Text style={[styles.tableHeaderText, styles.colTotal]}>Total</Text>
                 </View>
 
-                {data.monthlyItems.map((item, index) => (
-                    <View key={index} style={[styles.tableRow, index % 2 !== 0 ? styles.tableRowAlt : {}]}>
-                        <Text style={[styles.cellText, styles.colDescription]}>{item.description}</Text>
-                        <Text style={[styles.cellText, styles.colQty]}>{item.quantity}</Text>
-                        <Text style={[styles.cellText, styles.colPrice]}>{item.unitPrice.toFixed(2)} €</Text>
-                        <Text style={[styles.cellTextBold, styles.colTotal]}>{item.total.toFixed(2)} €</Text>
-                    </View>
-                ))}
+                {data.monthlyItems.map((item, index) => {
+                    const isDiscount = item.total < 0;
+                    const textStyle = isDiscount ? { color: '#E74C3C' } : {}; // Red color for discounts
+
+                    return (
+                        <View key={index} style={[styles.tableRow, index % 2 !== 0 ? styles.tableRowAlt : {}]}>
+                            <Text style={[styles.cellText, styles.colDescription, textStyle]}>{item.description}</Text>
+                            <Text style={[styles.cellText, styles.colQty, textStyle]}>{item.quantity}</Text>
+                            <Text style={[styles.cellText, styles.colPrice, textStyle]}>{item.unitPrice.toFixed(2)} €</Text>
+                            <Text style={[styles.cellTextBold, styles.colTotal, textStyle]}>{item.total.toFixed(2)} €</Text>
+                        </View>
+                    );
+                })}
 
                 <View style={styles.tableTotalRow}>
                     <Text style={styles.tableTotalLabel}>Total Mensuel:</Text>
@@ -490,25 +500,31 @@ export const QuotePDF = ({ data }: { data: QuoteData }) => (
                             <Text style={{ fontSize: 7, color: COLORS.textLight, marginBottom: 2 }}>
                                 Mention manuscrite « Bon pour accord »
                             </Text>
-                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 25 }} />
+                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 50 }} />
                         </View>
 
                         {/* Date */}
                         <View style={{ width: '35%' }}>
                             <Text style={{ fontSize: 7, color: COLORS.textLight, marginBottom: 2 }}>Date</Text>
-                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 25 }} />
+                            {/* DocuSeal Date Field Anchor - invisible text */}
+                            <Text style={{ fontSize: 1, color: '#FFFFFF' }}>{`{{date}}`}</Text>
+                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 50 }} />
                         </View>
                     </View>
 
                     {/* Signature */}
                     <View style={{ marginTop: 5 }}>
                         <Text style={{ fontSize: 7, color: COLORS.textLight, marginBottom: 2 }}>Signature client</Text>
+
+                        {/* DocuSeal Signature Field Anchor - invisible text */}
+                        <Text style={{ fontSize: 1, color: '#FFFFFF' }}>{`{{signature}}`}</Text>
+
                         {data.signatureImage ? (
                             <View style={{ height: 40, marginBottom: 3 }}>
                                 <Image src={data.signatureImage} style={{ height: 38, objectFit: 'contain' }} />
                             </View>
                         ) : (
-                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 40, marginBottom: 3 }} />
+                            <View style={{ borderBottomWidth: 0.5, borderBottomColor: COLORS.text, height: 80, marginBottom: 3 }} />
                         )}
                         {data.signedDate && (
                             <Text style={styles.signatureNote}>Signé le {data.signedDate}</Text>

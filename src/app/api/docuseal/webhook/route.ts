@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
                 }
 
                 // 3. Update Client Status -> active
-                if (client.status === 'prospect') {
+                if (['prospect', 'pending_confirmation'].includes(client.status)) {
                     await updateClient(client.id, { status: 'active' });
                     console.log(`Client ${client.company_name} updated to active`);
                 }
@@ -105,16 +105,13 @@ export async function POST(request: NextRequest) {
                     console.error('Failed to send emails:', emailErr);
                 }
 
-                // 5. AUTO-CREATE SUBSCRIPTIONS from quote recurring items
-                // This ensures the client is immediately operational
+                // 5. AUTO-CREATE SUBSCRIPTIONS & CHARGES from quote items
                 let subscriptionsCreated = 0;
+                let chargesCreated = 0;
                 if (quote.items && Array.isArray(quote.items)) {
                     try {
                         const { createSubscription } = await import('@/lib/db/supabase');
                         for (const item of quote.items) {
-                            // Check if item is recurring (price monthly > 0 implies recurring in this logic if explicit flag missing, 
-                            // but usually we check is_recurring flag. I'll check both for safety or just is_recurring if typed)
-                            // Assuming item has is_recurring based on confirm/route.ts usage
                             if ((item as any).is_recurring) {
                                 await createSubscription({
                                     client_id: client.id,
@@ -128,11 +125,20 @@ export async function POST(request: NextRequest) {
                                     cancelled_at: null,
                                 });
                                 subscriptionsCreated++;
+                            } else {
+                                // Add as one-time charge
+                                await supabaseAdmin.insert('one_time_charges', {
+                                    client_id: client.id,
+                                    description: item.description,
+                                    amount: item.total,
+                                    invoiced: true, // They will be invoiced by the Zoho Deposit Invoice (20%) or separate invoice
+                                });
+                                chargesCreated++;
                             }
                         }
-                        console.log(`Created ${subscriptionsCreated} subscriptions from quote ${quoteNumber}`);
+                        console.log(`Created ${subscriptionsCreated} subscriptions and ${chargesCreated} charges from quote ${quoteNumber}`);
                     } catch (subError) {
-                        console.error('Failed to auto-create subscriptions:', subError);
+                        console.error('Failed to auto-create subscriptions/charges:', subError);
                     }
                 }
 

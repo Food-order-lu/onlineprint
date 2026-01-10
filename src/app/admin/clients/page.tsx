@@ -161,6 +161,13 @@ export default function AdminClientsPage() {
                             Annuaires des restaurateurs et commerçants
                         </p>
                     </div>
+                    <Link
+                        href="/admin/clients/new"
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
+                    >
+                        <UserPlus size={18} />
+                        Nouveau Client
+                    </Link>
                 </div>
 
                 {/* Stats */}

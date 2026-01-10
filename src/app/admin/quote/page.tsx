@@ -221,7 +221,7 @@ export default function QuoteBuilderPage() {
     const [showQRModal, setShowQRModal] = useState(false);
 
     // Presentation Mode State
-    const [presentationMode, setPresentationMode] = useState(false);
+    const [presentationMode, setPresentationMode] = useState(true);
 
     // View Mode: 'builder' | 'pipeline'
     // For now we keep it simple in one page or just add the widget at top
@@ -548,7 +548,20 @@ export default function QuoteBuilderPage() {
                                                     pdf_base64: base64data,
                                                     client_email: quoteData.clientEmail,
                                                     client_name: quoteData.clientName,
-                                                    quote_number: quoteNumber
+                                                    client_company: quoteData.clientCompany,
+                                                    client_phone: quoteData.clientPhone,
+                                                    quote_number: quoteNumber,
+                                                    quote_data: {
+                                                        subtotal: quoteData.subtotal,
+                                                        vatRate: quoteData.vatRate,
+                                                        vatAmount: quoteData.vatAmount,
+                                                        totalTtc: quoteData.totalTtc,
+                                                        discountPercent: quoteData.discountPercent,
+                                                        discountAmount: quoteData.discountAmount,
+                                                        monthlyTotal: quoteData.monthlyTotal,
+                                                        monthlyItems: quoteData.monthlyItems,
+                                                        oneTimeItems: quoteData.oneTimeItems
+                                                    }
                                                 })
                                             });
 

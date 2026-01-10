@@ -21,7 +21,17 @@ interface RouteParams {
 // GET /api/clients/[id] - Get client details
 export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
+
         const { id } = await params;
+
+        // Validate UUID
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(id)) {
+            return NextResponse.json(
+                { error: 'Invalid ID format' },
+                { status: 400 }
+            );
+        }
 
         const clientWithSubs = await getClientWithSubscriptions(id);
 

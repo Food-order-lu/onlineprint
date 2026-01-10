@@ -24,30 +24,33 @@ export default function DashboardGlobalPage() {
         prospects: 0,
         mrr: 0, // Monthly Recurring Revenue
         pendingTasks: 0,
-        recentActivity: [] as any[]
+        recentActivity: [] as any[],
+        signedQuotesThisMonth: 0
     });
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch stats (Mock for now, replace with API call)
-        // await fetch('/api/admin/stats')...
-        setTimeout(() => {
-            setStats({
-                activeClients: 12,
-                inactiveClients: 3,
-                prospects: 5,
-                mrr: 1850.00,
-                pendingTasks: 8,
-                recentActivity: [
-                    { id: 1, type: 'sign', text: 'Devis signé : Restaurant La Palma', time: '2h ago' },
-                    { id: 2, type: 'payment', text: 'Paiement reçu : 1450€ (Pizzeria Bella)', time: '4h ago' },
-                    { id: 3, type: 'task', text: 'Tâche terminée : Design Hero Section', time: '1d ago' },
-                ]
-            });
-            setLoading(false);
-        }, 800);
+        const fetchStats = async () => {
+            try {
+                const response = await fetch('/api/admin/stats');
+                if (response.ok) {
+                    const data = await response.json();
+                    setStats(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
     }, []);
+
+    // Progress calculations
+    const clientProgress = (stats.activeClients / 14) * 100;
+    const mrrProgress = (stats.mrr / 2500) * 100;
 
     return (
         <div className="min-h-screen bg-white p-6 md:p-12">
@@ -82,22 +85,22 @@ export default function DashboardGlobalPage() {
                             <div>
                                 <p className="text-gray-400 text-sm mb-1">Objectif Mensuel (Clients)</p>
                                 <div className="flex items-end gap-2">
-                                    <span className="text-4xl font-bold text-white">12</span>
-                                    <span className="text-gray-400 mb-1">/ 15</span>
+                                    <span className="text-4xl font-bold text-white">{stats.activeClients}</span>
+                                    <span className="text-gray-400 mb-1">/ 14</span>
                                 </div>
                                 <div className="w-full h-1.5 bg-gray-800 rounded-full mt-3 overflow-hidden">
-                                    <div className="h-full bg-blue-500 rounded-full" style={{ width: '80%' }}></div>
+                                    <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(clientProgress, 100)}%` }}></div>
                                 </div>
                             </div>
 
                             <div>
                                 <p className="text-gray-400 text-sm mb-1">Objectif Mensuel (MRR)</p>
                                 <div className="flex items-end gap-2">
-                                    <span className="text-4xl font-bold text-white">1.8k€</span>
+                                    <span className="text-4xl font-bold text-white">{(stats.mrr / 1000).toFixed(1)}k€</span>
                                     <span className="text-gray-400 mb-1">/ 2.5k€</span>
                                 </div>
                                 <div className="w-full h-1.5 bg-gray-800 rounded-full mt-3 overflow-hidden">
-                                    <div className="h-full bg-green-500 rounded-full" style={{ width: '72%' }}></div>
+                                    <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.min(mrrProgress, 100)}%` }}></div>
                                 </div>
                             </div>
 

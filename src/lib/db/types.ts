@@ -38,8 +38,8 @@ export interface Client {
   country: string;
   vat_number: string | null;
   commission_config: CommissionConfig | null;
-  referral_code: string | null;
-  referred_by: string | null;
+  referral_code?: string | null;
+  referred_by?: string | null;
 
   zoho_contact_id: string | null;
   payment_method: 'sepa' | 'manual' | 'card' | 'transfer';

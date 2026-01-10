@@ -27,7 +27,7 @@ export interface DocuSealSubmissionData {
   documents?: DocuSealDocument[];
   send_email: boolean;
   submitters: DocuSealSubmitter[];
-  redirect_url?: string;
+  completed_redirect_url?: string; // Correct parameter name for redirect after signing
 }
 
 export class DocuSealClient {
@@ -103,11 +103,11 @@ export class DocuSealClient {
                 role: 'First Party',
                 type: 'signature',  // Handwritten mention as signature field
                 areas: [{
-                  page: 1,
-                  x: 0.05,
-                  y: 0.65,   // Moved UP further from 0.72
-                  w: 0.40,
-                  h: 0.04
+                  page: parseInt(process.env.DOCUSEAL_MENTION_PAGE || '1'),
+                  x: parseFloat(process.env.DOCUSEAL_MENTION_X || '0.05'),
+                  y: parseFloat(process.env.DOCUSEAL_MENTION_Y || '0.78'),
+                  w: parseFloat(process.env.DOCUSEAL_MENTION_W || '0.40'),
+                  h: parseFloat(process.env.DOCUSEAL_MENTION_H || '0.03')
                 }]
               },
               {
@@ -115,11 +115,11 @@ export class DocuSealClient {
                 role: 'First Party',
                 type: 'date',
                 areas: [{
-                  page: 1,
-                  x: 0.55,
-                  y: 0.65,   // Moved UP further from 0.72
-                  w: 0.25,
-                  h: 0.02
+                  page: parseInt(process.env.DOCUSEAL_DATE_PAGE || '1'),
+                  x: parseFloat(process.env.DOCUSEAL_DATE_X || '0.55'),
+                  y: parseFloat(process.env.DOCUSEAL_DATE_Y || '0.78'),
+                  w: parseFloat(process.env.DOCUSEAL_DATE_W || '0.25'),
+                  h: parseFloat(process.env.DOCUSEAL_DATE_H || '0.03')
                 }]
               },
               {
@@ -127,11 +127,11 @@ export class DocuSealClient {
                 role: 'First Party',
                 type: 'signature',
                 areas: [{
-                  page: 1,
-                  x: 0.05,
-                  y: 0.69,   // Moved UP further from 0.76 (was 0.77 in previous edit comment, meant 0.77->0.76? No, 0.81->0.77->0.69)
-                  w: 0.45,
-                  h: 0.04
+                  page: parseInt(process.env.DOCUSEAL_SIGNATURE_PAGE || '1'),
+                  x: parseFloat(process.env.DOCUSEAL_SIGNATURE_X || '0.05'),
+                  y: parseFloat(process.env.DOCUSEAL_SIGNATURE_Y || '0.84'),
+                  w: parseFloat(process.env.DOCUSEAL_SIGNATURE_W || '0.45'),
+                  h: parseFloat(process.env.DOCUSEAL_SIGNATURE_H || '0.06')
                 }]
               }
             ]
@@ -182,7 +182,7 @@ export class DocuSealClient {
           name: data.name,
         },
       ],
-      redirect_url: data.redirect_url,
+      completed_redirect_url: data.redirect_url, // Use correct parameter name
     };
 
     return this.createSubmission(payload);

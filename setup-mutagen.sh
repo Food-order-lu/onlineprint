@@ -1,5 +1,6 @@
 #!/bin/bash
 # Script de configuration Mutagen pour Rivego - CORRIGÉ
+export PATH="$HOME/bin:$PATH"
 
 echo "🧹 Nettoyage de l'ancienne config SSH..."
 # Supprime les anciennes entrées oracle si elles existent

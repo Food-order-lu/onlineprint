@@ -84,10 +84,34 @@ export async function POST(request: NextRequest) {
             console.error('Failed to store mandate:', insertError);
         }
 
+        let emailResult = null;
+        if (body.send_email && billing_request_flows.authorisation_url) {
+            const { sendEmail } = await import('@/lib/resend');
+            emailResult = await sendEmail({
+                to: client.email,
+                subject: 'Mise en place du prélèvement SEPA - Rivego',
+                html: `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                        <h2 style="color: #2563eb;">Bonjour ${client.contact_name},</h2>
+                        <p>Afin de finaliser la mise en place de vos services, merci de bien vouloir configurer le mandat de prélèvement SEPA en cliquant sur le bouton ci-dessous :</p>
+                        <br/>
+                        <a href="${billing_request_flows.authorisation_url}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                            Configurer le prélèvement SEPA
+                        </a>
+                        <br/><br/>
+                        <p>Ce lien est sécurisé et géré par notre partenaire GoCardless.</p>
+                        <p>Cordialement,<br/>L'équipe Rivego</p>
+                    </div>
+                `,
+                text: `Bonjour ${client.contact_name},\n\nMerci de configurer votre mandat SEPA via ce lien : ${billing_request_flows.authorisation_url}`
+            });
+        }
+
         return NextResponse.json({
             success: true,
             authorization_url: billing_request_flows.authorisation_url,
             billing_request_id: billing_request.id,
+            email_sent: emailResult?.success || false
         });
     } catch (error) {
         console.error('Error creating mandate:', error);

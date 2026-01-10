@@ -1,46 +1,55 @@
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/db/supabase';
 
-// GET /api/admin/stats
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
     try {
-        // 1. Total Clients
-        const { data: allClients, error: err1 } = await supabaseAdmin.select<any>('clients', 'select=id');
-        const totalClients = allClients?.length || 0;
+        // 1. Get counts using correct select() method
+        const { data: activeClients } = await supabaseAdmin.select<any>('clients', 'status=eq.active&select=id');
+        const { data: inactiveClients } = await supabaseAdmin.select<any>('clients', 'status=eq.inactive&select=id');
+        const { data: prospects } = await supabaseAdmin.select<any>('clients', 'status=in.(prospect,pending_confirmation)&select=id');
 
-        // 2. Active Clients
-        const { data: activeClientsData, error: err2 } = await supabaseAdmin.select<any>('clients', 'status=eq.active');
-        const activeClients = activeClientsData?.length || 0;
+        // 2. Calculate MRR
+        const { data: subscriptions } = await supabaseAdmin.select<any>('subscriptions', 'status=eq.active&select=monthly_amount');
+        const mrr = subscriptions?.reduce((sum: number, sub: any) => sum + (Number(sub.monthly_amount) || 0), 0) || 0;
 
-        // 3. Pending Cancellations
-        const { data: pendingCancellationsData, error: err3 } = await supabaseAdmin.select<any>('clients', 'status=eq.pending_cancellation');
-        const pendingCancellations = pendingCancellationsData?.length || 0;
+        // 3. Pending tasks
+        const { data: pendingTasksList } = await supabaseAdmin.select<any>('tasks', 'status=eq.pending&select=id');
 
-        // 4. Monthly Recurring Revenue (MRR)
-        // Get all active subscriptions
-        const { data: subscriptions, error: err4 } = await supabaseAdmin.select<any>('subscriptions', 'status=eq.active');
+        // 4. Recent activity (Quotes signed)
+        const { data: recentQuotes } = await supabaseAdmin.select<any>('quotes', 'status=eq.signed&order=signed_at.desc&limit=5&select=quote_number,client_company,signed_at');
 
-        const mrr = subscriptions?.reduce((sum: number, sub: any) => sum + (sub.monthly_amount || 0), 0) || 0;
+        const recentActivity = recentQuotes?.map((quote: any) => ({
+            id: quote.quote_number,
+            type: 'sign',
+            text: `Devis signé : ${quote.client_company}`,
+            time: quote.signed_at ? new Date(quote.signed_at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'N/A'
+        })) || [];
 
-        // 5. Tasks Stats (Open Tasks)
-        const { data: openTasksData, error: err5 } = await supabaseAdmin.select<any>('tasks', 'status=eq.todo'); // Assuming 'todo' is the status
-        const openTasks = openTasksData?.length || 0;
+        // 5. Signed quotes this month
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
 
-        if (err1 || err2 || err3 || err4 || err5) {
-            console.error('Stats fetch error', err1, err2, err3, err4, err5);
-        }
+        const { data: signedThisMonth } = await supabaseAdmin.select<any>(
+            'quotes',
+            `status=eq.signed&signed_at=gte.${startOfMonth.toISOString()}&select=id`
+        );
 
         return NextResponse.json({
-            total_clients: totalClients,
-            active_clients: activeClients,
-            pending_cancellations: pendingCancellations,
-            monthly_recurring_revenue: mrr,
-            open_tasks: openTasks
+            activeClients: activeClients?.length || 0,
+            inactiveClients: inactiveClients?.length || 0,
+            prospects: prospects?.length || 0,
+            mrr,
+            pendingTasks: pendingTasksList?.length || 0,
+            recentActivity,
+            signedQuotesThisMonth: signedThisMonth?.length || 0
         });
 
-    } catch (error) {
-        console.error('Admin stats error:', error);
-        return NextResponse.json({ error: 'Stats failed' }, { status: 500 });
+    } catch (error: any) {
+        console.error('Admin Stats API Error:', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

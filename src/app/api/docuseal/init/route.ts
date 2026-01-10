@@ -8,7 +8,7 @@ export const maxDuration = 60; // Increase timeout just in case
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { templateId, documents, email, name } = body;
+        const { templateId, documents, email, name, redirect_url } = body;
 
         // Basic validation
         if ((!templateId && !documents) || !email) {
@@ -19,7 +19,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Call DocuSeal wrapper
-        const submission = await docuSeal.initSigningSession({ templateId, documents, email, name });
+        const submission = await docuSeal.initSigningSession({
+            templateId,
+            documents,
+            email,
+            name,
+            redirect_url
+        });
 
         return NextResponse.json({
             success: true,

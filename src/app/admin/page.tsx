@@ -18,11 +18,13 @@ import {
 } from 'lucide-react';
 
 interface Stats {
-    total_clients: number;
-    active_clients: number;
-    pending_cancellations: number;
-    monthly_recurring_revenue: number;
-    open_tasks: number;
+    activeClients: number;
+    inactiveClients: number;
+    prospects: number;
+    mrr: number;
+    pendingTasks: number;
+    recentActivity: any[];
+    signedQuotesThisMonth: number;
 }
 
 export default function AdminHomePage() {
@@ -46,6 +48,8 @@ export default function AdminHomePage() {
         fetchStats();
     }, []);
 
+    const totalClients = stats ? (stats.activeClients + stats.inactiveClients + stats.prospects) : 0;
+
     const menuItems = [
         {
             title: 'Commercial',
@@ -57,15 +61,15 @@ export default function AdminHomePage() {
         },
         {
             title: 'Gestion Clients',
-            description: `${stats?.active_clients || 0} Clients actifs sur ${stats?.total_clients || 0} total`,
+            description: `${stats?.activeClients || 0} Clients actifs sur ${totalClients} total`,
             icon: Users,
             color: 'bg-green-500',
             href: '/admin/clients',
-            count: stats ? `${stats.active_clients} Actifs` : '...'
+            count: stats ? `${stats.activeClients} Actifs` : '...'
         },
         {
             title: 'Prélèvements',
-            description: `MRR estimé : €${stats?.monthly_recurring_revenue.toFixed(2) || '0.00'}`,
+            description: `MRR estimé : €${stats?.mrr?.toFixed(2) || '0.00'}`,
             icon: CreditCard,
             color: 'bg-purple-500',
             href: '/admin/payments',
@@ -73,11 +77,11 @@ export default function AdminHomePage() {
         },
         {
             title: 'Tâches & Projets',
-            description: `${stats?.open_tasks || 0} tâches en attente`,
+            description: `${stats?.pendingTasks || 0} tâches en attente`,
             icon: CheckSquare,
             color: 'bg-orange-500',
             href: '/admin/tasks',
-            count: stats ? `${stats.open_tasks}` : '...'
+            count: stats ? `${stats.pendingTasks}` : '...'
         },
         {
             title: 'Dashboard Global',

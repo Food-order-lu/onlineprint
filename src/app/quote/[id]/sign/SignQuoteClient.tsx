@@ -9,6 +9,7 @@ import {
     Clock,
     Loader2,
     Smartphone,
+    ArrowRight
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { DocusealForm } from '@docuseal/react';
@@ -52,6 +53,7 @@ type Quote = typeof demoQuote;
 
 export default function SignQuoteClient({ demoQuote: initialQuote }: { demoQuote?: Quote }) {
     const params = useParams();
+    const router = useRouter();
     const quoteId = params.id as string;
 
     const [quote] = useState(initialQuote || demoQuote);
@@ -63,6 +65,7 @@ export default function SignQuoteClient({ demoQuote: initialQuote }: { demoQuote
     // State for dynamic DocuSeal session
     const [loadingSrc, setLoadingSrc] = useState(true);
     const [docuSealSrc, setDocuSealSrc] = useState<string | null>(null);
+    const [popupOpened, setPopupOpened] = useState(false);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -133,87 +136,98 @@ export default function SignQuoteClient({ demoQuote: initialQuote }: { demoQuote
     };
 
     // Initialize DocuSeal with Generated PDF
+    const startSigningFlow = async () => {
+        try {
+            setLoadingSrc(true);
+            setError(null);
+
+            // 1. Generate PDF Blob
+            console.log('Generating PDF...');
+            const { generateQuotePDF } = await import('@/components/pdf/QuotePDF');
+            const contractData = getContractData();
+            const pdfBlob = await generateQuotePDF(contractData);
+
+            if (!pdfBlob || pdfBlob.size === 0) throw new Error('PDF generation failed');
+
+            // 2. Convert Blob to Base64
+            const base64data = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const result = reader.result?.toString().split(',')[1];
+                    if (result) resolve(result);
+                    else reject(new Error('Failed to convert PDF to base64'));
+                };
+                reader.onerror = () => reject(new Error('FileReader error'));
+                reader.readAsDataURL(pdfBlob);
+            });
+
+            // 3. Call API to create signing session
+            // We pass ?mode=popup_callback so the success page knows to close the popup
+            const redirectUrl = `${window.location.origin}/quote/${quoteId}/success?mode=popup_callback`;
+
+            const response = await fetch('/api/docuseal/init', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    documents: [{
+                        name: `Devis-${quote.id}.pdf`,
+                        file: base64data
+                    }],
+                    email: quote.client.email,
+                    name: quote.client.name,
+                    redirect_url: redirectUrl
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Failed to init DocuSeal');
+            }
+
+            const data = await response.json();
+
+            // 4. Open Popup
+            const width = 1000;
+            const height = 800;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+
+            // Append redirect_url to DocuSeal URL as fallback
+            const finalUrl = `https://docuseal.com/s/${data.slug}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+
+            window.open(
+                finalUrl,
+                'SignQuote',
+                `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+            );
+
+            setPopupOpened(true);
+            setLoadingSrc(false);
+
+        } catch (err: any) {
+            console.error('Error initializing DocuSeal:', err);
+            setError(`${err.message}`);
+            setLoadingSrc(false);
+        }
+    };
+
+    // Listen for completion message from popup
     useEffect(() => {
-        const initDocuSeal = async () => {
-            try {
-                setLoadingSrc(true);
-                setError(null);
+        const handleMessage = (event: MessageEvent) => {
+            // Check origin for security (though we are same domain usually)
+            if (event.origin !== window.location.origin) return;
 
-                // 1. Generate PDF Blob
-                console.log('Generating PDF...');
-                const { generateQuotePDF } = await import('@/components/pdf/QuotePDF');
-                const contractData = getContractData();
-                const pdfBlob = await generateQuotePDF(contractData);
-                console.log('PDF Blob size:', pdfBlob.size, 'bytes');
-
-                if (!pdfBlob || pdfBlob.size === 0) {
-                    throw new Error('PDF generation failed - empty blob');
-                }
-
-                // 2. Convert Blob to Base64
-                const base64data = await new Promise<string>((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        const result = reader.result?.toString().split(',')[1];
-                        if (result) {
-                            resolve(result);
-                        } else {
-                            reject(new Error('Failed to convert PDF to base64'));
-                        }
-                    };
-                    reader.onerror = () => reject(new Error('FileReader error'));
-                    reader.readAsDataURL(pdfBlob);
-                });
-
-                console.log('Base64 length:', base64data.length);
-
-                // 3. Call API to create signing session
-                const response = await fetch('/api/docuseal/init', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        documents: [{
-                            name: `Devis-${quote.id}.pdf`,
-                            file: base64data
-                        }],
-                        email: quote.client.email,
-                        name: quote.client.name
-                    })
-                });
-
-                if (!response.ok) {
-                    const err = await response.json();
-                    throw new Error(err.error || 'Failed to init DocuSeal');
-                }
-
-                const data = await response.json();
-                console.log('DocuSeal response:', data);
-                setDocuSealSrc(`https://docuseal.com/s/${data.slug}`);
-                setLoadingSrc(false);
-            } catch (err: any) {
-                console.error('Error initializing DocuSeal:', err);
-                // Show error but also offer fallback
-                setError(`${err.message}. Vous pouvez utiliser le modèle standard à la place.`);
-                setDocuSealSrc("https://docuseal.com/d/NaZif3BS7bNSkn"); // Fallback URL
-                setLoadingSrc(false);
+            if (event.data && event.data.type === 'QUOTE_SIGNED' && event.data.quoteId === quoteId) {
+                console.log('Received signature confirmation from popup');
+                setSigned(true);
+                router.push(`/quote/${quoteId}/success`);
             }
         };
 
-        if (!signed) {
-            initDocuSeal();
-        }
-    }, [quote, signed]);
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, [quoteId, router]);
 
-    const router = useRouter();
-
-    const handleSignComplete = (data: any) => {
-        console.log('Signature completed:', data);
-        setSigned(true);
-        // Redirect to success page for next steps - Force top level redirect in case of iframe
-        if (typeof window !== 'undefined') {
-            window.top!.location.href = `/quote/${quoteId}/success`;
-        }
-    };
 
     const handleDownloadContract = async () => {
         // Download the FINAL signed PDF from DocuSeal if possible, 
@@ -244,12 +258,9 @@ export default function SignQuoteClient({ demoQuote: initialQuote }: { demoQuote
                     <h1 className="text-4xl font-bold mb-4 text-gray-900">Devis signé !</h1>
                     <p className="text-gray-600 text-lg mb-8">
                         Merci ! Votre devis N° {quote.id} a été signé avec succès.
-                        Une copie vous a été envoyée par email.
                     </p>
-
-                    <button onClick={handleDownloadContract} className="btn btn-primary">
-                        <FileText size={20} />
-                        Télécharger le devis signé
+                    <button onClick={() => router.push(`/quote/${quoteId}/success`)} className="btn btn-primary">
+                        Continuer
                     </button>
                 </div>
             </section>
@@ -327,25 +338,73 @@ export default function SignQuoteClient({ demoQuote: initialQuote }: { demoQuote
                         </div>
                     </div>
 
-                    {/* DocuSeal Form - Dynamic Loading */}
-                    <div className="card min-h-[400px] flex items-center justify-center bg-white p-0 overflow-hidden relative">
+                    {/* Action Area - CHANGED to Button */}
+                    <div className="card min-h-[400px] flex flex-col items-center justify-center bg-white p-8 text-center">
                         {error ? (
-                            <div className="p-8 text-center text-red-500">
+                            <div className="p-4 text-center text-red-500 bg-red-50 rounded-lg mb-4">
                                 <p>Erreur: {error}</p>
                             </div>
-                        ) : loadingSrc ? (
-                            <div className="flex flex-col items-center justify-center p-8 text-gray-400">
-                                <Loader2 size={32} className="animate-spin mb-4 text-[#0D7377]" />
-                                <p>Génération du contrat en cours...</p>
-                            </div>
                         ) : (
-                            <div className="w-full h-full min-h-[600px]">
-                                <DocusealForm
-                                    src={docuSealSrc || ''}
-                                    email={quote.client.email}
-                                    onComplete={handleSignComplete}
-                                />
-                            </div>
+                            <>
+                                <div className="mb-6 bg-blue-50 p-6 rounded-full">
+                                    <FileText size={48} className="text-blue-600" />
+                                </div>
+
+                                {popupOpened ? (
+                                    // Show after popup was opened - waiting for signature
+                                    <>
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Signature en cours...</h3>
+                                        <p className="text-gray-500 mb-6 max-w-sm">
+                                            Une fenêtre s'est ouverte pour signer le document. Une fois terminé, cliquez ci-dessous.
+                                        </p>
+
+                                        <button
+                                            onClick={() => router.push(`/quote/${quoteId}/success`)}
+                                            className="btn btn-primary w-full py-4 text-lg shadow-xl shadow-green-200/50 flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700"
+                                        >
+                                            <CheckCircle size={24} />
+                                            J'ai signé le document
+                                        </button>
+
+                                        <button
+                                            onClick={startSigningFlow}
+                                            className="mt-4 text-sm text-blue-600 hover:text-blue-800 underline"
+                                        >
+                                            Réouvrir la fenêtre de signature
+                                        </button>
+                                    </>
+                                ) : (
+                                    // Initial state - ready to sign
+                                    <>
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Prêt à signer ?</h3>
+                                        <p className="text-gray-500 mb-8 max-w-sm">
+                                            Cliquez ci-dessous pour ouvrir le document sécurisé dans une nouvelle fenêtre.
+                                        </p>
+
+                                        <button
+                                            onClick={startSigningFlow}
+                                            disabled={loadingSrc}
+                                            className="btn btn-primary w-full py-4 text-lg shadow-xl shadow-blue-200/50 flex items-center justify-center gap-3"
+                                        >
+                                            {loadingSrc ? (
+                                                <>
+                                                    <Loader2 size={24} className="animate-spin" />
+                                                    Préparation du document...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Signer le devis
+                                                    <ArrowRight size={24} />
+                                                </>
+                                            )}
+                                        </button>
+                                    </>
+                                )}
+
+                                <p className="text-xs text-gray-400 mt-6">
+                                    Processus sécurisé par DocuSeal.
+                                </p>
+                            </>
                         )}
                     </div>
                 </div>
