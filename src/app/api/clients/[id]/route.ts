@@ -101,6 +101,22 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
             }
         }
 
+        // Check VAT number uniqueness if being updated
+        if (body.vat_number && body.vat_number.trim() !== '') {
+            const { data: existingClients } = await supabaseAdmin.select<{ id: string }>(
+                'clients',
+                `vat_number=eq.${body.vat_number.trim()}`
+            );
+            // Check if another client (not this one) has the same VAT
+            const duplicate = existingClients?.find(c => c.id !== id);
+            if (duplicate) {
+                return NextResponse.json(
+                    { error: 'Un client avec ce numéro de TVA existe déjà' },
+                    { status: 409 }
+                );
+            }
+        }
+
         const client = await updateClient(id, body);
 
         return NextResponse.json({ client });

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, createInvoice } from '@/lib/db/supabase';
 import { zoho } from '@/lib/invoicing/zoho';
 import type { Client, Subscription, OneTimeCharge } from '@/lib/db/types';
+import { getCurrentDate } from '@/lib/date-helper';
 
 export async function POST(
     request: NextRequest,
@@ -23,7 +24,7 @@ export async function POST(
             return NextResponse.json({ error: 'Client not found' }, { status: 404 });
         }
 
-        const today = new Date();
+        const today = await getCurrentDate();
         const currentMonthName = today.toLocaleString('fr-FR', { month: 'long', year: 'numeric' });
 
         // 2. Fetch Active Subscriptions
@@ -93,15 +94,15 @@ export async function POST(
         });
 
         // 5. Create Zoho Invoice
-        const dueDate = new Date();
-        dueDate.setDate(dueDate.getDate() + 15); // Net 15
+        const dueDate = await getCurrentDate();
+        // dueDate.setDate(dueDate.getDate() + 15); // Removed Net 15, now Due on Receipt
 
         const { invoice: zohoInvoice } = await zoho.createInvoice({
             customer_id: contact.contact_id,
             date: today.toISOString().split('T')[0],
             due_date: dueDate.toISOString().split('T')[0],
-            notes: `Facture générée manuellement - ${currentMonthName}`,
-            terms: 'Paiement à 15 jours par prélèvement ou virement.',
+            notes: `Compte bancaire : LU73 0019 7755 6437 0000`,
+            terms: 'Paiement immédiat à réception (Due on Receipt).',
             line_items: lineItems,
         });
 

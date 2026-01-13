@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import TimeTravelWrapper from "@/components/debug/TimeTravelWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,10 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <div className="fixed bottom-4 right-4 z-50">
+          {/* Dynamic Import to avoid SSR issues if cookies used in render (though we handled it) */}
+        </div>
+        <TimeTravelWrapper />
       </body>
     </html>
   );

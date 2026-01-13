@@ -4,10 +4,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSubscription, supabaseAdmin } from '@/lib/db/supabase';
 import type { ServiceType, SubscriptionStatus, OneTimeCharge } from '@/lib/db/types';
+import { getCurrentDate } from '@/lib/date-helper';
 
 // Calculate prorated amount for partial month
-function calculateProration(monthlyAmount: number, startDateStr: string): { amount: number; days: number; totalDays: number } | null {
-    const today = new Date();
+function calculateProration(monthlyAmount: number, startDateStr: string, today: Date): { amount: number; days: number; totalDays: number } | null {
+    // const today = new Date(); // Pass 'today' as argument to mock time
     const startDate = new Date(startDateStr);
 
     // Only prorate if start date is in current month
@@ -50,7 +51,8 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        const startedAt = body.started_at || new Date().toISOString().split('T')[0];
+        const today = await getCurrentDate();
+        const startedAt = body.started_at || today.toISOString().split('T')[0];
         const monthlyAmount = parseFloat(body.monthly_amount);
 
         // Create subscription
@@ -71,7 +73,7 @@ export async function POST(request: NextRequest) {
         // Calculate and create proration charge if applicable
         let prorationChargeId = null;
         try {
-            const proration = calculateProration(monthlyAmount, startedAt);
+            const proration = calculateProration(monthlyAmount, startedAt, today);
 
             if (proration && proration.amount > 0) {
                 const { data: chargeData } = await supabaseAdmin.insert<OneTimeCharge>('one_time_charges', {

@@ -146,6 +146,39 @@ function StatusBadge({ status }: { status: ClientStatus }) {
     );
 }
 
+function CancellationCountdown({ effectiveDate }: { effectiveDate: string | null }) {
+    // No effective date set yet - show "Résiliation demandée"
+    if (!effectiveDate) {
+        return (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                <Clock size={14} />
+                Résiliation demandée
+            </span>
+        );
+    }
+
+    const today = new Date();
+    const endDate = new Date(effectiveDate);
+    const diffTime = endDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) {
+        return (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-red-100 text-red-700 border border-red-200">
+                <AlertCircle size={14} />
+                Résiliation effective
+            </span>
+        );
+    }
+
+    return (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-orange-100 text-orange-700 border border-orange-200">
+            <Clock size={14} />
+            J-{diffDays}
+        </span>
+    );
+}
+
 function Section({ title, icon: Icon, children, action }: {
     title: string;
     icon: any;
@@ -181,6 +214,9 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     const [addingSubscription, setAddingSubscription] = useState(false);
     const [addingCharge, setAddingCharge] = useState(false);
     const [generatingInvoice, setGeneratingInvoice] = useState(false);
+    const [showManualMandate, setShowManualMandate] = useState(false);
+    const [addingMandate, setAddingMandate] = useState(false);
+    const [manualIban, setManualIban] = useState('');
 
     // Form states
     const [newSubscription, setNewSubscription] = useState({
@@ -188,6 +224,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
         service_name: '',
         monthly_amount: '',
         commission_percent: '0',
+        started_at: new Date().toISOString().split('T')[0],
     });
     const [newCharge, setNewCharge] = useState({ description: '', amount: '' });
 
@@ -244,6 +281,29 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
         }
     };
 
+    const handleManualMandate = async () => {
+        if (!manualIban) return;
+        setAddingMandate(true);
+        try {
+            const response = await fetch(`/api/clients/${resolvedParams.id}/mandate/manual`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ iban: manualIban })
+            });
+
+            if (!response.ok) throw new Error('Failed to create mandate');
+
+            await fetchClient();
+            setShowManualMandate(false);
+            setManualIban('');
+            alert('Mandat ajouté avec succès !');
+        } catch (err) {
+            alert('Erreur lors de l\'ajout du mandat');
+        } finally {
+            setAddingMandate(false);
+        }
+    };
+
     const handleGenerateContract = async () => {
         setGeneratingContract(true);
         try {
@@ -292,10 +352,10 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    client_id: resolvedParams.id,
                     ...newSubscription,
                     monthly_amount: parseFloat(newSubscription.monthly_amount),
                     commission_percent: parseFloat(newSubscription.commission_percent),
+                    started_at: newSubscription.started_at,
                 }),
             });
             if (response.ok) {
@@ -380,6 +440,9 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
                         <StatusBadge status={client.status} />
+                        {client.status === 'pending_cancellation' && (
+                            <CancellationCountdown effectiveDate={client.cancellation_effective_at} />
+                        )}
 
                         <Link
                             href={`/admin/clients/${client.id}/edit`}
@@ -456,6 +519,32 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                     >
                                         {sendingMandate ? 'Envoi...' : 'Envoyer Demande SEPA'}
                                     </button>
+
+                                    <button
+                                        onClick={() => setShowManualMandate(!showManualMandate)}
+                                        className="w-full mt-2 py-2 text-xs text-gray-500 hover:text-gray-700 underline"
+                                    >
+                                        Ajouter manuellement
+                                    </button>
+
+                                    {showManualMandate && (
+                                        <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200">
+                                            <input
+                                                type="text"
+                                                placeholder="IBAN (LU73...)"
+                                                value={manualIban}
+                                                onChange={e => setManualIban(e.target.value)}
+                                                className="w-full p-2 text-sm border rounded-lg mb-2 uppercase"
+                                            />
+                                            <button
+                                                onClick={handleManualMandate}
+                                                disabled={addingMandate || !manualIban}
+                                                className="w-full py-1.5 bg-gray-900 text-white text-xs font-bold rounded-lg disabled:opacity-50"
+                                            >
+                                                {addingMandate ? 'Ajout...' : 'Valider'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </Section>
@@ -508,6 +597,15 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                                 onChange={e => setNewSubscription({ ...newSubscription, commission_percent: e.target.value })}
                                                 className="p-2 border rounded-lg"
                                             />
+                                            <div className="flex flex-col">
+                                                <label className="text-xs text-gray-500 mb-1">Date de début</label>
+                                                <input
+                                                    type="date"
+                                                    value={newSubscription.started_at}
+                                                    onChange={e => setNewSubscription({ ...newSubscription, started_at: e.target.value })}
+                                                    className="p-2 border rounded-lg"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="flex justify-end gap-2">
                                             <button
@@ -531,11 +629,37 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                     <p className="text-center text-gray-400 py-8 italic">Aucun abonnement actif</p>
                                 ) : client.subscriptions.map(sub => (
                                     <div key={sub.id} className="flex justify-between items-center p-5 bg-white border border-gray-100 rounded-2xl shadow-sm">
-                                        <div>
+                                        <div className="flex-1">
                                             <p className="font-bold text-gray-900">{sub.service_name || serviceTypeLabels[sub.service_type]}</p>
                                             <p className="text-sm text-gray-400">{serviceTypeLabels[sub.service_type]}</p>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Début : {sub.started_at ? new Date(sub.started_at).toLocaleDateString('fr-FR') : 'Non défini'}
+                                            </p>
                                         </div>
-                                        <p className="text-xl font-black text-gray-900">{sub.monthly_amount.toFixed(2)}€<span className="text-xs text-gray-400">/mois</span></p>
+                                        <div className="flex items-center gap-3">
+                                            <p className="text-xl font-black text-gray-900">{sub.monthly_amount.toFixed(2)}€<span className="text-xs text-gray-400">/mois</span></p>
+                                            <button
+                                                onClick={async () => {
+                                                    const newDate = prompt('Nouvelle date de début (YYYY-MM-DD):', sub.started_at || new Date().toISOString().split('T')[0]);
+                                                    if (newDate) {
+                                                        try {
+                                                            await fetch(`/api/subscriptions/${sub.id}`, {
+                                                                method: 'PATCH',
+                                                                headers: { 'Content-Type': 'application/json' },
+                                                                body: JSON.stringify({ started_at: newDate })
+                                                            });
+                                                            window.location.reload();
+                                                        } catch (err) {
+                                                            alert('Erreur lors de la modification');
+                                                        }
+                                                    }
+                                                }}
+                                                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                title="Modifier la date de début"
+                                            >
+                                                <Calendar size={16} />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -626,7 +750,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                     <span className="font-medium">{client.total_monthly.toFixed(2)}€</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-600">Frais uniques / Prorata</span>
+                                    <span className="text-gray-600">Frais uniques</span>
                                     <span className="font-medium">
                                         {(client.oneTimeCharges?.filter(c => !c.invoiced).reduce((sum, c) => sum + c.amount, 0) || 0).toFixed(2)}€
                                     </span>
@@ -655,6 +779,67 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                             <p className="text-xs text-gray-400">{new Date(inv.issued_at).toLocaleDateString()}</p>
                                         </div>
                                         <p className="font-bold text-gray-900">{inv.total.toFixed(2)}€</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </Section>
+
+                        {/* Devis (Quotes) */}
+                        <Section title="Devis" icon={FileText}>
+                            <div className="space-y-3">
+                                {client.quotes.length === 0 ? (
+                                    <p className="text-center text-gray-400 py-4 italic">Aucun devis</p>
+                                ) : client.quotes.map(quote => (
+                                    <div key={quote.id} className="flex justify-between items-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+                                        <div>
+                                            <p className="font-semibold text-gray-900">{quote.quote_number}</p>
+                                            <p className="text-xs text-gray-400">{new Date(quote.created_at).toLocaleDateString()}</p>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className={`text-xs px-2 py-0.5 rounded-full ${quote.status === 'signed' ? 'bg-green-100 text-green-700' :
+                                                quote.status === 'sent' ? 'bg-blue-100 text-blue-700' :
+                                                    'bg-gray-100 text-gray-600'
+                                                }`}>
+                                                {quote.status === 'signed' ? 'Signé' : quote.status === 'sent' ? 'Envoyé' : 'Brouillon'}
+                                            </span>
+                                            <p className="font-bold text-gray-900">{quote.total.toFixed(2)}€</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Section>
+
+                        {/* Contrats */}
+                        <Section title="Contrats" icon={FileSignature}>
+                            <div className="space-y-3">
+                                {client.contracts.length === 0 ? (
+                                    <p className="text-center text-gray-400 py-4 italic">Aucun contrat</p>
+                                ) : client.contracts.map(contract => (
+                                    <div key={contract.id} className="flex justify-between items-center p-4 bg-purple-50 rounded-xl border border-purple-100">
+                                        <div>
+                                            <p className="font-semibold text-gray-900">Contrat</p>
+                                            <p className="text-xs text-gray-400">
+                                                {contract.valid_from ? `Du ${new Date(contract.valid_from).toLocaleDateString()}` : 'Date non définie'}
+                                                {contract.valid_until ? ` au ${new Date(contract.valid_until).toLocaleDateString()}` : ''}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className={`text-xs px-2 py-0.5 rounded-full ${contract.status === 'signed' ? 'bg-green-100 text-green-700' :
+                                                contract.status === 'sent' ? 'bg-blue-100 text-blue-700' :
+                                                    contract.status === 'terminated' ? 'bg-red-100 text-red-700' :
+                                                        'bg-gray-100 text-gray-600'
+                                                }`}>
+                                                {contract.status === 'signed' ? 'Signé' :
+                                                    contract.status === 'sent' ? 'Envoyé' :
+                                                        contract.status === 'terminated' ? 'Résilié' : 'Brouillon'}
+                                            </span>
+                                            {contract.document_url && (
+                                                <a href={contract.document_url} target="_blank" rel="noopener noreferrer"
+                                                    className="text-blue-600 hover:underline text-sm">
+                                                    Voir
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

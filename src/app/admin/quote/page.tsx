@@ -53,6 +53,7 @@ const quoteSchema = z.object({
     paymentTerms: z.enum(['acompte', 'custom']),
     customPaymentTerms: z.string().optional(),
     notes: z.string().optional(),
+    startDate: z.string().optional(),
 });
 
 type QuoteFormData = z.infer<typeof quoteSchema>;
@@ -106,6 +107,7 @@ const oneTimeExtras = [
     { name: 'Site multi-langues', price: 30 },
     { name: 'Imprimante (reconditionné)', price: 150, note: 'Installation incluse' },
     { name: 'Router pour imprimante', price: 40, note: 'Installation incluse' },
+    { name: 'Tablette offerte', price: 0, note: 'Offerte avec Commande en ligne' },
 ];
 
 // Generate quote number
@@ -245,6 +247,7 @@ export default function QuoteBuilderPage() {
             depositPercent: 20,
             paymentTerms: 'acompte',
             customPaymentTerms: '',
+            startDate: '',
         },
     });
 
@@ -446,6 +449,9 @@ export default function QuoteBuilderPage() {
             // Pass monthly total info
             monthlyTotal: totals.monthlyTotal,
             monthlyDiscount: data.monthlyDiscount,
+
+            // Start date for services
+            startDate: data.startDate || null,
         };
 
         setQuoteData(pdfData);
@@ -461,8 +467,22 @@ export default function QuoteBuilderPage() {
     const toggleMonthly = (index: number) => {
         const currentMonthly = [...monthly];
         if (monthlyServices[index]?.required && currentMonthly[index].selected) return;
-        currentMonthly[index].selected = !currentMonthly[index].selected;
+
+        const newState = !currentMonthly[index].selected;
+        currentMonthly[index].selected = newState;
         setValue('monthly', currentMonthly);
+
+        // Auto-select Free Tablet if 'Système commande en ligne' is selected
+        if (monthlyServices[index].name === 'Système commande en ligne') {
+            const currentExtras = [...extras];
+            const tabletIndex = oneTimeExtras.findIndex(e => e.name === 'Tablette offerte');
+            if (tabletIndex !== -1) {
+                // Determine the correct index in currentExtras (should match order)
+                // Need to be careful if extras are from state 'extras' which maps 'oneTimeExtras'
+                currentExtras[tabletIndex].selected = newState;
+                setValue('extras', currentExtras);
+            }
+        }
     };
 
 
@@ -560,7 +580,8 @@ export default function QuoteBuilderPage() {
                                                         discountAmount: quoteData.discountAmount,
                                                         monthlyTotal: quoteData.monthlyTotal,
                                                         monthlyItems: quoteData.monthlyItems,
-                                                        oneTimeItems: quoteData.oneTimeItems
+                                                        oneTimeItems: quoteData.oneTimeItems,
+                                                        startDate: quoteData.startDate
                                                     }
                                                 })
                                             });
@@ -834,19 +855,47 @@ export default function QuoteBuilderPage() {
                                 <h2 className="text-xl font-semibold mb-2 text-gray-900">Options ponctuelles</h2>
                                 <p className="text-sm text-gray-500 mb-6">Frais uniques</p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {extras.map((extra, index) => (
-                                        <label key={extra.name} className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${extra.selected ? 'border-[#0D7377] bg-[#0D7377]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                                            <div className="flex items-center gap-3">
-                                                <input type="checkbox" checked={extra.selected} onChange={() => toggleExtra(index)} className="w-5 h-5 rounded border-gray-300 text-[#0D7377] focus:ring-[#0D7377]" />
-                                                <span className="text-gray-700">{extra.name}</span>
-                                            </div>
-                                            <span className="text-[#0D7377] font-medium">+{extra.price} €</span>
-                                        </label>
-                                    ))}
+                                    {extras.map((extra, index) => {
+                                        // Hide Tablet if "Système commande en ligne" is not selected
+                                        if (extra.name === 'Tablette offerte') {
+                                            const onlineOrdering = monthly.find(m => m.name === 'Système commande en ligne');
+                                            if (!onlineOrdering?.selected) return null;
+                                        }
+
+                                        return (
+                                            <label key={extra.name} className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${extra.selected ? 'border-[#0D7377] bg-[#0D7377]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                                                <div className="flex items-center gap-3">
+                                                    <input type="checkbox" checked={extra.selected} onChange={() => toggleExtra(index)} className="w-5 h-5 rounded border-gray-300 text-[#0D7377] focus:ring-[#0D7377]" />
+                                                    <span className="text-gray-700">{extra.name}</span>
+                                                </div>
+                                                <span className="text-[#0D7377] font-medium">+{extra.price} €</span>
+                                            </label>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
                             {/* Payment Terms */}
+                            {/* Date de Début des Services */}
+                            <div className="card">
+                                <h2 className="text-xl font-semibold mb-6 text-gray-900">Date de début des services</h2>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Date de lancement prévue (optionnel)
+                                        </label>
+                                        <input
+                                            type="date"
+                                            {...register('startDate')}
+                                            className="input"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Si définie, les abonnements mensuels commenceront à cette date (prorata automatique).
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="card">
                                 <h2 className="text-xl font-semibold mb-6 text-gray-900">Conditions de paiement</h2>
                                 <div className="space-y-4">

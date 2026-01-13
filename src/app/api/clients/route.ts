@@ -67,6 +67,20 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Check VAT number uniqueness (if provided)
+        if (body.vat_number && body.vat_number.trim() !== '') {
+            const { data: existingClient } = await supabaseAdmin.selectOne<{ id: string }>(
+                'clients',
+                `vat_number=eq.${body.vat_number.trim()}`
+            );
+            if (existingClient) {
+                return NextResponse.json(
+                    { error: 'Un client avec ce numéro de TVA existe déjà' },
+                    { status: 409 }
+                );
+            }
+        }
+
         const clientInput: CreateClientInput = {
             company_name: body.company_name,
             contact_name: body.contact_name,
@@ -99,10 +113,7 @@ export async function POST(request: NextRequest) {
             console.log(`Looking up referrer for code: ${body.referral_code}`);
             // We need to query supabaseAdmin to find the client with this code
             const { data: referrer, error: refError } = await supabaseAdmin
-                .from('clients')
-                .select('id')
-                .eq('referral_code', body.referral_code)
-                .single();
+                .selectOne<{ id: string }>('clients', `referral_code=eq.${body.referral_code}`);
 
             if (referrer) {
                 console.log(`Found referrer: ${referrer.id}`);

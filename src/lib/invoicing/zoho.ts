@@ -205,6 +205,15 @@ class ZohoClient {
         return this.request(`/contacts?email=${encodeURIComponent(email)}`);
     }
 
+    async listContacts(params?: { page?: number; per_page?: number }): Promise<{ contacts: ZohoContact[]; page_context: any }> {
+        const searchParams = new URLSearchParams();
+        if (params?.page) searchParams.append('page', params.page.toString());
+        if (params?.per_page) searchParams.append('per_page', params.per_page.toString());
+
+        const queryString = searchParams.toString();
+        return this.request(queryString ? `/contacts?${queryString}` : '/contacts');
+    }
+
     async updateContact(id: string, params: Partial<{
         contact_name: string;
         company_name: string;

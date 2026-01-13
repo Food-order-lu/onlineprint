@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
                 else if (lowerDesc.includes('site') || lowerDesc.includes('web')) serviceType = 'website';
                 else if (lowerDesc.includes('maintenance')) serviceType = 'maintenance';
 
-                const startedAt = new Date().toISOString().split('T')[0];
+                const startedAt = quote_data.startDate || new Date().toISOString().split('T')[0];
                 const monthlyAmt = item.unitPrice * item.quantity;
 
                 await supabaseAdmin.insert('subscriptions', {
