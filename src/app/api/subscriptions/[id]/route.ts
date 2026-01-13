@@ -1,5 +1,7 @@
 // Subscription Detail API Route
 // DELETE /api/subscriptions/[id] - Cancel a subscription with proration
+// PATCH /api/subscriptions/[id] - Update subscription details
+
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, cancelSubscription, getSubscriptionById } from '@/lib/db/supabase';
@@ -82,6 +84,34 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         console.error('Error cancelling subscription:', error);
         return NextResponse.json(
             { error: error instanceof Error ? error.message : 'Failed to cancel subscription' },
+            { status: 500 }
+        );
+    }
+}
+
+// PATCH - Update subscription details (specifically started_at)
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
+    try {
+        const { id } = await params;
+        const body = await request.json();
+
+        // only allow updating started_at for now
+        if (body.started_at) {
+            const { error } = await supabaseAdmin.update('subscriptions', `id=eq.${id}`, {
+                started_at: body.started_at
+            });
+
+            if (error) throw error;
+
+            return NextResponse.json({ success: true });
+        }
+
+        return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+
+    } catch (error) {
+        console.error('Error updating subscription:', error);
+        return NextResponse.json(
+            { error: 'Failed to update subscription' },
             { status: 500 }
         );
     }

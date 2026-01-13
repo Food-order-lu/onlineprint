@@ -13,16 +13,17 @@ import {
     ArrowDownRight,
     Clock,
     CheckCircle,
-    AlertTriangle
+    Target
 } from 'lucide-react';
 
 export default function DashboardGlobalPage() {
-    const [showObjectives, setShowObjectives] = useState(false);
+    // const [showObjectives, setShowObjectives] = useState(false); -> removed
     const [stats, setStats] = useState({
         activeClients: 0,
         inactiveClients: 0,
         prospects: 0,
         mrr: 0, // Monthly Recurring Revenue
+        fixedRevenue: 0,
         pendingTasks: 0,
         recentActivity: [] as any[],
         signedQuotesThisMonth: 0
@@ -50,7 +51,8 @@ export default function DashboardGlobalPage() {
 
     // Progress calculations
     const clientProgress = (stats.activeClients / 14) * 100;
-    const mrrProgress = (stats.mrr / 2500) * 100;
+    const mrrProgress = (stats.mrr / 1000) * 100;
+    const fixedRevenueProgress = (stats.fixedRevenue / 5000) * 100;
 
     return (
         <div className="min-h-screen bg-white p-6 md:p-12">
@@ -68,54 +70,52 @@ export default function DashboardGlobalPage() {
                 */}
             </div>
 
-            {/* Hidden Commercial Objectives Section */}
-            {showObjectives && (
-                <div className="mb-12 bg-gray-900 rounded-3xl p-8 text-white relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-32 bg-blue-500 rounded-full blur-3xl opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+            {/* Commercial Objectives Section */}
+            <div className="mb-12 bg-white rounded-2xl border border-gray-100 p-8 shadow-sm relative overflow-hidden">
+                <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-2 bg-yellow-50 rounded-lg">
+                            <Target size={24} className="text-yellow-500" />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-900">Objectifs Commerciaux</h2>
+                    </div>
 
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 bg-white/10 rounded-lg">
-                                <AlertTriangle size={24} className="text-yellow-400" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div>
+                            <p className="text-gray-500 text-sm mb-1">Objectif Mensuel (Clients)</p>
+                            <div className="flex items-end gap-2">
+                                <span className="text-4xl font-bold text-gray-900">{stats.activeClients}</span>
+                                <span className="text-gray-400 mb-1">/ 14</span>
                             </div>
-                            <h2 className="text-xl font-bold">Objectifs Commerciaux (Privé)</h2>
+                            <div className="w-full h-1.5 bg-gray-100 rounded-full mt-3 overflow-hidden">
+                                <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(clientProgress, 100)}%` }}></div>
+                            </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div>
-                                <p className="text-gray-400 text-sm mb-1">Objectif Mensuel (Clients)</p>
-                                <div className="flex items-end gap-2">
-                                    <span className="text-4xl font-bold text-white">{stats.activeClients}</span>
-                                    <span className="text-gray-400 mb-1">/ 14</span>
-                                </div>
-                                <div className="w-full h-1.5 bg-gray-800 rounded-full mt-3 overflow-hidden">
-                                    <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(clientProgress, 100)}%` }}></div>
-                                </div>
+                        <div>
+                            <p className="text-gray-500 text-sm mb-1">Objectif Mensuel (MRR)</p>
+                            <div className="flex items-end gap-2">
+                                <span className="text-4xl font-bold text-gray-900">{(stats.mrr).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
+                                <span className="text-gray-400 mb-1">/ 1 000€</span>
                             </div>
-
-                            <div>
-                                <p className="text-gray-400 text-sm mb-1">Objectif Mensuel (MRR)</p>
-                                <div className="flex items-end gap-2">
-                                    <span className="text-4xl font-bold text-white">{(stats.mrr / 1000).toFixed(1)}k€</span>
-                                    <span className="text-gray-400 mb-1">/ 2.5k€</span>
-                                </div>
-                                <div className="w-full h-1.5 bg-gray-800 rounded-full mt-3 overflow-hidden">
-                                    <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.min(mrrProgress, 100)}%` }}></div>
-                                </div>
+                            <div className="w-full h-1.5 bg-gray-100 rounded-full mt-3 overflow-hidden">
+                                <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.min(mrrProgress, 100)}%` }}></div>
                             </div>
+                        </div>
 
-                            <div>
-                                <p className="text-gray-400 text-sm mb-1">Taux de Conversion</p>
-                                <div className="flex items-end gap-2">
-                                    <span className="text-4xl font-bold text-white">24%</span>
-                                    <span className="text-green-400 text-sm mb-1 font-medium">+2.5%</span>
-                                </div>
-                                <p className="text-xs text-gray-500 mt-2">Basé sur 21 devis envoyés</p>
+                        <div>
+                            <p className="text-gray-500 text-sm mb-1">Objectif Mensuel (Services Fixes)</p>
+                            <div className="flex items-end gap-2">
+                                <span className="text-4xl font-bold text-gray-900">{(stats.fixedRevenue).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
+                                <span className="text-gray-400 mb-1">/ 5 000€</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-gray-100 rounded-full mt-3 overflow-hidden">
+                                <div className="h-full bg-purple-500 rounded-full" style={{ width: `${Math.min(fixedRevenueProgress, 100)}%` }}></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
 
             {/* Top Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">

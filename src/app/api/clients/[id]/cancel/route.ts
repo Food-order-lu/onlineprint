@@ -41,9 +41,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
         // Parse optional body
         let reason = null;
+        let cancelType = 'full';
         try {
             const body = await request.json();
             reason = body.reason || null;
+            if (body.type === 'service') cancelType = 'service';
         } catch {
             // No body provided, that's fine
         }
@@ -54,7 +56,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         // Create cancellation request
         const { error: insertError } = await supabaseAdmin.insert('cancellation_requests', {
             client_id: id,
-            cancel_type: 'full',
+            cancel_type: cancelType,
             reason,
             token,
             requested_at: new Date().toISOString(),
@@ -64,10 +66,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
             throw new Error(insertError.message);
         }
 
+        // Calculate effective date (2 months from now)
+        const effectiveDate = new Date();
+        effectiveDate.setMonth(effectiveDate.getMonth() + 2);
+
         // Update client status
         await updateClient(id, {
             status: 'pending_cancellation',
             cancellation_requested_at: new Date().toISOString(),
+            cancellation_effective_at: effectiveDate.toISOString(),
             cancellation_reason: reason,
         });
 

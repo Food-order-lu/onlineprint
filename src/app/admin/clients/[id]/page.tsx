@@ -20,6 +20,7 @@ import {
     AlertCircle,
     CheckCircle,
     XCircle,
+    X,
     Clock,
     Calendar,
     Receipt,
@@ -147,17 +148,26 @@ function StatusBadge({ status }: { status: ClientStatus }) {
 }
 
 function CancellationCountdown({ effectiveDate }: { effectiveDate: string | null }) {
+    const [today, setToday] = useState(new Date());
+
+    useEffect(() => {
+        // Support Time Machine on Client Side
+        const match = document.cookie.match(/(^| )NEXT_DEBUG_DATE=([^;]+)/);
+        if (match && match[2]) {
+            setToday(new Date(match[2]));
+        }
+    }, []);
+
     // No effective date set yet - show "Résiliation demandée"
     if (!effectiveDate) {
         return (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
                 <Clock size={14} />
-                Résiliation demandée
+                Durée restante
             </span>
         );
     }
 
-    const today = new Date();
     const endDate = new Date(effectiveDate);
     const diffTime = endDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -217,6 +227,21 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     const [showManualMandate, setShowManualMandate] = useState(false);
     const [addingMandate, setAddingMandate] = useState(false);
     const [manualIban, setManualIban] = useState('');
+
+    // Cancellation Modal State
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [showInvoiceConfirmModal, setShowInvoiceConfirmModal] = useState(false);
+    const [cancelReason, setCancelReason] = useState('');
+    const [cancelType, setCancelType] = useState('full');
+
+    // Inline Edit State for Subscriptions
+    const [editingSubId, setEditingSubId] = useState<string | null>(null);
+    const [editDate, setEditDate] = useState('');
+
+    // Contract Edit State
+    const [isEditingContract, setIsEditingContract] = useState(false);
+    const [contractDuration, setContractDuration] = useState('12');
+    const [contractRenewal, setContractRenewal] = useState('Tacite');
 
     // Form states
     const [newSubscription, setNewSubscription] = useState({
@@ -330,16 +355,30 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
         }
     };
 
-    const handleInitiateCancellation = async () => {
-        if (!confirm('Initier la résiliation ?')) return;
+    const handleInitiateCancellation = () => {
+        setCancelReason('');
+        setCancelType('full');
+        setShowCancelModal(true);
+    };
+
+    const confirmCancellation = async () => {
+        if (!cancelReason) return alert('Veuillez indiquer un motif.');
+
         setCancelling(true);
         try {
-            const response = await fetch(`/api/clients/${resolvedParams.id}/cancel`, { method: 'POST' });
+            const response = await fetch(`/api/clients/${resolvedParams.id}/cancel`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reason: cancelReason, type: cancelType })
+            });
+
             if (!response.ok) throw new Error('Failed');
+
             await fetchClient();
-            alert('Résiliation initiée');
+            setShowCancelModal(false);
+            alert('Résiliation initiée avec succès.');
         } catch (e) {
-            alert('Erreur');
+            alert('Erreur lors de la résiliation.');
         } finally {
             setCancelling(false);
         }
@@ -392,9 +431,12 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
         }
     };
 
-    const handleGenerateInvoice = async () => {
-        if (!confirm('Voulez-vous générer une facture pour les abonnements et frais en attente ?\nNote: Cela marquera les frais comme facturés.')) return;
+    const handleGenerateInvoice = () => {
+        setShowInvoiceConfirmModal(true);
+    };
 
+    const confirmGenerateInvoice = async () => {
+        setShowInvoiceConfirmModal(false);
         setGeneratingInvoice(true);
         try {
             const response = await fetch(`/api/clients/${resolvedParams.id}/generate-invoice`, {
@@ -548,6 +590,83 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                 </div>
                             )}
                         </Section>
+
+                        <Section title="Contrat & Engagement" icon={FileText}>
+                            <div className="space-y-4">
+                                {isEditingContract ? (
+                                    <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                        <div>
+                                            <label className="block text-xs text-gray-500 mb-1">Durée d'engagement (Mois)</label>
+                                            <select
+                                                value={contractDuration}
+                                                onChange={(e) => setContractDuration(e.target.value)}
+                                                className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white"
+                                            >
+                                                <option value="12">12 Mois</option>
+                                                <option value="24">24 Mois</option>
+                                                <option value="36">36 Mois</option>
+                                                <option value="48">48 Mois</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-500 mb-1">Type de Renouvellement</label>
+                                            <select
+                                                value={contractRenewal}
+                                                onChange={(e) => setContractRenewal(e.target.value)}
+                                                className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white"
+                                            >
+                                                <option value="Tacite">Tacite Reconduction</option>
+                                                <option value="Manuel">Manuel</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="flex gap-2 pt-2">
+                                            <button
+                                                onClick={() => setIsEditingContract(false)}
+                                                className="flex-1 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700"
+                                            >
+                                                Annuler
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    // Placeholder save logic
+                                                    alert("Termes mis à jour (Simulation)");
+                                                    setIsEditingContract(false);
+                                                }}
+                                                className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold shadow-sm"
+                                            >
+                                                Enregistrer
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-600 text-sm">Durée d'engagement</span>
+                                            <span className="font-semibold text-gray-900">{contractDuration} Mois</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-600 text-sm">Fin d'engagement</span>
+                                            <span className="font-semibold text-gray-900">
+                                                {client.created_at ? new Date(new Date(client.created_at).setFullYear(new Date(client.created_at).getFullYear() + parseInt(contractDuration))).toLocaleDateString('fr-FR') : '-'}
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-600 text-sm">Renouvellement</span>
+                                            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs font-semibold">{contractRenewal}</span>
+                                        </div>
+
+                                        <button
+                                            onClick={() => setIsEditingContract(true)}
+                                            className="w-full mt-2 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 flex items-center justify-center gap-2"
+                                        >
+                                            <Edit size={14} />
+                                            Modifier les termes
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </Section>
                     </div>
 
                     {/* Main Content */}
@@ -632,33 +751,60 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                         <div className="flex-1">
                                             <p className="font-bold text-gray-900">{sub.service_name || serviceTypeLabels[sub.service_type]}</p>
                                             <p className="text-sm text-gray-400">{serviceTypeLabels[sub.service_type]}</p>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Début : {sub.started_at ? new Date(sub.started_at).toLocaleDateString('fr-FR') : 'Non défini'}
-                                            </p>
+
+                                            {editingSubId === sub.id ? (
+                                                <div className="mt-2 flex items-center gap-2">
+                                                    <input
+                                                        type="date"
+                                                        value={editDate}
+                                                        onChange={(e) => setEditDate(e.target.value)}
+                                                        className="p-1 border rounded text-sm"
+                                                    />
+                                                    <button
+                                                        onClick={async () => {
+                                                            if (!editDate) return;
+                                                            try {
+                                                                await fetch(`/api/subscriptions/${sub.id}`, {
+                                                                    method: 'PATCH',
+                                                                    headers: { 'Content-Type': 'application/json' },
+                                                                    body: JSON.stringify({ started_at: editDate })
+                                                                });
+                                                                // Use router refresh or fetchClient instead of reload for smoother UX
+                                                                await fetchClient();
+                                                                setEditingSubId(null);
+                                                            } catch (err) {
+                                                                alert('Erreur lors de la modification');
+                                                            }
+                                                        }}
+                                                        className="p-1 bg-green-100 text-green-700 rounded hover:bg-green-200"
+                                                    >
+                                                        <CheckCircle size={14} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setEditingSubId(null)}
+                                                        className="p-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
+                                                    >
+                                                        <X size={14} />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <p className="text-xs text-gray-500 mt-1 flex items-center gap-2 group">
+                                                    Début : {sub.started_at ? new Date(sub.started_at).toLocaleDateString('fr-FR') : 'Non défini'}
+                                                    <button
+                                                        onClick={() => {
+                                                            setEditingSubId(sub.id);
+                                                            setEditDate(sub.started_at || new Date().toISOString().split('T')[0]);
+                                                        }}
+                                                        className="opacity-0 group-hover:opacity-100 text-blue-500 hover:text-blue-700 transition-opacity"
+                                                        title="Modifier la date"
+                                                    >
+                                                        <Edit size={12} />
+                                                    </button>
+                                                </p>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <p className="text-xl font-black text-gray-900">{sub.monthly_amount.toFixed(2)}€<span className="text-xs text-gray-400">/mois</span></p>
-                                            <button
-                                                onClick={async () => {
-                                                    const newDate = prompt('Nouvelle date de début (YYYY-MM-DD):', sub.started_at || new Date().toISOString().split('T')[0]);
-                                                    if (newDate) {
-                                                        try {
-                                                            await fetch(`/api/subscriptions/${sub.id}`, {
-                                                                method: 'PATCH',
-                                                                headers: { 'Content-Type': 'application/json' },
-                                                                body: JSON.stringify({ started_at: newDate })
-                                                            });
-                                                            window.location.reload();
-                                                        } catch (err) {
-                                                            alert('Erreur lors de la modification');
-                                                        }
-                                                    }
-                                                }}
-                                                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                title="Modifier la date de début"
-                                            >
-                                                <Calendar size={16} />
-                                            </button>
                                         </div>
                                     </div>
                                 ))}
@@ -847,6 +993,110 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                     </div>
                 </div>
             </div>
+            {/* Cancellation Modal */}
+            {showCancelModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                <AlertCircle className="text-red-500" />
+                                Résilier le contrat
+                            </h3>
+                            <button onClick={() => setShowCancelModal(false)} className="text-gray-400 hover:text-gray-600">
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Type de résiliation</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <button
+                                        onClick={() => setCancelType('full')}
+                                        className={`p-3 rounded-xl border text-sm font-medium transition-colors ${cancelType === 'full'
+                                            ? 'bg-red-50 border-red-200 text-red-700'
+                                            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        Totale / Complète
+                                    </button>
+                                    <button
+                                        onClick={() => setCancelType('service')}
+                                        className={`p-3 rounded-xl border text-sm font-medium transition-colors ${cancelType === 'service'
+                                            ? 'bg-orange-50 border-orange-200 text-orange-700'
+                                            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        Service partiel
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Motif de la résiliation</label>
+                                <textarea
+                                    value={cancelReason}
+                                    onChange={e => setCancelReason(e.target.value)}
+                                    placeholder="Raison du départ, services concernés..."
+                                    className="w-full p-3 border border-gray-200 rounded-xl min-h-[100px] focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                />
+                            </div>
+
+                            <div className="bg-yellow-50 p-3 rounded-lg flex gap-2 items-start text-xs text-yellow-800">
+                                <AlertCircle size={14} className="mt-0.5 shrink-0" />
+                                <p>La résiliation sera effective après la période de préavis contractuelle (2 mois).</p>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 mt-8">
+                            <button
+                                onClick={() => setShowCancelModal(false)}
+                                className="px-4 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-colors"
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={confirmCancellation}
+                                disabled={cancelling || !cancelReason}
+                                className="px-4 py-2.5 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+                            >
+                                {cancelling ? <Loader2 size={18} className="animate-spin" /> : <Ban size={18} />}
+                                Confirmer la résiliation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Invoice Confirmation Modal */}
+            {showInvoiceConfirmModal && (
+                <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-xl animate-in fade-in zoom-in duration-200">
+                        <div className="p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Générer une facture</h3>
+                            <p className="text-gray-500 mb-6">
+                                Voulez-vous générer une facture pour les abonnements et frais en attente ?<br />
+                                <span className="text-xs text-orange-600 font-medium">Note: Cela marquera les frais comme facturés.</span>
+                            </p>
+
+                            <div className="flex justify-end gap-3">
+                                <button
+                                    onClick={() => setShowInvoiceConfirmModal(false)}
+                                    className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors"
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={confirmGenerateInvoice}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
+                                >
+                                    Confirmer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

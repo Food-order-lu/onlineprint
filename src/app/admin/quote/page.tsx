@@ -17,9 +17,7 @@ import {
     Download,
     Eye,
     QrCode,
-    X,
-    Target,
-    TrendingUp
+    X
 } from 'lucide-react';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
@@ -108,6 +106,7 @@ const oneTimeExtras = [
     { name: 'Imprimante (reconditionné)', price: 150, note: 'Installation incluse' },
     { name: 'Router pour imprimante', price: 40, note: 'Installation incluse' },
     { name: 'Tablette offerte', price: 0, note: 'Offerte avec Commande en ligne' },
+    { name: 'Optimisation Profil Google', price: 50 },
 ];
 
 // Generate quote number
@@ -163,55 +162,7 @@ const PDFDownloadButton = ({ quoteData, quoteNumber }: { quoteData: any; quoteNu
     );
 };
 
-// NEW: Monthly Objectives Component
-const MonthlyObjectives = () => {
-    // TODO: Fetch real data from DB
-    const objective = {
-        min: 10,
-        target: 14,
-        actual: 4, // Example current progress
-        month: 'Janvier 2026'
-    };
 
-    const progressPercent = Math.min(100, (objective.actual / objective.target) * 100);
-    const minPercent = (objective.min / objective.target) * 100;
-
-    return (
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm mb-8">
-            <div className="flex justify-between items-start mb-4">
-                <div>
-                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                        <Target className="text-blue-600" size={20} />
-                        Objectifs Commerciaux
-                    </h3>
-                    <p className="text-sm text-gray-500">{objective.month}</p>
-                </div>
-                <div className="text-right">
-                    <p className="text-2xl font-bold text-gray-900">{objective.actual} <span className="text-sm text-gray-400 font-normal">/ {objective.target}</span></p>
-                    <p className="text-xs text-green-600 font-medium">Nouveaux Clients</p>
-                </div>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden">
-                {/* Min Target Marker */}
-                <div className="absolute top-0 bottom-0 w-0.5 bg-gray-300 z-10" style={{ left: `${minPercent}%` }} title={`Minimum: ${objective.min}`}></div>
-
-                {/* Actual Progress */}
-                <div
-                    className={`absolute top-0 bottom-0 transition-all duration-1000 ${objective.actual >= objective.min ? 'bg-green-500' : 'bg-blue-500'}`}
-                    style={{ width: `${progressPercent}%` }}
-                ></div>
-            </div>
-
-            <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium">
-                <span>0</span>
-                <span style={{ marginLeft: `${minPercent - 5}%` }}>Min: {objective.min}</span>
-                <span>Obj: {objective.target}</span>
-            </div>
-        </div>
-    );
-};
 
 export default function QuoteBuilderPage() {
     const router = useRouter();
@@ -744,8 +695,7 @@ export default function QuoteBuilderPage() {
                     </button>
                 </div>
 
-                {/* NEW: Objectives Section (Displayed at top of Quote Builder) */}
-                <MonthlyObjectives />
+
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

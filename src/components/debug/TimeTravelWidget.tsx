@@ -63,12 +63,25 @@ export default function TimeTravelWidget() {
                     Simule une date future pour tester la facturation et les proratas.
                 </div>
 
-                <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                />
+                <div className="relative">
+                    <input
+                        id="time-travel-date"
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-lg font-medium"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const input = document.getElementById('time-travel-date') as HTMLInputElement;
+                            if (input?.showPicker) input.showPicker();
+                        }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-purple-600 hover:bg-purple-50 rounded"
+                    >
+                        <Calendar size={20} />
+                    </button>
+                </div>
 
                 <div className="flex gap-2">
                     <button

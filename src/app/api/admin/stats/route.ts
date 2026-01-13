@@ -38,6 +38,13 @@ export async function GET(request: NextRequest) {
             `status=eq.signed&signed_at=gte.${startOfMonth.toISOString()}&select=id`
         );
 
+        // 6. Calculate Fixed Revenue (One Time Charges created this month)
+        const { data: fixedCharges } = await supabaseAdmin.select<any>(
+            'one_time_charges',
+            `created_at=gte.${startOfMonth.toISOString()}&select=amount`
+        );
+        const fixedRevenue = fixedCharges?.reduce((sum: number, item: any) => sum + (Number(item.amount) || 0), 0) || 0;
+
         return NextResponse.json({
             activeClients: activeClients?.length || 0,
             inactiveClients: inactiveClients?.length || 0,
@@ -45,7 +52,8 @@ export async function GET(request: NextRequest) {
             mrr,
             pendingTasks: pendingTasksList?.length || 0,
             recentActivity,
-            signedQuotesThisMonth: signedThisMonth?.length || 0
+            signedQuotesThisMonth: signedThisMonth?.length || 0,
+            fixedRevenue
         });
 
     } catch (error: any) {

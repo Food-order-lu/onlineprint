@@ -55,14 +55,41 @@ export async function POST(
                 // Skip variable subscriptions (0 monthly amount)
                 if (sub.monthly_amount <= 0) continue;
 
+                let amount = sub.monthly_amount;
+                let description = `Abonnement mensuel - ${currentMonthName}`;
+                let quantity = 1;
+
+                // Check for Prorata
+                if (sub.started_at) {
+                    const startDate = new Date(sub.started_at);
+                    if (startDate > today) {
+                        // Future subscription - Skip or charge 0? 
+                        // For now, let's skip it to avoid charging before service starts
+                        continue;
+                    }
+
+                    if (startDate.getMonth() === today.getMonth() && startDate.getFullYear() === today.getFullYear()) {
+                        // Started THIS month -> Prorata
+                        const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+                        const startDay = startDate.getDate();
+                        const daysActive = daysInMonth - startDay + 1;
+
+                        // Calculate prorata
+                        const dailyRate = sub.monthly_amount / daysInMonth;
+                        amount = Number((dailyRate * daysActive).toFixed(2));
+
+                        description += ` (Prorata: ${startDay}/${startDate.getMonth() + 1} - ${daysInMonth}/${startDate.getMonth() + 1})`;
+                    }
+                }
+
                 lineItems.push({
                     name: sub.service_name || sub.service_type,
-                    description: `Abonnement mensuel - ${currentMonthName}`,
-                    rate: sub.monthly_amount,
+                    description: description,
+                    rate: amount,
                     quantity: 1,
                     tax_percentage: 17 // Default VAT
                 });
-                subtotal += sub.monthly_amount;
+                subtotal += amount;
             }
         }
 
