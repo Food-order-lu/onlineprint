@@ -117,7 +117,12 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
             }
         }
 
-        const client = await updateClient(id, body);
+        const client = await updateClient(id, {
+            ...body,
+            // Explicitly allow new fields if strict filtering is needed, 
+            // but usually updateClient handles it if types match.
+            // No code change needed here if updateClient accepts Partial<Client>
+        });
 
         return NextResponse.json({ client });
     } catch (error) {

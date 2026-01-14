@@ -240,6 +240,24 @@ class ZohoClient {
      */
     async createInvoice(input: CreateInvoiceInput): Promise<{ invoice: ZohoInvoice }> {
         const today = new Date().toISOString().split('T')[0];
+
+        // Resolve Tax IDs if tax_percentage is provided but tax_id is missing
+        let lineItems = input.line_items;
+        if (lineItems.some(i => i.tax_percentage && !i.tax_id)) {
+            const taxes = await this.getTaxRates();
+            if (taxes.length > 0) {
+                lineItems = lineItems.map(item => {
+                    if (item.tax_percentage && !item.tax_id) {
+                        const tax = taxes.find(t => t.tax_percentage === item.tax_percentage);
+                        if (tax) {
+                            return { ...item, tax_id: tax.tax_id };
+                        }
+                    }
+                    return item;
+                });
+            }
+        }
+
         const dueDate = input.due_date || (() => {
             const due = new Date();
             due.setDate(due.getDate() + 30);
@@ -253,7 +271,7 @@ class ZohoClient {
                 customer_id: input.customer_id,
                 date: input.date || today,
                 due_date: dueDate,
-                line_items: input.line_items,
+                line_items: lineItems,
                 notes: input.notes,
                 terms: input.terms,
                 reference_number: input.reference_number,
@@ -358,11 +376,17 @@ class ZohoClient {
         payment_mode?: string;
         reference?: string;
     }): Promise<{ message: string }> {
-        // First create a payment
+        // 1. Get invoice to find customer_id
+        const { invoice } = await this.getInvoice(id);
+        if (!invoice || !invoice.customer_id) {
+            throw new Error(`Could not find customer_id for invoice ${id}`);
+        }
+
+        // 2. Create payment
         await this.request('/customerpayments', {
             method: 'POST',
             body: JSON.stringify({
-                customer_id: '', // Will be inferred from invoice
+                customer_id: invoice.customer_id,
                 payment_mode: params.payment_mode || 'Bank Transfer',
                 amount: params.amount,
                 date: params.date,
@@ -459,6 +483,48 @@ class ZohoClient {
     // HELPERS
     // ==========================================================================
 
+    private taxRatesCache: any[] | null = null;
+
+    async getTaxRates(): Promise<any[]> {
+        if (this.taxRatesCache) return this.taxRatesCache;
+        try {
+            const { taxes } = await this.request<{ taxes: any[] }>('/settings/taxes');
+            this.taxRatesCache = taxes;
+            return taxes;
+        } catch (e) {
+            console.error('Failed to fetch Zoho taxes:', e);
+            return [];
+        }
+    }
+
+    /**
+     * Validate and clean VAT number for Zoho API.
+     * Returns the cleaned VAT or undefined if invalid.
+     * Valid EU VAT format: 2 letter country code + numbers (e.g., LU12345678, FR12345678901)
+     */
+    private cleanVatNumber(vat: string | undefined | null): string | undefined {
+        if (!vat || typeof vat !== 'string') return undefined;
+
+        // Clean up the VAT number
+        const cleaned = vat.trim().toUpperCase().replace(/\s+/g, '');
+
+        // Check for empty or placeholder values
+        if (!cleaned || cleaned.length < 4) return undefined;
+        if (['N/A', 'NA', 'NONE', '-', '--', '---', 'NULL', 'UNDEFINED'].includes(cleaned)) {
+            return undefined;
+        }
+
+        // Basic EU VAT format validation: 2 letters followed by numbers/letters
+        // Examples: LU12345678, FR12345678901, DE123456789, BE0123456789
+        const euVatRegex = /^[A-Z]{2}[0-9A-Z]{2,12}$/;
+        if (!euVatRegex.test(cleaned)) {
+            console.warn(`Invalid VAT format rejected: "${vat}" -> "${cleaned}"`);
+            return undefined;
+        }
+
+        return cleaned;
+    }
+
     /**
      * Get or create a Zoho contact for a client
      */
@@ -473,15 +539,46 @@ class ZohoClient {
         country?: string;
         vat_number?: string;
     }): Promise<ZohoContact> {
+        // Validate VAT number before sending to Zoho
+        const validVat = this.cleanVatNumber(client.vat_number);
+
         // Try to find existing contact
         const { contacts } = await this.findContactByEmail(client.email);
 
         if (contacts && contacts.length > 0) {
-            return contacts[0];
+            const existingContact = contacts[0];
+
+            // Update existing contact with latest Rivego details (Rivego is source of truth)
+            console.log(`Updating existing Zoho contact ${existingContact.contact_id} for ${client.email}`);
+
+            try {
+                // Build update payload, only include vat_reg_no if valid
+                const updatePayload: any = {
+                    contact_name: client.company_name,
+                    company_name: client.company_name,
+                    billing_address: {
+                        address: client.address || '',
+                        city: client.city || '',
+                        zip: client.postal_code || '',
+                        country: client.country || 'Luxembourg',
+                    },
+                };
+
+                // Only add VAT if valid
+                if (validVat) {
+                    updatePayload.vat_reg_no = validVat;
+                }
+
+                const { contact: updatedContact } = await this.updateContact(existingContact.contact_id, updatePayload);
+                return updatedContact;
+            } catch (error) {
+                console.error('Failed to update Zoho contact, using existing:', error);
+                return existingContact;
+            }
         }
 
-        // Create new contact
-        const { contact } = await this.createContact({
+        // Build create payload, only include vat_reg_no if valid
+        const createPayload: any = {
             contact_name: client.company_name,
             company_name: client.company_name,
             email: client.email,
@@ -492,8 +589,15 @@ class ZohoClient {
                 zip: client.postal_code,
                 country: client.country || 'Luxembourg',
             },
-            vat_reg_no: client.vat_number,
-        });
+        };
+
+        // Only add VAT if valid
+        if (validVat) {
+            createPayload.vat_reg_no = validVat;
+        }
+
+        // Create new contact
+        const { contact } = await this.createContact(createPayload);
 
         return contact;
     }

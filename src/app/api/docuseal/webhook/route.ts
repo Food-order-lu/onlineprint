@@ -111,6 +111,39 @@ export async function POST(request: NextRequest) {
                 if (quote.items && Array.isArray(quote.items)) {
                     try {
                         const { createSubscription } = await import('@/lib/db/supabase');
+
+                        // Calculate start date based on quote.start_date (format: 'current-full', 'next-half', etc.)
+                        const today = new Date();
+                        let startDate: Date;
+                        const quoteStartMode = (quote as any).start_date || 'current-full';
+
+                        // Parse the format: [month]-[day]
+                        const parts = quoteStartMode.split('-');
+                        const monthPart = parts[0] || 'current';
+                        const dayPart = parts[1] || 'full';
+
+                        // Determine month offset
+                        let monthOffset = 0;
+                        if (monthPart === 'next') monthOffset = 1;
+                        else if (monthPart === 'next2') monthOffset = 2;
+                        // Legacy support: 'half' alone means current month 15th
+                        else if (monthPart === 'half') {
+                            startDate = new Date(today.getFullYear(), today.getMonth(), 15);
+                        }
+                        // Legacy support: 'full' alone means current month 1st
+                        else if (monthPart === 'full') {
+                            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                        }
+
+                        // Calculate final date if not already set by legacy handling
+                        if (!startDate!) {
+                            const day = dayPart === 'half' ? 15 : 1;
+                            startDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, day);
+                        }
+
+                        const startDateStr = startDate.toISOString().split('T')[0];
+                        console.log(`Using start date: ${startDateStr} (mode: ${quoteStartMode})`);
+
                         for (const item of quote.items) {
                             if ((item as any).is_recurring) {
                                 await createSubscription({
@@ -121,7 +154,7 @@ export async function POST(request: NextRequest) {
                                     monthly_amount: item.total,
                                     commission_percent: 0,
                                     status: 'active',
-                                    started_at: new Date().toISOString().split('T')[0],
+                                    started_at: startDateStr,
                                     cancelled_at: null,
                                 });
                                 subscriptionsCreated++;

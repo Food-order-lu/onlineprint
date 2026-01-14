@@ -40,32 +40,46 @@ export default function QuoteSuccessPage() {
     }, [searchParams, quoteId, router]);
 
     // Fetch quote to get Client ID
+    // Poll for Client ID (waiting for Webhook to finish creating client)
     useEffect(() => {
-        async function fetchQuoteData() {
+        let attempts = 0;
+        const maxAttempts = 20; // Try for 60 seconds
+        let interval: NodeJS.Timeout;
+
+        const checkClient = async () => {
             try {
-                // We'll search for the quote by number to find the client_id
-                const res = await fetch(`/api/quotes/${quoteId}`); // Need to ensure we have this endpoint or similar
-                // Fallback: Use the newly signed quote info if possible, or assume we can find it.
-                // Actually, let's try a direct query if the API exists, or we might need to rely on the user
-                // clicking. BUT, we can just fetch the quote by number from our existing public/admin API if permitted.
-
-                // For now, let's assume we can fetch the client ID via a specialized endpoint 
-                // or we decode it if it was passed (it wasn't).
-                // Let's create a server action or simple fetch.
-
-                // Simplest: The admin is logged in (Sales Agent). They can fetch any quote.
-                const response = await fetch(`/api/admin/quotes/${quoteId}`);
+                const response = await fetch(`/api/public/quotes/${quoteId}`);
                 if (response.ok) {
                     const data = await response.json();
-                    setClientId(data.client_id);
+                    if (data.client_id) {
+                        setClientId(data.client_id);
+                        setLoading(false);
+                        return true; // Found
+                    }
                 }
             } catch (e) {
                 console.error("Failed to fetch client ID", e);
-            } finally {
-                setLoading(false);
             }
-        }
-        fetchQuoteData();
+            return false;
+        };
+
+        // Check immediately
+        checkClient().then(found => {
+            if (!found) {
+                setLoading(true); // Keep loading
+                interval = setInterval(async () => {
+                    attempts++;
+                    console.log('Polling for client ID...', attempts);
+                    const found = await checkClient();
+                    if (found || attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        if (!found) setLoading(false); // Stop loading even if failed
+                    }
+                }, 3000);
+            }
+        });
+
+        return () => clearInterval(interval);
     }, [quoteId]);
 
     const handleSetupPayment = async () => {

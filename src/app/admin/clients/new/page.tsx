@@ -11,7 +11,8 @@ import {
     Save,
     ArrowLeft,
     Loader2,
-    Share2
+    Share2,
+    CreditCard
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -19,6 +20,13 @@ export default function NewClientPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [referralCode, setReferralCode] = useState('');
+
+    const [startMode, setStartMode] = useState<'full' | 'half'>('full');
+    const [services, setServices] = useState([
+        { id: 'hosting', type: 'hosting', label: 'Hébergement', amount: '25', selected: true },
+        { id: 'maintenance', type: 'maintenance', label: 'Maintenance', amount: '50', selected: false },
+        { id: 'ordering', type: 'online_ordering', label: 'Commandes en ligne', amount: '60', selected: false },
+    ]);
 
     const [formData, setFormData] = useState({
         company_name: '',
@@ -40,6 +48,13 @@ export default function NewClientPage() {
             const body = {
                 ...formData,
                 referral_code: referralCode.trim() || undefined,
+                start_mode: startMode,
+                initial_services: services.filter(s => s.selected).map(s => ({
+                    type: s.type,
+                    name: s.label,
+                    amount: s.amount,
+                    selected: true
+                }))
             };
 
             const response = await fetch('/api/clients', {
@@ -211,6 +226,75 @@ export default function NewClientPage() {
                                 <p className="text-xs text-indigo-600 mt-2">
                                     Si ce client est parrainé par un client existant, entrez son code ici.
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Services & Facturation */}
+                    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-6">
+                        <h2 className="font-semibold text-lg flex items-center gap-2">
+                            <CreditCard size={20} className="text-blue-500" />
+                            Services & Facturation Initiale
+                        </h2>
+
+                        {/* Start Mode Toggle */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Période de démarrage (Facturation 1er mois)</label>
+                            <div className="flex bg-gray-100 p-1 rounded-lg w-full md:w-2/3">
+                                <button
+                                    type="button"
+                                    onClick={() => setStartMode('full')}
+                                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${startMode === 'full' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Mois complet (100%) - Le 1er
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setStartMode('half')}
+                                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${startMode === 'half' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Mi-mois (50%) - Le 15
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Services List */}
+                        <div className="space-y-4">
+                            <label className="block text-sm font-medium text-gray-700">Services à activer</label>
+                            <div className="grid gap-4">
+                                {services.map((service, index) => (
+                                    <div key={service.id} className={`flex items-center gap-4 p-4 rounded-lg border transition-colors ${service.selected ? 'border-blue-500 bg-blue-50/30' : 'border-gray-200 hover:border-blue-300'}`}>
+                                        <input
+                                            type="checkbox"
+                                            checked={service.selected}
+                                            onChange={(e) => {
+                                                const newServices = [...services];
+                                                newServices[index].selected = e.target.checked;
+                                                setServices(newServices);
+                                            }}
+                                            className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                                        />
+                                        <div className="flex-1">
+                                            <p className={`font-medium ${service.selected ? 'text-blue-900' : 'text-gray-700'}`}>{service.label}</p>
+                                        </div>
+                                        <div className="w-32">
+                                            <div className="relative">
+                                                <input
+                                                    type="number"
+                                                    disabled={!service.selected}
+                                                    value={service.amount}
+                                                    onChange={(e) => {
+                                                        const newServices = [...services];
+                                                        newServices[index].amount = e.target.value;
+                                                        setServices(newServices);
+                                                    }}
+                                                    className="w-full pl-3 pr-8 py-1.5 rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-400"
+                                                />
+                                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>

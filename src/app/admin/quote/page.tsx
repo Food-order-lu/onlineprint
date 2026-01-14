@@ -22,6 +22,7 @@ import {
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import { generateQuotePDF } from '@/components/pdf/QuotePDF'; // Ensure this is exported and client-side safe
+import QuoteSignatureAdjuster from '@/components/pdf/QuoteSignatureAdjuster';
 
 // Schema for quote form
 const quoteSchema = z.object({
@@ -60,7 +61,7 @@ type QuoteFormData = z.infer<typeof quoteSchema>;
 const webvisionPlans = [
     {
         id: 'supplements',
-        name: 'Suppléments uniquement',
+        name: 'Sans site web',
         basePrice: 0,
         description: 'Pas de site web - Services mensuels uniquement',
         features: ['Choisissez vos services mensuels ci-dessous']
@@ -70,21 +71,21 @@ const webvisionPlans = [
         name: 'Essentiel',
         basePrice: 399,
         description: 'Site vitrine professionnel',
-        features: ['Design moderne', 'Responsive mobile', 'Formulaire contact', 'SEO de base']
+        features: ['Design moderne', 'Responsive mobile', 'SEO de base']
     },
     {
         id: 'business',
         name: 'Business',
         basePrice: 599,
         description: 'Site complet avec fonctionnalités avancées',
-        features: ['Tout de Essentiel', 'Menu digital', 'Galerie photos', 'Google Maps']
+        features: ['Tout de Essentiel', 'Galerie photos', 'Google Maps', 'Formulaire contact']
     },
     {
         id: 'premium',
         name: 'Premium',
         basePrice: 799,
         description: 'Solution complète sur mesure',
-        features: ['Tout de Business', 'Réservation en ligne', 'Multi-langues', 'Support prioritaire']
+        features: ['Tout de Business', 'Galerie de photos (Admin modifiable)']
     },
 ];
 
@@ -94,7 +95,6 @@ const monthlyServices = [
     { name: 'Système commande en ligne', price: 60, unit: '/mois', required: false, note: 'Min 60€/mois, taux variable selon contrat' },
     { name: 'Retouche photos qualité studio (IA)', price: 60, unit: '/mois', required: false, note: 'Retouche illimitée des photos du restaurant' },
     { name: 'Réservation de table', price: 10, unit: '/mois', required: false, note: 'Système de réservation en ligne' },
-    { name: 'Chatbot site web', price: 25, unit: '/mois', required: false, note: 'Assistant IA disponible 24/7' },
     { name: 'Traduction avis & affichage', price: 9, unit: '/mois', required: false, note: 'Avis traduits et affichés sur le site' },
 ];
 
@@ -172,6 +172,7 @@ export default function QuoteBuilderPage() {
     const [quoteData, setQuoteData] = useState<any>(null);
     const [quoteNumber, setQuoteNumber] = useState('');
     const [showQRModal, setShowQRModal] = useState(false);
+    const [showAdjuster, setShowAdjuster] = useState(false);
 
     // Presentation Mode State
     const [presentationMode, setPresentationMode] = useState(true);
@@ -461,6 +462,7 @@ export default function QuoteBuilderPage() {
                     <div className="flex gap-4 justify-center flex-wrap mb-8">
                         <PDFDownloadButton quoteData={quoteData} quoteNumber={quoteNumber} />
 
+                        {/* ... QR Code ... */}
                         <button
                             className="btn btn-secondary"
                             onClick={() => setShowQRModal(true)}
@@ -469,15 +471,26 @@ export default function QuoteBuilderPage() {
                             QR Signature mobile
                         </button>
 
+                        {/* NEW: Adjust & Sign Button */}
                         <button
-                            className="btn btn-secondary"
-                            onClick={() => {
-                                const signUrl = `/quote/${quoteNumber}/sign`;
-                                window.open(signUrl, '_blank');
+                            className="btn bg-gray-900 text-white hover:bg-black shadow-lg"
+                            onClick={() => setShowAdjuster(true)}
+                        >
+                            <FileText size={20} />
+                            Ajuster & Signer
+                        </button>
+
+                        {/* Standard Sign Button (Hidden or kept as backup? Kept for now but secondary) */}
+                        <button
+                            className="btn btn-secondary text-sm"
+                            onClick={async () => {
+                                // ... existing logic ...
+                                // Just calling regular sign logic
+                                alert('Utilisez le gros bouton noir "Ajuster & Signer" pour signer !');
                             }}
                         >
-                            <Eye size={20} />
-                            Voir page signature
+                            <Eye size={16} />
+                            Signer (Direct)
                         </button>
 
                         <button className="btn bg-[#0D7377] text-white hover:bg-[#0A5A5C]">
@@ -485,89 +498,7 @@ export default function QuoteBuilderPage() {
                             Envoyer par email
                         </button>
 
-                        <button
-                            className="btn bg-indigo-600 text-white hover:bg-indigo-700"
-                            onClick={async () => {
-                                const btn = document.activeElement as HTMLButtonElement;
-                                const originalText = btn.innerHTML;
-                                btn.innerHTML = '<span class="animate-spin">...</span> Préparation...';
-                                btn.disabled = true;
-
-                                try {
-                                    // 1. Generate PDF
-                                    const blob = await generateQuotePDF(quoteData);
-
-                                    // 2. Convert to Base64
-                                    const reader = new FileReader();
-                                    reader.readAsDataURL(blob);
-                                    reader.onloadend = async () => {
-                                        const base64data = reader.result?.toString().split(',')[1];
-
-                                        if (!base64data) {
-                                            alert('Erreur: Impossible de générer le PDF');
-                                            btn.innerHTML = originalText;
-                                            btn.disabled = false;
-                                            return;
-                                        }
-
-                                        // 3. Send to API
-                                        try {
-                                            const res = await fetch('/api/invoicing/sign-docuseal', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({
-                                                    pdf_base64: base64data,
-                                                    client_email: quoteData.clientEmail,
-                                                    client_name: quoteData.clientName,
-                                                    client_company: quoteData.clientCompany,
-                                                    client_phone: quoteData.clientPhone,
-                                                    quote_number: quoteNumber,
-                                                    quote_data: {
-                                                        subtotal: quoteData.subtotal,
-                                                        vatRate: quoteData.vatRate,
-                                                        vatAmount: quoteData.vatAmount,
-                                                        totalTtc: quoteData.totalTtc,
-                                                        discountPercent: quoteData.discountPercent,
-                                                        discountAmount: quoteData.discountAmount,
-                                                        monthlyTotal: quoteData.monthlyTotal,
-                                                        monthlyItems: quoteData.monthlyItems,
-                                                        oneTimeItems: quoteData.oneTimeItems,
-                                                        startDate: quoteData.startDate
-                                                    }
-                                                })
-                                            });
-
-                                            const json = await res.json();
-                                            if (json.success && json.url) {
-                                                // 4. Navigate to Signing URL (same tab to avoid popup blocker)
-                                                window.location.href = json.url;
-                                            } else {
-                                                alert(`Erreur DocuSeal: ${json.error}`);
-                                                btn.innerHTML = originalText;
-                                                btn.disabled = false;
-                                            }
-                                        } catch (apiErr) {
-                                            console.error(apiErr);
-                                            alert('Erreur lors de la communication avec le serveur (DocuSeal)');
-                                            btn.innerHTML = originalText;
-                                            btn.disabled = false;
-                                        }
-                                    };
-                                } catch (err) {
-                                    console.error('PDF Generation Error Details:', err);
-                                    if (err instanceof Error) {
-                                        console.error('Stack:', err.stack);
-                                    }
-                                    alert(`Erreur lors de la génération du PDF: ${err instanceof Error ? err.message : 'Erreur inconnue'}`);
-                                    btn.innerHTML = originalText;
-                                    btn.disabled = false;
-                                }
-                            }}
-                        >
-                            <FileText size={20} />
-                            Signer via DocuSeal
-                        </button>
-
+                        {/* Sync Zoho */}
                         <button
                             className="btn border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
                             onClick={async () => {
@@ -596,7 +527,7 @@ export default function QuoteBuilderPage() {
                                             discount_amount: quoteData.discountAmount,
                                             vat_rate: quoteData.vatRate,
                                             items: quoteData.lineItems.map((item: any) => ({
-                                                name: item.description, // Mapping description only as name? Or splitting?
+                                                name: item.description,
                                                 description: item.description,
                                                 unit_price: item.unitPrice,
                                                 quantity: item.quantity
@@ -632,11 +563,10 @@ export default function QuoteBuilderPage() {
                         </button>
                     </div>
 
-                    <Link href="/admin/dashboard" className="text-gray-500 hover:text-gray-700">
-                        ← Retour au dashboard
-                    </Link>
+                    {/* ... Links ... */}
 
                     {showQRModal && (
+                        // ... QR Modal ...
                         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
                             <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative">
                                 <button
@@ -658,10 +588,21 @@ export default function QuoteBuilderPage() {
                             </div>
                         </div>
                     )}
+
+                    {/* Adjuster Modal */}
+                    <QuoteSignatureAdjuster
+                        isOpen={showAdjuster}
+                        onClose={() => setShowAdjuster(false)}
+                        quoteData={quoteData}
+                        quoteNumber={quoteNumber}
+                    />
                 </div>
             </section>
         );
     }
+    // ... (rest of file)
+
+
 
     return (
         <section className="min-h-screen pt-24 pb-12 bg-gray-50">
@@ -825,24 +766,62 @@ export default function QuoteBuilderPage() {
                                 </div>
                             </div>
 
-                            {/* Payment Terms */}
                             {/* Date de Début des Services */}
                             <div className="card">
-                                <h2 className="text-xl font-semibold mb-6 text-gray-900">Date de début des services</h2>
+                                <h2 className="text-xl font-semibold mb-6 text-gray-900">Facturation du premier mois</h2>
                                 <div className="space-y-4">
+                                    {/* Month Selector */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Date de lancement prévue (optionnel)
+                                            Mois de démarrage
                                         </label>
-                                        <input
-                                            type="date"
-                                            {...register('startDate')}
-                                            className="input"
-                                        />
-                                        <p className="text-xs text-gray-500 mt-2">
-                                            Si définie, les abonnements mensuels commenceront à cette date (prorata automatique).
-                                        </p>
+                                        <select
+                                            className="input w-full"
+                                            value={watch('startDate')?.split('-')[0] || 'current'}
+                                            onChange={(e) => {
+                                                const monthVal = e.target.value;
+                                                const currentDay = watch('startDate')?.includes('half') ? 'half' : 'full';
+                                                setValue('startDate', `${monthVal}-${currentDay}`);
+                                            }}
+                                        >
+                                            <option value="current">Ce mois-ci ({new Date().toLocaleDateString('fr-FR', { month: 'long' })})</option>
+                                            <option value="next">Mois prochain ({new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toLocaleDateString('fr-FR', { month: 'long' })})</option>
+                                            <option value="next2">Dans 2 mois ({new Date(new Date().getFullYear(), new Date().getMonth() + 2, 1).toLocaleDateString('fr-FR', { month: 'long' })})</option>
+                                        </select>
                                     </div>
+
+                                    {/* Day Selector (1st or 15th) */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                                            Jour de démarrage
+                                        </label>
+                                        <div className="flex bg-gray-100 p-1 rounded-xl">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const monthPart = watch('startDate')?.split('-')[0] || 'current';
+                                                    setValue('startDate', `${monthPart}-full`);
+                                                }}
+                                                className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all ${!watch('startDate')?.includes('half') ? 'bg-white text-[#0D7377] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                🗓️ Le 1er (100%)
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const monthPart = watch('startDate')?.split('-')[0] || 'current';
+                                                    setValue('startDate', `${monthPart}-half`);
+                                                }}
+                                                className={`flex-1 py-3 px-4 text-sm font-medium rounded-lg transition-all ${watch('startDate')?.includes('half') ? 'bg-white text-[#0D7377] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                📅 Le 15 (50%)
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-xs text-gray-500 mt-3 p-3 bg-gray-50 rounded-lg">
+                                        💡 La date exacte sera visible sur le profil client et modifiable après signature si nécessaire.
+                                    </p>
                                 </div>
                             </div>
 

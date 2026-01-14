@@ -7,7 +7,7 @@ import { supabaseAdmin, getClientByEmail, createClient as createClientDb } from 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { pdf_base64, client_email, client_name, client_company, client_phone, quote_number, quote_data } = body;
+        const { pdf_base64, client_email, client_name, client_company, client_phone, quote_number, quote_data, field_overrides, clientAddress, vatNumber } = body;
 
         if (!pdf_base64 || !client_email) {
             return NextResponse.json(
@@ -30,13 +30,13 @@ export async function POST(request: NextRequest) {
                 contact_name: client_name || 'Contact',
                 email: client_email,
                 phone: client_phone || null,
-                address: null,
+                address: clientAddress || null,
                 city: null,
                 postal_code: null,
                 status: 'active',
                 client_type: 'new',
                 country: 'Luxembourg',
-                vat_number: null,
+                vat_number: vatNumber || null,
                 cancellation_requested_at: null,
                 cancellation_effective_at: null,
                 cancellation_reason: null,
@@ -63,13 +63,13 @@ export async function POST(request: NextRequest) {
                     contact_name: client_name || 'Contact',
                     email: newEmail,
                     phone: client_phone || null,
-                    address: null,
+                    address: clientAddress || null,
                     city: null,
                     postal_code: null,
                     status: 'active',
                     client_type: 'new',
                     country: 'Luxembourg',
-                    vat_number: null,
+                    vat_number: vatNumber || null,
                     cancellation_requested_at: null,
                     cancellation_effective_at: null,
                     cancellation_reason: null,
@@ -89,27 +89,77 @@ export async function POST(request: NextRequest) {
         console.log(`Created new client: ${client_company || client_name} (ID: ${clientId})`);
 
         // 2. Create quote record in database
-        const { data: quote, error: quoteError } = await supabaseAdmin.insert('quotes', {
-            quote_number: quote_number,
-            client_id: clientId,
-            client_name: client_name,
-            client_email: client_email,
-            client_company: client_company || client_name,
-            subtotal: quote_data?.subtotal || 0,
-            vat_rate: quote_data?.vatRate || 17,
-            vat_amount: quote_data?.vatAmount || 0,
-            total: quote_data?.totalTtc || 0,
-            discount_percent: quote_data?.discountPercent || 0,
-            discount_amount: quote_data?.discountAmount || 0,
-            has_recurring: quote_data?.monthlyTotal > 0,
-            status: 'sent', // Will be updated to 'signed' by webhook
-            valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        });
+        // Build items array for storage
+        const allItems = [
+            ...(quote_data?.monthlyItems || []).map((item: any) => ({
+                description: item.description,
+                quantity: item.quantity,
+                unit_price: item.unitPrice,
+                total: item.unitPrice * item.quantity,
+                is_recurring: true
+            })),
+            ...(quote_data?.oneTimeItems || []).map((item: any) => ({
+                description: item.description,
+                quantity: item.quantity,
+                unit_price: item.unitPrice,
+                total: item.unitPrice * item.quantity,
+                is_recurring: false
+            }))
+        ];
+
+        console.log(`Saving quote with ${allItems.length} items (${quote_data?.monthlyItems?.length || 0} monthly, ${quote_data?.oneTimeItems?.length || 0} one-time)`);
+
+        // Check if quote exists
+        const { data: existingQuote } = await supabaseAdmin.selectOne<any>('quotes', `quote_number=eq.${quote_number}`);
+
+        let quoteError;
+
+        if (existingQuote) {
+            console.log(`Quote ${quote_number} exists, updating with new client ${clientId}...`);
+            const { error } = await supabaseAdmin.update('quotes', `quote_number=eq.${quote_number}`, {
+                client_id: clientId,
+                client_name: client_name,
+                client_email: client_email,
+                client_company: client_company || client_name,
+                items: allItems,
+                subtotal: quote_data?.subtotal || 0,
+                vat_rate: quote_data?.vatRate || 17,
+                vat_amount: quote_data?.vatAmount || 0,
+                total: quote_data?.totalTtc || 0,
+                discount_percent: quote_data?.discountPercent || 0,
+                discount_amount: quote_data?.discountAmount || 0,
+                has_recurring: quote_data?.monthlyTotal > 0,
+                status: 'sent',
+                valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            });
+            quoteError = error;
+        } else {
+            console.log(`Quote ${quote_number} does not exist, creating...`);
+            const { error } = await supabaseAdmin.insert('quotes', {
+                quote_number: quote_number,
+                client_id: clientId,
+                client_name: client_name,
+                client_email: client_email,
+                client_company: client_company || client_name,
+                items: allItems,
+                subtotal: quote_data?.subtotal || 0,
+                vat_rate: quote_data?.vatRate || 17,
+                vat_amount: quote_data?.vatAmount || 0,
+                total: quote_data?.totalTtc || 0,
+                discount_percent: quote_data?.discountPercent || 0,
+                discount_amount: quote_data?.discountAmount || 0,
+                has_recurring: quote_data?.monthlyTotal > 0,
+                status: 'sent',
+                valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            });
+            quoteError = error;
+        }
 
         if (quoteError) {
-            console.error('Failed to create quote:', quoteError);
+            console.error('Failed to create/update quote:', quoteError);
+            throw new Error(`Failed to save quote: ${quoteError.message}`); // Throw to stop execution
         } else {
-            console.log(`Quote ${quote_number} created in database`);
+            console.log(`Quote ${quote_number} saved/updated in database linked to client ${clientId}`);
         }
 
         // Helper to calculate proration
@@ -129,8 +179,26 @@ export async function POST(request: NextRequest) {
         }
 
         // 3. Create Subscriptions from Monthly Items
-        if (quote_data?.monthlyItems && Array.isArray(quote_data.monthlyItems)) {
-            console.log(`Processing ${quote_data.monthlyItems.length} monthly items...`);
+        if (quote_data?.monthlyItems && Array.isArray(quote_data.monthlyItems) && quote_data.monthlyItems.length > 0) {
+            console.log(`Creating ${quote_data.monthlyItems.length} subscriptions for client ${clientId}...`);
+
+            // Parse startDate format: 'current-full', 'next-half', etc.
+            const today = new Date();
+            const startModeRaw = quote_data.startDate || 'current-full';
+            const parts = startModeRaw.split('-');
+            const monthPart = parts[0] || 'current';
+            const dayPart = parts[1] || 'full';
+
+            let monthOffset = 0;
+            if (monthPart === 'next') monthOffset = 1;
+            else if (monthPart === 'next2') monthOffset = 2;
+
+            const day = dayPart === 'half' ? 15 : 1;
+            const startDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, day);
+            const startedAt = startDate.toISOString().split('T')[0];
+
+            console.log(`Subscription start date: ${startedAt} (mode: ${startModeRaw})`);
+
             for (const item of quote_data.monthlyItems) {
                 // Determine Service Type from description
                 let serviceType = 'other';
@@ -141,10 +209,11 @@ export async function POST(request: NextRequest) {
                 else if (lowerDesc.includes('site') || lowerDesc.includes('web')) serviceType = 'website';
                 else if (lowerDesc.includes('maintenance')) serviceType = 'maintenance';
 
-                const startedAt = quote_data.startDate || new Date().toISOString().split('T')[0];
                 const monthlyAmt = item.unitPrice * item.quantity;
 
-                await supabaseAdmin.insert('subscriptions', {
+                console.log(`  -> Creating subscription: ${item.description} (${monthlyAmt}€/mois, type: ${serviceType})`);
+
+                const { error: subError } = await supabaseAdmin.insert('subscriptions', {
                     client_id: clientId,
                     service_type: serviceType,
                     service_name: item.description,
@@ -155,6 +224,12 @@ export async function POST(request: NextRequest) {
                     started_at: startedAt,
                     cancelled_at: null
                 });
+
+                if (subError) {
+                    console.error(`  ❌ Failed to create subscription: ${subError.message}`);
+                } else {
+                    console.log(`  ✅ Subscription created: ${item.description}`);
+                }
 
                 // Calculate Prorata
                 const proration = calculateProration(monthlyAmt, startedAt);
@@ -168,6 +243,9 @@ export async function POST(request: NextRequest) {
                     });
                 }
             }
+            console.log(`Finished creating subscriptions for client ${clientId}`);
+        } else {
+            console.log(`No monthly items to process (monthlyItems: ${JSON.stringify(quote_data?.monthlyItems)})`);
         }
 
         // 4. Create One-Time Charges
@@ -185,6 +263,10 @@ export async function POST(request: NextRequest) {
         }
 
         // 5. Create DocuSeal submission
+        // Use environment variable for base URL (Vercel compatible)
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
+            (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
         const submission = await docuSeal.initSigningSession({
             email: client_email,
             name: client_name || 'Client',
@@ -192,7 +274,8 @@ export async function POST(request: NextRequest) {
                 name: `Devis_${quote_number}.pdf`,
                 file: pdf_base64,
             }],
-            redirect_url: `http://141.253.116.210:3000/quote/${quote_number}/success`
+            redirect_url: `${baseUrl}/quote/${quote_number}/success`,
+            field_overrides: field_overrides
         });
 
         console.log('DocuSeal Submission Response:', submission);
@@ -202,6 +285,13 @@ export async function POST(request: NextRequest) {
 
         if (!signingUrl && !slug) {
             throw new Error('No signing URL or slug returned from DocuSeal');
+        }
+
+        // Store slug in quote for status verification (fallback for webhook)
+        if (slug) {
+            await supabaseAdmin.update('quotes', `quote_number=eq.${quote_number}`, {
+                signature_data: JSON.stringify({ slug: slug })
+            });
         }
 
         return NextResponse.json({

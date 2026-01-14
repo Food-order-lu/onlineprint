@@ -110,13 +110,26 @@ export default function EditClientPage({ params }: { params: Promise<{ id: strin
         setSaving(true);
         try {
             // Construct commission config object
-            const commissionConfig: CommissionConfig = {
-                type: data.commission_mode,
-                base_fee: data.commission_base_fee,
-                percent: data.commission_percent,
-                threshold: data.commission_threshold,
-                fixed_amount: data.commission_fixed_amount
-            };
+            let commissionConfig: CommissionConfig;
+
+            if (data.commission_mode === 'hybrid') {
+                commissionConfig = {
+                    type: 'hybrid',
+                    base_fee: data.commission_base_fee,
+                    percent: data.commission_percent,
+                    threshold: data.commission_threshold
+                };
+            } else if (data.commission_mode === 'legacy_percent') {
+                commissionConfig = {
+                    type: 'legacy_percent',
+                    percent: data.commission_percent
+                };
+            } else {
+                commissionConfig = {
+                    type: 'legacy_fixed',
+                    fixed_amount: data.commission_fixed_amount
+                };
+            }
 
             const payload = {
                 company_name: data.company_name,

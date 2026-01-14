@@ -6,6 +6,7 @@ import {
     getClients,
     createClient,
     updateClient,
+    createSubscription,
     getClientWithSubscriptions,
     supabaseAdmin,
 } from '@/lib/db/supabase';
@@ -157,6 +158,43 @@ export async function POST(request: NextRequest) {
         } catch (zohoError) {
             console.error('Failed to sync client to Zoho:', zohoError);
             // We don't block the response, just log the error
+        }
+
+        // Handle Initial Services
+        if (body.initial_services && Array.isArray(body.initial_services)) {
+            console.log('Processing initial services:', body.initial_services);
+            const today = new Date();
+            let startDate = new Date();
+
+            // Toggle Logic: Full Month (1st) vs Half Month (15th)
+            if (body.start_mode === 'half') {
+                startDate = new Date(today.getFullYear(), today.getMonth(), 15);
+            } else if (body.start_mode === 'full') {
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            }
+
+            const startDateStr = startDate.toISOString().split('T')[0];
+
+            for (const service of body.initial_services) {
+                if (service.selected && service.amount) {
+                    try {
+                        console.log(`Creating subscription for ${service.type} at ${service.amount}€`);
+                        await createSubscription({
+                            client_id: client.id,
+                            service_type: service.type,
+                            service_name: service.name || '',
+                            monthly_amount: parseFloat(service.amount),
+                            commission_percent: 0,
+                            status: 'active',
+                            started_at: startDateStr,
+                            description: null,
+                            cancelled_at: null,
+                        });
+                    } catch (subError) {
+                        console.error('Failed to create initial subscription:', subError);
+                    }
+                }
+            }
         }
 
         return NextResponse.json({ client }, { status: 201 });

@@ -26,7 +26,9 @@ export default function DashboardGlobalPage() {
         fixedRevenue: 0,
         pendingTasks: 0,
         recentActivity: [] as any[],
-        signedQuotesThisMonth: 0
+        signedQuotesThisMonth: 0,
+        newClientsThisMonth: 0,
+        newMRRThisMonth: 0
     });
 
     const [loading, setLoading] = useState(true);
@@ -50,9 +52,10 @@ export default function DashboardGlobalPage() {
     }, []);
 
     // Progress calculations
-    const clientProgress = (stats.activeClients / 14) * 100;
-    const mrrProgress = (stats.mrr / 1000) * 100;
-    const fixedRevenueProgress = (stats.fixedRevenue / 5000) * 100;
+    // Progress calculations (Monthly Goals)
+    const clientProgress = (stats.newClientsThisMonth / 5) * 100; // Target: 5 new clients/month
+    const mrrProgress = (stats.newMRRThisMonth / 500) * 100; // Target: 500€ new MRR/month
+    const fixedRevenueProgress = (stats.fixedRevenue / 5000) * 100; // Target: 5000€ fixed/month
 
     return (
         <div className="min-h-screen bg-white p-6 md:p-12">
@@ -82,10 +85,10 @@ export default function DashboardGlobalPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div>
-                            <p className="text-gray-500 text-sm mb-1">Objectif Mensuel (Clients)</p>
+                            <p className="text-gray-500 text-sm mb-1">Nouveaux Clients</p>
                             <div className="flex items-end gap-2">
-                                <span className="text-4xl font-bold text-gray-900">{stats.activeClients}</span>
-                                <span className="text-gray-400 mb-1">/ 14</span>
+                                <span className="text-4xl font-bold text-gray-900">{stats.newClientsThisMonth}</span>
+                                <span className="text-gray-400 mb-1">/ 5</span>
                             </div>
                             <div className="w-full h-1.5 bg-gray-100 rounded-full mt-3 overflow-hidden">
                                 <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(clientProgress, 100)}%` }}></div>
@@ -93,10 +96,10 @@ export default function DashboardGlobalPage() {
                         </div>
 
                         <div>
-                            <p className="text-gray-500 text-sm mb-1">Objectif Mensuel (MRR)</p>
+                            <p className="text-gray-500 text-sm mb-1">Nouveau MRR</p>
                             <div className="flex items-end gap-2">
-                                <span className="text-4xl font-bold text-gray-900">{(stats.mrr).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
-                                <span className="text-gray-400 mb-1">/ 1 000€</span>
+                                <span className="text-4xl font-bold text-gray-900">{(stats.newMRRThisMonth).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
+                                <span className="text-gray-400 mb-1">/ 500€</span>
                             </div>
                             <div className="w-full h-1.5 bg-gray-100 rounded-full mt-3 overflow-hidden">
                                 <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.min(mrrProgress, 100)}%` }}></div>

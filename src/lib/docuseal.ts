@@ -27,12 +27,26 @@ export interface DocuSealSubmissionData {
   documents?: DocuSealDocument[];
   send_email: boolean;
   submitters: DocuSealSubmitter[];
-  completed_redirect_url?: string; // Correct parameter name for redirect after signing
+  completed_redirect_url?: string;
+  field_overrides?: DocuSealOverrides;
+}
+
+export interface DocuSealFieldOverride {
+  x?: number;
+  y?: number;
+  w?: number;
+  h?: number;
+}
+
+export interface DocuSealOverrides {
+  mention?: DocuSealFieldOverride;
+  date?: DocuSealFieldOverride;
+  signature?: DocuSealFieldOverride;
 }
 
 export class DocuSealClient {
   private apiKey: string;
-  private baseUrl = 'https://api.docuseal.eu'; // EU cloud endpoint
+  private baseUrl = 'https://api.docuseal.com'; // Try .com instead of .eu
 
   constructor() {
     this.apiKey = process.env.DOCUSEAL_API_KEY || '';
@@ -77,15 +91,50 @@ export class DocuSealClient {
   }
 
   /**
+   * Get submission status by slug
+   */
+  async getSubmission(slug: string): Promise<any> {
+    if (!this.apiKey) return null;
+    try {
+      const response = await fetch(`${this.baseUrl}/submissions?slug=${slug}&limit=1`, {
+        method: 'GET',
+        headers: { 'X-Auth-Token': this.apiKey }
+      });
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data && data.data && data.data.length > 0 ? data.data[0] : null;
+    } catch (e) {
+      console.error('Failed to get DocuSeal submission:', e);
+      return null;
+    }
+  }
+
+  /**
    * Create a template from a PDF file
    */
-  async createTemplateFromPdf(pdfBase64: string, name: string): Promise<{ id: number; slug: string }> {
+  async createTemplateFromPdf(pdfBase64: string, name: string, overrides?: DocuSealOverrides): Promise<{ id: number; slug: string }> {
     if (!this.apiKey) {
       throw new Error('DOCUSEAL_API_KEY is not configured');
     }
 
     try {
       console.log('Creating DocuSeal Template from PDF:', name);
+
+      const mentionX = overrides?.mention?.x ?? parseFloat(process.env.DOCUSEAL_MENTION_X || '0.05');
+      const mentionY = overrides?.mention?.y ?? parseFloat(process.env.DOCUSEAL_MENTION_Y || '0.78');
+      const mentionW = overrides?.mention?.w ?? parseFloat(process.env.DOCUSEAL_MENTION_W || '0.40');
+      const mentionH = overrides?.mention?.h ?? parseFloat(process.env.DOCUSEAL_MENTION_H || '0.03');
+
+      const dateX = overrides?.date?.x ?? parseFloat(process.env.DOCUSEAL_DATE_X || '0.55');
+      const dateY = overrides?.date?.y ?? parseFloat(process.env.DOCUSEAL_DATE_Y || '0.78');
+      const dateW = overrides?.date?.w ?? parseFloat(process.env.DOCUSEAL_DATE_W || '0.25');
+      const dateH = overrides?.date?.h ?? parseFloat(process.env.DOCUSEAL_DATE_H || '0.03');
+
+      const sigX = overrides?.signature?.x ?? parseFloat(process.env.DOCUSEAL_SIGNATURE_X || '0.05');
+      const sigY = overrides?.signature?.y ?? parseFloat(process.env.DOCUSEAL_SIGNATURE_Y || '0.84');
+      const sigW = overrides?.signature?.w ?? parseFloat(process.env.DOCUSEAL_SIGNATURE_W || '0.45');
+      const sigH = overrides?.signature?.h ?? parseFloat(process.env.DOCUSEAL_SIGNATURE_H || '0.06');
+
       const response = await fetch(`${this.baseUrl}/templates/pdf`, {
         method: 'POST',
         headers: {
@@ -104,10 +153,10 @@ export class DocuSealClient {
                 type: 'signature',  // Handwritten mention as signature field
                 areas: [{
                   page: parseInt(process.env.DOCUSEAL_MENTION_PAGE || '1'),
-                  x: parseFloat(process.env.DOCUSEAL_MENTION_X || '0.05'),
-                  y: parseFloat(process.env.DOCUSEAL_MENTION_Y || '0.78'),
-                  w: parseFloat(process.env.DOCUSEAL_MENTION_W || '0.40'),
-                  h: parseFloat(process.env.DOCUSEAL_MENTION_H || '0.03')
+                  x: mentionX,
+                  y: mentionY,
+                  w: mentionW,
+                  h: mentionH
                 }]
               },
               {
@@ -116,10 +165,10 @@ export class DocuSealClient {
                 type: 'date',
                 areas: [{
                   page: parseInt(process.env.DOCUSEAL_DATE_PAGE || '1'),
-                  x: parseFloat(process.env.DOCUSEAL_DATE_X || '0.55'),
-                  y: parseFloat(process.env.DOCUSEAL_DATE_Y || '0.78'),
-                  w: parseFloat(process.env.DOCUSEAL_DATE_W || '0.25'),
-                  h: parseFloat(process.env.DOCUSEAL_DATE_H || '0.03')
+                  x: dateX,
+                  y: dateY,
+                  w: dateW,
+                  h: dateH
                 }]
               },
               {
@@ -128,10 +177,10 @@ export class DocuSealClient {
                 type: 'signature',
                 areas: [{
                   page: parseInt(process.env.DOCUSEAL_SIGNATURE_PAGE || '1'),
-                  x: parseFloat(process.env.DOCUSEAL_SIGNATURE_X || '0.05'),
-                  y: parseFloat(process.env.DOCUSEAL_SIGNATURE_Y || '0.84'),
-                  w: parseFloat(process.env.DOCUSEAL_SIGNATURE_W || '0.45'),
-                  h: parseFloat(process.env.DOCUSEAL_SIGNATURE_H || '0.06')
+                  x: sigX,
+                  y: sigY,
+                  w: sigW,
+                  h: sigH
                 }]
               }
             ]
@@ -157,7 +206,7 @@ export class DocuSealClient {
   /**
    * Helper to initialize a submission - optionally creates template from PDF first
    */
-  async initSigningSession(data: { templateId?: string, documents?: DocuSealDocument[], email: string, name?: string, redirect_url?: string }) {
+  async initSigningSession(data: { templateId?: string, documents?: DocuSealDocument[], email: string, name?: string, redirect_url?: string, field_overrides?: DocuSealOverrides }) {
     if (!data.templateId && !data.documents) {
       throw new Error("Must provide either templateId or documents");
     }
@@ -167,7 +216,7 @@ export class DocuSealClient {
     // If documents provided, create a template first
     if (data.documents && data.documents.length > 0 && !templateId) {
       const doc = data.documents[0];
-      const template = await this.createTemplateFromPdf(doc.file, doc.name);
+      const template = await this.createTemplateFromPdf(doc.file, doc.name, data.field_overrides);
       templateId = template.id.toString();
       console.log('Using new template ID:', templateId);
     }
@@ -182,7 +231,7 @@ export class DocuSealClient {
           name: data.name,
         },
       ],
-      completed_redirect_url: data.redirect_url, // Use correct parameter name
+      completed_redirect_url: data.redirect_url,
     };
 
     return this.createSubmission(payload);

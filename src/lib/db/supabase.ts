@@ -313,6 +313,19 @@ export async function createInvoice(input: Omit<Invoice, 'id' | 'created_at' | '
     return data[0];
 }
 
+export async function getInvoiceById(id: string): Promise<Invoice | null> {
+    const { data, error } = await supabaseAdmin.selectOne<Invoice>('invoices', `id=eq.${id}`);
+    if (error) throw new Error(error.message);
+    return data;
+}
+
+export async function updateInvoice(id: string, updates: Partial<Invoice>): Promise<Invoice> {
+    const { data, error } = await supabaseAdmin.update<Invoice>('invoices', `id=eq.${id}`, updates);
+    if (error) throw new Error(error.message);
+    if (!data || data.length === 0) throw new Error('Failed to update invoice');
+    return data[0];
+}
+
 export async function generateInvoiceNumber(): Promise<string> {
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, '0');

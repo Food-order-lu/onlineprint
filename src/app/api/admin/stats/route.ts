@@ -45,6 +45,19 @@ export async function GET(request: NextRequest) {
         );
         const fixedRevenue = fixedCharges?.reduce((sum: number, item: any) => sum + (Number(item.amount) || 0), 0) || 0;
 
+        // 7. New Clients This Month
+        const { data: newClients } = await supabaseAdmin.select<any>(
+            'clients',
+            `created_at=gte.${startOfMonth.toISOString()}&select=id`
+        );
+
+        // 8. New MRR This Month
+        const { data: newSubs } = await supabaseAdmin.select<any>(
+            'subscriptions',
+            `started_at=gte.${startOfMonth.toISOString()}&select=monthly_amount`
+        );
+        const newMRR = newSubs?.reduce((sum: number, sub: any) => sum + (Number(sub.monthly_amount) || 0), 0) || 0;
+
         return NextResponse.json({
             activeClients: activeClients?.length || 0,
             inactiveClients: inactiveClients?.length || 0,
@@ -53,7 +66,9 @@ export async function GET(request: NextRequest) {
             pendingTasks: pendingTasksList?.length || 0,
             recentActivity,
             signedQuotesThisMonth: signedThisMonth?.length || 0,
-            fixedRevenue
+            fixedRevenue,
+            newClientsThisMonth: newClients?.length || 0,
+            newMRRThisMonth: newMRR
         });
 
     } catch (error: any) {

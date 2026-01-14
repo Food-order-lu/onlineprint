@@ -43,6 +43,7 @@ interface Subscription {
     description: string | null;
     monthly_amount: number;
     commission_percent: number;
+    commission_threshold?: number;
     status: SubscriptionStatus;
     started_at: string;
     cancelled_at: string | null;
@@ -111,6 +112,8 @@ interface Client {
     sepa_exception: boolean;
     sepa_exception_reason: string | null;
     notes: string | null;
+    contract_duration_months?: number;
+    contract_renewal_type?: string;
     created_at: string;
     subscriptions: Subscription[];
     invoices: Invoice[];
@@ -243,15 +246,70 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     const [contractDuration, setContractDuration] = useState('12');
     const [contractRenewal, setContractRenewal] = useState('Tacite');
 
+    // Sync contract state when client data loads
+    useEffect(() => {
+        if (client) {
+            setContractDuration(client.contract_duration_months?.toString() || '12');
+            setContractRenewal(client.contract_renewal_type || 'Tacite');
+        }
+    }, [client]);
+
     // Form states
     const [newSubscription, setNewSubscription] = useState({
         service_type: 'hosting' as ServiceType,
         service_name: '',
-        monthly_amount: '',
+        monthly_amount: '25',
         commission_percent: '0',
-        started_at: new Date().toISOString().split('T')[0],
+        commission_threshold: '0',
+        started_at: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0], // Default 1st of month
     });
+
     const [newCharge, setNewCharge] = useState({ description: '', amount: '' });
+    const [payingInvoiceId, setPayingInvoiceId] = useState<string | null>(null);
+    const [confirmPayInvoiceId, setConfirmPayInvoiceId] = useState<string | null>(null);
+
+    const handlePayInvoice = async (invoiceId: string) => {
+        setPayingInvoiceId(invoiceId);
+        setConfirmPayInvoiceId(null);
+        try {
+            const response = await fetch('/api/gocardless/charge-invoice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ invoiceId })
+            });
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.error || 'Erreur de prélèvement');
+
+            alert('Prélèvement initié avec succès. Statut mis à jour sur Zoho.');
+            await fetchClient();
+        } catch (error: any) {
+            alert(`Erreur: ${error.message}`);
+        } finally {
+            setPayingInvoiceId(null);
+        }
+    };
+
+    const handleSaveContract = async () => {
+        if (!client) return;
+        try {
+            const response = await fetch(`/api/clients/${client.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contract_duration_months: parseInt(contractDuration),
+                    contract_renewal_type: contractRenewal
+                })
+            });
+
+            if (!response.ok) throw new Error('Erreur sauvegarde');
+
+            await fetchClient();
+            setIsEditingContract(false);
+        } catch (err) {
+            alert('Erreur lors de la sauvegarde du contrat');
+        }
+    };
 
     const fetchClient = async () => {
         try {
@@ -267,7 +325,26 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     };
 
     useEffect(() => {
+        // Initial fetch
         fetchClient();
+
+        // Background sync with Zoho to check for status updates (e.g. Sent, Paid)
+        const syncZoho = async () => {
+            try {
+                const res = await fetch(`/api/clients/${resolvedParams.id}/sync-invoices`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.synced > 0) {
+                        console.log('Synced invoices from Zoho:', data.updates);
+                        // Refresh data to show new statuses
+                        fetchClient();
+                    }
+                }
+            } catch (e) {
+                console.error('Invoice sync failed:', e);
+            }
+        };
+        syncZoho();
     }, [resolvedParams.id]);
 
     const handleSendMandateRequest = async () => {
@@ -394,6 +471,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                     ...newSubscription,
                     monthly_amount: parseFloat(newSubscription.monthly_amount),
                     commission_percent: parseFloat(newSubscription.commission_percent),
+                    commission_threshold: parseFloat(newSubscription.commission_threshold || '0'),
                     started_at: newSubscription.started_at,
                 }),
             });
@@ -482,6 +560,19 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
                         <StatusBadge status={client.status} />
+                        {/* Auto-liquidation warning for intra/extra-community clients */}
+                        {client.vat_number && (() => {
+                            const cleaned = client.vat_number.trim().toUpperCase().replace(/\s+/g, '');
+                            const euVatRegex = /^[A-Z]{2}[0-9A-Z]{2,12}$/;
+                            const isValidEuVat = euVatRegex.test(cleaned);
+                            const isNonLU = isValidEuVat && !cleaned.startsWith('LU');
+                            return isNonLU ? (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border bg-amber-50 text-amber-700 border-amber-200">
+                                    <AlertCircle size={14} />
+                                    Auto-liquidation TVA (0%)
+                                </span>
+                            ) : null;
+                        })()}
                         {client.status === 'pending_cancellation' && (
                             <CancellationCountdown effectiveDate={client.cancellation_effective_at} />
                         )}
@@ -628,11 +719,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                                 Annuler
                                             </button>
                                             <button
-                                                onClick={() => {
-                                                    // Placeholder save logic
-                                                    alert("Termes mis à jour (Simulation)");
-                                                    setIsEditingContract(false);
-                                                }}
+                                                onClick={handleSaveContract}
                                                 className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold shadow-sm"
                                             >
                                                 Enregistrer
@@ -648,7 +735,11 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                         <div className="flex justify-between items-center">
                                             <span className="text-gray-600 text-sm">Fin d'engagement</span>
                                             <span className="font-semibold text-gray-900">
-                                                {client.created_at ? new Date(new Date(client.created_at).setFullYear(new Date(client.created_at).getFullYear() + parseInt(contractDuration))).toLocaleDateString('fr-FR') : '-'}
+                                                {client.created_at ? (() => {
+                                                    const start = new Date(client.created_at);
+                                                    start.setMonth(start.getMonth() + parseInt(contractDuration));
+                                                    return start.toLocaleDateString('fr-FR');
+                                                })() : '-'}
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center">
@@ -688,7 +779,27 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                             <select
                                                 value={newSubscription.service_type}
-                                                onChange={e => setNewSubscription({ ...newSubscription, service_type: e.target.value as ServiceType })}
+                                                onChange={e => {
+                                                    const type = e.target.value as ServiceType;
+                                                    let amount = '0';
+                                                    let percent = '0';
+                                                    let threshold = '0';
+
+                                                    // Defaults
+                                                    if (type === 'hosting') amount = '25';
+                                                    if (type === 'online_ordering') { amount = '60'; percent = '3'; threshold = '1000'; }
+                                                    if (type === 'table_reservation') amount = '10';
+                                                    if (type === 'website') amount = '399'; // Base for Essentiel
+                                                    if (type === 'maintenance') amount = '50';
+
+                                                    setNewSubscription({
+                                                        ...newSubscription,
+                                                        service_type: type,
+                                                        monthly_amount: amount,
+                                                        commission_percent: percent,
+                                                        commission_threshold: threshold
+                                                    });
+                                                }}
                                                 className="p-2 border rounded-lg"
                                             >
                                                 {Object.entries(serviceTypeLabels).map(([key, label]) => (
@@ -702,20 +813,43 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                                 onChange={e => setNewSubscription({ ...newSubscription, service_name: e.target.value })}
                                                 className="p-2 border rounded-lg"
                                             />
-                                            <input
-                                                type="number"
-                                                placeholder="Montant mensuel (€)"
-                                                value={newSubscription.monthly_amount}
-                                                onChange={e => setNewSubscription({ ...newSubscription, monthly_amount: e.target.value })}
-                                                className="p-2 border rounded-lg"
-                                            />
-                                            <input
-                                                type="number"
-                                                placeholder="Commission (%)"
-                                                value={newSubscription.commission_percent}
-                                                onChange={e => setNewSubscription({ ...newSubscription, commission_percent: e.target.value })}
-                                                className="p-2 border rounded-lg"
-                                            />
+                                            <div className="flex flex-col">
+                                                <label className="text-xs text-gray-500 mb-1">Montant Mensuel (€)</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="Montant mensuel (€)"
+                                                    value={newSubscription.monthly_amount}
+                                                    onChange={e => setNewSubscription({ ...newSubscription, monthly_amount: e.target.value })}
+                                                    className="p-2 border rounded-lg"
+                                                />
+                                            </div>
+
+                                            {/* Commission Fields - Only for Online Ordering or if needed */}
+                                            {newSubscription.service_type === 'online_ordering' && (
+                                                <>
+                                                    <div className="flex flex-col">
+                                                        <label className="text-xs text-gray-500 mb-1">Commission (%)</label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Commission (%)"
+                                                            value={newSubscription.commission_percent}
+                                                            onChange={e => setNewSubscription({ ...newSubscription, commission_percent: e.target.value })}
+                                                            className="p-2 border rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <label className="text-xs text-gray-500 mb-1">Seuil CA (€)</label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Seuil (ex: 1000)"
+                                                            value={newSubscription.commission_threshold}
+                                                            onChange={e => setNewSubscription({ ...newSubscription, commission_threshold: e.target.value })}
+                                                            className="p-2 border rounded-lg"
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+
                                             <div className="flex flex-col">
                                                 <label className="text-xs text-gray-500 mb-1">Date de début</label>
                                                 <input
@@ -923,8 +1057,35 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                         <div>
                                             <p className="font-semibold text-gray-900">{inv.invoice_number}</p>
                                             <p className="text-xs text-gray-400">{new Date(inv.issued_at).toLocaleDateString()}</p>
+                                            {(() => {
+                                                const statusMap: Record<string, { label: string, cls: string }> = {
+                                                    paid: { label: 'Payée', cls: 'bg-green-100 text-green-700' },
+                                                    draft: { label: 'Brouillon', cls: 'bg-gray-100 text-gray-600 border border-gray-200' },
+                                                    sent: { label: 'Envoyée', cls: 'bg-blue-100 text-blue-700' },
+                                                    overdue: { label: 'En retard', cls: 'bg-red-100 text-red-700' },
+                                                    cancelled: { label: 'Annulée', cls: 'bg-red-50 text-red-400' },
+                                                };
+                                                const s = statusMap[inv.status] || { label: inv.status, cls: 'bg-gray-100 text-gray-700' };
+                                                return (
+                                                    <span className={`text-xs px-2 py-0.5 rounded-full ${s.cls}`}>
+                                                        {s.label}
+                                                    </span>
+                                                );
+                                            })()}
                                         </div>
-                                        <p className="font-bold text-gray-900">{inv.total.toFixed(2)}€</p>
+                                        <div className="flex items-center gap-3">
+                                            <p className="font-bold text-gray-900">{inv.total.toFixed(2)}€</p>
+                                            {inv.status !== 'paid' && client.mandate?.status === 'active' && (
+                                                <button
+                                                    onClick={() => setConfirmPayInvoiceId(inv.id)}
+                                                    disabled={payingInvoiceId === inv.id}
+                                                    className="px-3 py-1 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-gray-800 disabled:opacity-50 flex items-center gap-2"
+                                                >
+                                                    {payingInvoiceId === inv.id ? <Loader2 size={12} className="animate-spin" /> : <CreditCard size={12} />}
+                                                    Prélever
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -1091,6 +1252,37 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                     className="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
                                 >
                                     Confirmer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirmation Modal for Payment */}
+            {confirmPayInvoiceId && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 animate-in zoom-in-95 duration-200">
+                        <div className="p-6">
+                            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CreditCard size={24} className="text-orange-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Confirmer le prélèvement</h3>
+                            <p className="text-gray-500 text-center mb-6">
+                                Voulez-vous vraiment prélever cette facture via GoCardless ?
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setConfirmPayInvoiceId(null)}
+                                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={() => handlePayInvoice(confirmPayInvoiceId)}
+                                    className="flex-1 px-4 py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-colors"
+                                >
+                                    Prélever
                                 </button>
                             </div>
                         </div>

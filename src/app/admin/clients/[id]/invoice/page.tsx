@@ -23,6 +23,7 @@ interface OneTimeCharge {
 interface InvoiceItem {
     description: string;
     amount: number;
+    vatRate: number; // VAT rate in percent
     source: 'subscription' | 'one_time' | 'manual';
     sourceId?: string;
 }
@@ -44,6 +45,7 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
     const [items, setItems] = useState<InvoiceItem[]>([]);
     const [manualDescription, setManualDescription] = useState('');
     const [manualAmount, setManualAmount] = useState('');
+    const [manualVat, setManualVat] = useState('17');
 
     useEffect(() => {
         fetchClient();
@@ -64,6 +66,7 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
                     .map((sub: Subscription) => ({
                         description: sub.service_name || sub.service_type,
                         amount: sub.monthly_amount,
+                        vatRate: 17,
                         source: 'subscription' as const,
                         sourceId: sub.id,
                     }));
@@ -74,6 +77,7 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
                     .map((charge: OneTimeCharge) => ({
                         description: charge.description,
                         amount: charge.amount,
+                        vatRate: 17,
                         source: 'one_time' as const,
                         sourceId: charge.id,
                     }));
@@ -92,10 +96,12 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
         setItems([...items, {
             description: manualDescription,
             amount: parseFloat(manualAmount),
-            source: 'manual',
+            vatRate: parseFloat(manualVat) || 0,
+            source: 'manual', // Fix: source matches literal type
         }]);
         setManualDescription('');
         setManualAmount('');
+        setManualVat('17');
     }
 
     function removeItem(index: number) {
@@ -131,7 +137,7 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
     }
 
     const total = items.reduce((sum, item) => sum + item.amount, 0);
-    const tva = total * 0.17;
+    const tva = items.reduce((sum, item) => sum + (item.amount * (item.vatRate / 100)), 0);
     const totalTtc = total + tva;
 
     if (loading) {
@@ -203,7 +209,10 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <span className="font-bold text-white">€{item.amount.toFixed(2)}</span>
+                                    <div className="text-right mr-4">
+                                        <div className="font-bold text-white">€{item.amount.toFixed(2)}</div>
+                                        <div className="text-xs text-gray-400">TVA {item.vatRate}%</div>
+                                    </div>
                                     <button
                                         onClick={() => removeItem(index)}
                                         className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded"
@@ -241,6 +250,19 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
                                 step="0.01"
                                 min="0"
                             />
+                            <div className="flex items-center gap-2 bg-gray-700 border border-gray-600 rounded-lg px-3">
+                                <span className="text-gray-400 text-sm">TVA</span>
+                                <input
+                                    type="number"
+                                    value={manualVat}
+                                    onChange={(e) => setManualVat(e.target.value)}
+                                    className="w-12 bg-transparent text-white placeholder-gray-500 text-right focus:outline-none"
+                                    step="1"
+                                    min="0"
+                                    max="100"
+                                />
+                                <span className="text-gray-400 text-sm">%</span>
+                            </div>
                             <button
                                 onClick={addManualItem}
                                 className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg"
@@ -259,7 +281,7 @@ export default function CreateInvoicePage({ params }: { params: Promise<{ id: st
                             <span>€{total.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-gray-400">
-                            <span>TVA (17%)</span>
+                            <span>TVA (Total)</span>
                             <span>€{tva.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-xl font-bold text-white pt-2 border-t border-gray-700">

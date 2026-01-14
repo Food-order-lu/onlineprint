@@ -5,6 +5,33 @@ import { zoho } from '@/lib/invoicing/zoho';
 import type { Client, Subscription, OneTimeCharge } from '@/lib/db/types';
 import { getCurrentDate } from '@/lib/date-helper';
 
+/**
+ * Determine VAT rate based on client's VAT number.
+ * - If VAT number exists, is valid EU format, and is NOT Luxembourgish (LU), apply 0% (reverse charge).
+ * - Otherwise, apply the standard Luxembourg VAT rate of 17%.
+ */
+function getClientVatRate(client: Client): number {
+    if (client.vat_number && client.vat_number.trim().length > 0) {
+        // Clean and validate VAT format
+        const cleaned = client.vat_number.trim().toUpperCase().replace(/\s+/g, '');
+
+        // Check for valid EU VAT format: 2 letters + 2-12 alphanumeric chars
+        const euVatRegex = /^[A-Z]{2}[0-9A-Z]{2,12}$/;
+        if (!euVatRegex.test(cleaned)) {
+            // Invalid format, use standard rate
+            return 17;
+        }
+
+        const vatPrefix = cleaned.substring(0, 2);
+        if (vatPrefix !== 'LU') {
+            // Valid non-LU EU VAT -> Intra-community -> 0%
+            return 0;
+        }
+    }
+    // Luxembourg client or no valid VAT number -> Standard 17%
+    return 17;
+}
+
 export async function POST(
     request: NextRequest,
     context: { params: Promise<{ id: string }> } // Correct Next.js 15+ params type
@@ -23,6 +50,11 @@ export async function POST(
         if (clientError || !client) {
             return NextResponse.json({ error: 'Client not found' }, { status: 404 });
         }
+
+        // Determine VAT rate for this client
+        const vatRate = getClientVatRate(client);
+        const isReverseCharge = vatRate === 0;
+        console.log(`Client ${client.company_name}: VAT Rate = ${vatRate}%${isReverseCharge ? ' (Reverse Charge)' : ''}`);
 
         const today = await getCurrentDate();
         const currentMonthName = today.toLocaleString('fr-FR', { month: 'long', year: 'numeric' });
@@ -55,41 +87,14 @@ export async function POST(
                 // Skip variable subscriptions (0 monthly amount)
                 if (sub.monthly_amount <= 0) continue;
 
-                let amount = sub.monthly_amount;
-                let description = `Abonnement mensuel - ${currentMonthName}`;
-                let quantity = 1;
-
-                // Check for Prorata
-                if (sub.started_at) {
-                    const startDate = new Date(sub.started_at);
-                    if (startDate > today) {
-                        // Future subscription - Skip or charge 0? 
-                        // For now, let's skip it to avoid charging before service starts
-                        continue;
-                    }
-
-                    if (startDate.getMonth() === today.getMonth() && startDate.getFullYear() === today.getFullYear()) {
-                        // Started THIS month -> Prorata
-                        const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-                        const startDay = startDate.getDate();
-                        const daysActive = daysInMonth - startDay + 1;
-
-                        // Calculate prorata
-                        const dailyRate = sub.monthly_amount / daysInMonth;
-                        amount = Number((dailyRate * daysActive).toFixed(2));
-
-                        description += ` (Prorata: ${startDay}/${startDate.getMonth() + 1} - ${daysInMonth}/${startDate.getMonth() + 1})`;
-                    }
-                }
-
                 lineItems.push({
                     name: sub.service_name || sub.service_type,
-                    description: description,
-                    rate: amount,
+                    description: `Abonnement mensuel - ${currentMonthName}`,
+                    rate: sub.monthly_amount,
                     quantity: 1,
-                    tax_percentage: 17 // Default VAT
+                    tax_percentage: vatRate // Dynamic VAT rate
                 });
-                subtotal += amount;
+                subtotal += sub.monthly_amount;
             }
         }
 
@@ -98,10 +103,10 @@ export async function POST(
             for (const charge of oneTimeCharges!) {
                 lineItems.push({
                     name: charge.description,
-                    description: 'Service ponctuel / Ajustement',
+                    description: 'Service ponctuel',
                     rate: charge.amount,
                     quantity: 1,
-                    tax_percentage: 17 // Default VAT
+                    tax_percentage: vatRate // Dynamic VAT rate
                 });
                 subtotal += charge.amount;
             }
@@ -117,34 +122,43 @@ export async function POST(
             contact_name: client.contact_name,
             email: client.email,
             address: client.address || undefined,
+            city: client.city || undefined,
+            postal_code: client.postal_code || undefined,
+            country: client.country || 'Luxembourg',
             vat_number: client.vat_number || undefined,
         });
 
         // 5. Create Zoho Invoice
         const dueDate = await getCurrentDate();
-        // dueDate.setDate(dueDate.getDate() + 15); // Removed Net 15, now Due on Receipt
+
+        // Add reverse charge note if applicable
+        let invoiceNotes = `Compte bancaire : LU73 0019 7755 6437 0000`;
+        if (isReverseCharge) {
+            invoiceNotes += `\n\nTVA non applicable - Autoliquidation (Reverse Charge). Article 44 de la directive 2006/112/CE.`;
+        }
 
         const { invoice: zohoInvoice } = await zoho.createInvoice({
             customer_id: contact.contact_id,
             date: today.toISOString().split('T')[0],
             due_date: dueDate.toISOString().split('T')[0],
-            notes: `Compte bancaire : LU73 0019 7755 6437 0000`,
+            notes: invoiceNotes,
             terms: 'Paiement immédiat à réception (Due on Receipt).',
+            is_draft: true, // Create as Draft
             line_items: lineItems,
         });
 
         // 6. Save Invoice to Local DB
-        const vatAmount = subtotal * 0.17;
+        const vatAmount = subtotal * (vatRate / 100);
         const totalTtc = subtotal + vatAmount;
 
         const localInvoice = await createInvoice({
             client_id: client.id,
             invoice_number: zohoInvoice.invoice_number,
             subtotal: subtotal,
-            vat_rate: 17,
+            vat_rate: vatRate,
             vat_amount: vatAmount,
             total: totalTtc,
-            status: 'sent',
+            status: 'draft', // Draft status
             external_id: zohoInvoice.invoice_id,
             external_provider: 'zoho',
             gocardless_payment_id: null,

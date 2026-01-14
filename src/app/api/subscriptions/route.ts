@@ -23,10 +23,21 @@ function calculateProration(monthlyAmount: number, startDateStr: string, today: 
 
     const startOfMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
     const endOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-
     const daysInMonth = endOfMonth.getDate();
-    const daysActive = daysInMonth - startDate.getDate() + 1; // Inclusive
 
+    // Simplified Proration for V1:
+    // If start date is 1st -> No proration (handled above)
+    // If start date is 15th -> Exactly 50%
+    if (startDate.getDate() === 15) {
+        return {
+            amount: monthlyAmount / 2,
+            days: 15, // Approximate
+            totalDays: daysInMonth
+        };
+    }
+
+    // Default daily calculation for other dates (if manually set)
+    const daysActive = daysInMonth - startDate.getDate() + 1; // Inclusive
     const proratedAmount = (monthlyAmount / daysInMonth) * daysActive;
 
     return {
@@ -69,6 +80,21 @@ export async function POST(request: NextRequest) {
         };
 
         const subscription = await createSubscription(subscriptionInput);
+
+        // Update Client Commission Config if Online Ordering
+        if (body.service_type === 'online_ordering') {
+            const commissionConfig = {
+                type: 'hybrid',
+                base_fee: monthlyAmount,
+                percent: parseFloat(body.commission_percent || 0),
+                threshold: parseFloat(body.commission_threshold || 1000),
+            };
+
+            await supabaseAdmin.update('clients', `id=eq.${body.client_id}`, {
+                commission_config: commissionConfig
+            });
+            console.log(`Updated client commission config for ${body.client_id}`);
+        }
 
         // Calculate and create proration charge if applicable
         let prorationChargeId = null;

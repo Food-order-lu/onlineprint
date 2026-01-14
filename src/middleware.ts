@@ -21,6 +21,7 @@ const PUBLIC_ROUTES = [
     '/cancel',
     '/api/gocardless/webhook',
     '/api/cancel',
+    '/api/public',
 ];
 
 export async function middleware(request: NextRequest) {

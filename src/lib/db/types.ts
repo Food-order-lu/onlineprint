@@ -40,6 +40,7 @@ export interface Client {
   commission_config: CommissionConfig | null;
   referral_code?: string | null;
   referred_by?: string | null;
+  notes?: string | null;
 
   zoho_contact_id: string | null;
   payment_method: 'sepa' | 'manual' | 'card' | 'transfer';
@@ -55,7 +56,8 @@ export interface Client {
   sepa_exception: boolean;
   sepa_exception_reason: string | null;
 
-  notes: string | null;
+  contract_duration_months?: number; // Added in migration 005
+  contract_renewal_type?: string;
 
   created_at: string;
   updated_at: string;
@@ -71,6 +73,7 @@ export interface Subscription {
 
   monthly_amount: number;
   commission_percent: number;
+  commission_threshold?: number;
 
   status: SubscriptionStatus;
 

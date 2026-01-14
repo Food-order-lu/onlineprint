@@ -4,12 +4,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { zoho } from '@/lib/invoicing/zoho';
 import { supabaseAdmin, getClientById, createInvoice } from '@/lib/db/supabase';
+import type { Client } from '@/lib/db/types';
 
 interface InvoiceItem {
     description: string;
     amount: number;
+    vatRate?: number; // Add optional vatRate
     source: 'subscription' | 'one_time' | 'manual';
     sourceId?: string;
+}
+
+/**
+ * Determine VAT rate based on client's VAT number.
+ * - If VAT number exists, is valid EU format, and is NOT Luxembourgish (LU), apply 0% (reverse charge).
+ * - Otherwise, apply the standard Luxembourg VAT rate of 17%.
+ */
+function getClientVatRate(client: Client): number {
+    if (client.vat_number && client.vat_number.trim().length > 0) {
+        // Clean and validate VAT format
+        const cleaned = client.vat_number.trim().toUpperCase().replace(/\s+/g, '');
+
+        // Check for valid EU VAT format: 2 letters + 2-12 alphanumeric chars
+        const euVatRegex = /^[A-Z]{2}[0-9A-Z]{2,12}$/;
+        if (!euVatRegex.test(cleaned)) {
+            // Invalid format, use standard rate
+            return 17;
+        }
+
+        const vatPrefix = cleaned.substring(0, 2);
+        if (vatPrefix !== 'LU') {
+            // Valid non-LU EU VAT -> Intra-community -> 0%
+            return 0;
+        }
+    }
+    // Luxembourg client or no valid VAT number -> Standard 17%
+    return 17;
 }
 
 export async function POST(request: NextRequest) {
@@ -30,37 +59,62 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Client not found' }, { status: 404 });
         }
 
+        // Determine default VAT rate for this client
+        const defaultVatRate = getClientVatRate(client);
+        const isReverseCharge = defaultVatRate === 0;
+        console.log(`Client ${client.company_name}: Default VAT = ${defaultVatRate}%${isReverseCharge ? ' (Reverse Charge)' : ''}`);
+
         // 2. Calculate totals
-        const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-        const vatRate = 17;
-        const vatAmount = subtotal * (vatRate / 100);
+        let subtotal = 0;
+        let vatAmount = 0;
+
+        for (const item of items) {
+            subtotal += item.amount;
+            // Use item-specific VAT if provided, otherwise use client's default
+            const itemVatRate = item.vatRate !== undefined ? item.vatRate : defaultVatRate;
+            vatAmount += item.amount * (itemVatRate / 100);
+        }
+
         const total = subtotal + vatAmount;
+        // Average VAT rate for local DB (informative only)
+        const avgVatRate = subtotal > 0 ? parseFloat(((vatAmount / subtotal) * 100).toFixed(2)) : 0;
 
         // 3. Get or create Zoho contact
         const contact = await zoho.getOrCreateContact({
             company_name: client.company_name,
             contact_name: client.contact_name,
             email: client.email,
+            address: client.address || undefined,
+            city: client.city || undefined,
+            postal_code: client.postal_code || undefined,
+            country: client.country || 'Luxembourg',
+            vat_number: client.vat_number || undefined,
         });
 
         // 4. Create invoice in Zoho
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + 15); // Net 15
 
+        // Add reverse charge note if applicable
+        let invoiceNotes = `Facture mensuelle - ${client.company_name}`;
+        if (isReverseCharge) {
+            invoiceNotes += `\n\nTVA non applicable - Autoliquidation (Reverse Charge). Article 44 de la directive 2006/112/CE.`;
+        }
+
         const { invoice: zohoInvoice } = await zoho.createInvoice({
             customer_id: contact.contact_id,
             date: new Date().toISOString().split('T')[0],
             due_date: dueDate.toISOString().split('T')[0],
-            notes: `Facture mensuelle - ${client.company_name}`,
+            notes: invoiceNotes,
             terms: 'Paiement à 15 jours.',
-            is_draft: false,
+            is_draft: true, // Draft
             line_items: items.map(item => ({
                 name: item.description,
                 description: item.source === 'subscription' ? 'Abonnement mensuel' :
                     item.source === 'one_time' ? 'Service ponctuel' : '',
                 rate: item.amount,
                 quantity: 1,
-                tax_percentage: vatRate,
+                tax_percentage: item.vatRate !== undefined ? item.vatRate : defaultVatRate, // Use client default
             })),
         });
 
@@ -69,11 +123,11 @@ export async function POST(request: NextRequest) {
             client_id,
             invoice_number: zohoInvoice.invoice_number,
             subtotal: subtotal,
-            vat_rate: vatRate,
+            vat_rate: avgVatRate, // Use the calculated average
             vat_amount: vatAmount,
             total: total,
 
-            status: 'sent',
+            status: 'draft', // Draft status
             external_id: zohoInvoice.invoice_id,
             external_provider: 'zoho',
             gocardless_payment_id: null,
